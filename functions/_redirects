@@ -1,0 +1,6 @@
+# 强制 www 跳转到裸域名
+https://www.poke-survivors.org/* https://poke-survivors.org/:splat 301!
+http://www.poke-survivors.org/* https://poke-survivors.org/:splat 301!
+
+# 强制 HTTPS
+http://poke-survivors.org/* https://poke-survivors.org/:splat 301!

@@ -1,0 +1,424 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import FAQ from '../components/FAQ.astro';
+
+const title = 'PokeSurvivor Co-op Guide: Online Multiplayer for 4 Players';
+const description = "PokeSurvivor co-op puts you and up to 3 friends online with shared XP. Revives take 3 seconds, enemies scale per player, and the host's tab rules the run.";
+const image = 'https://poke-survivors.org/images/pokesurvivor-coop.webp';
+const jsonLd: Array<Record<string, unknown>> = [
+  {
+    '@type': 'Article',
+    headline: title,
+    description,
+    datePublished: '2026-10-16',
+    dateModified: '2026-10-16',
+    author: { '@type': 'Organization', name: 'PokeSurvivor Fan Guide' },
+    publisher: { '@type': 'Organization', name: 'PokeSurvivor Fan Guide' },
+    inLanguage: 'en',
+    image,
+    mainEntityOfPage: 'https://poke-survivors.org/co-op/',
+  },
+  {
+    '@type': 'HowTo',
+    name: 'How to start a PokeSurvivor co-op run with friends',
+    description: 'The three-step room setup from the official guide.',
+    inLanguage: 'en',
+    image,
+    totalTime: 'PT5M',
+    tool: [{ '@type': 'HowToTool', name: 'A pokesurvivor.com account for every player' }],
+    step: [
+      { '@type': 'HowToStep', position: 1, name: 'Sign in', text: 'Every player signs in to an account. A guest cannot join a saved group run.', url: 'https://poke-survivors.org/co-op/#setup' },
+      { '@type': 'HowToStep', position: 2, name: 'Add friends by nickname', text: 'Swap nicknames with the people you want to play with and add each other to the friends list.', url: 'https://poke-survivors.org/co-op/#setup' },
+      { '@type': 'HowToStep', position: 3, name: 'Invite them to your room', text: 'Whoever invites is the host. Once everyone is in the room, the host starts the run.', url: 'https://poke-survivors.org/co-op/#setup' },
+    ],
+  },
+];
+---
+
+<BaseLayout
+  title={title}
+  alternates={[
+    { locale: 'en', href: '/co-op/' },
+    { locale: 'zh-Hant', href: '/zh/co-op/' }
+  ]}
+  description={description}
+  locale="en"
+  ogType="article"
+  ogImage="/images/pokesurvivor-coop.jpg"
+  ogImageAlt="PokeSurvivor co-op: four partner Pokémon sprites side by side, one per player slot"
+  breadcrumbs={[
+    { name: 'Home', url: '/' },
+    { name: 'Co-op Guide', url: '/co-op/' },
+  ]}
+  preloadImage="/images/pokesurvivor-coop.webp"
+  jsonLd={jsonLd}
+>
+  <article class="guide">
+    <header class="guide-header">
+      <h1>PokeSurvivor Co-op: How Multiplayer Works</h1>
+      <p class="meta">Updated: 2026-10-16 · Unofficial fan guide</p>
+      <p class="lead">
+        Playing PokeSurvivor with friends means up to four of you surviving the same endless horde together, online, in
+        the browser. PokeSurvivor co-op shares one map, one XP bar and one leaderboard entry across the team. We are an
+        unofficial fan site: rules come from official sources, and tips are our opinion. Play the game for free at
+        <a href="https://pokesurvivor.com/en/" rel="noopener">pokesurvivor.com</a>.
+      </p>
+    </header>
+
+    <figure>
+      <img
+        src="/images/pokesurvivor-coop.webp"
+        width="1200"
+        height="520"
+        loading="eager"
+        fetchpriority="high"
+        decoding="async"
+        alt="Four partner Pokémon sprites lined up side by side, representing the four player slots in a PokeSurvivor co-op run"
+      />
+      <figcaption>A co-op run holds 2 to 4 players, each with their own partner Pokémon and their own card picks. Fan-made illustration, not an in-game screenshot. Sprites: SpriteCollab (CC BY-NC 4.0).</figcaption>
+    </figure>
+
+    <nav class="toc" aria-label="On this page">
+      <p class="toc-title">On this page</p>
+      <ul>
+        <li><a href="#basics">PokeSurvivor co-op basics</a></li>
+        <li><a href="#setup">Setting up a room with friends</a></li>
+        <li><a href="#xp">Shared XP and level-ups</a></li>
+        <li><a href="#revive">Downs and revives</a></li>
+        <li><a href="#scaling">Difficulty scaling</a></li>
+        <li><a href="#host">The host, pausing and privacy</a></li>
+        <li><a href="#rifts">Rifts in a group</a></li>
+        <li><a href="#leaderboards">Leaderboards and offline play</a></li>
+        <li><a href="#tips">Team tips (fan opinion)</a></li>
+        <li><a href="#faq">Co-op FAQ</a></li>
+      </ul>
+    </nav>
+
+    <section class="guide-section" id="basics">
+      <h2>PokeSurvivor co-op basics</h2>
+      <p>
+        According to the <a href="https://pokesurvivor.com/en/guide/" rel="noopener">official guide</a>, PokeSurvivor co-op is
+        online play for up to 4 players, built on your friends list. You play the same run as the solo game: you only move,
+        your partner Pokémon attacks on its own, and you pick upgrade cards as you level. The difference is that your
+        teammates share the map, the horde and the experience bar with you.
+      </p>
+      <ul>
+        <li><strong>Players:</strong> 2 to 4 per run.</li>
+        <li><strong>Where:</strong> online only, at pokesurvivor.com, in the browser.</li>
+        <li><strong>Account:</strong> required. Progress lives on your account and cloud save, so a guest has nothing to keep.</li>
+        <li><strong>Ending:</strong> the run ends when every player is down.</li>
+      </ul>
+      <p>
+        If you have never played a solo run, we suggest one or two first. Our <a href="/how-to-play/">beginner guide to
+        controls, cards and runs</a> covers the controls, upgrade cards and move evolution, and all of that carries straight into
+        a PokeSurvivor co-op run.
+      </p>
+    </section>
+
+    <section class="guide-section" id="setup">
+      <h2>Setting up a room with friends</h2>
+      <p>
+        PokeSurvivor multiplayer works through the in-game friends list. The official guide describes three steps, and
+        that is the whole flow. We won't make up menu names or lobby codes the sources don't mention.
+      </p>
+      <ol class="setup-list">
+        <li class="setup-step">
+          <span class="step-number">1</span>
+          <div class="step-content">
+            <h3>Sign in</h3>
+            <p>Every player signs in to an account. A guest cannot join a saved group run.</p>
+          </div>
+        </li>
+        <li class="setup-step">
+          <span class="step-number">2</span>
+          <div class="step-content">
+            <h3>Add friends by nickname</h3>
+            <p>Swap nicknames with the people you want to play with and add each other to the friends list.</p>
+          </div>
+        </li>
+        <li class="setup-step">
+          <span class="step-number">3</span>
+          <div class="step-content">
+            <h3>Invite them to your room</h3>
+            <p>Whoever invites is the host. Once everyone is in the room, the host starts the run.</p>
+          </div>
+        </li>
+      </ol>
+      <p>
+        In PokeSurvivor co-op, the host matters more than it seems. As the <a href="#host">host rules below</a> show, the host's browser
+        tab and connection decide whether the run keeps going. In our runs, the player with the most stable internet and
+        the fewest distractions hosts. On a phone? Our Chinese <a href="/zh/mobile/" lang="zh-Hant">手機版攻略</a> covers
+        co-op on mobile browsers, including why a phone host should not switch apps mid-run.
+      </p>
+    </section>
+
+    <section class="guide-section" id="xp">
+      <h2>Shared XP and level-ups</h2>
+      <p>
+        In PokeSurvivor co-op, the whole team shares one XP bar. When the bar fills, everyone levels up together. Each player picks their own card
+        from their own three options (a new move, a move upgrade or a stat boost), and the game waits until all players
+        have chosen before play resumes.
+      </p>
+      <p>
+        So each level-up briefly pauses the whole group. Nobody can fall behind in level, and it doesn't matter who
+        picks up the experience orbs. Fan opinion: let your fastest teammate, or whoever took Magnet (+30% pickup radius, community observation), sweep the
+        orbs while the others hold a safe spot. Also pick your card promptly. Three friends are waiting on you.
+      </p>
+    </section>
+
+    <section class="guide-section" id="revive">
+      <h2>Downs and revives</h2>
+      <p>
+        When a player's HP hits zero, they go down instead of ending the run. A teammate revives them by standing next to
+        them for 3 seconds, and the revived player comes back with half HP. Once all players are down, the PokeSurvivor
+        co-op run is over.
+      </p>
+      <p>
+        Three seconds is a long time with a horde closing in. Our habit is to clear a little space first, then step in to
+        revive, and have a second player cover the reviver. A revive brings the player back at half HP, so the revived
+        teammate should back off and heal, not charge straight back in.
+      </p>
+    </section>
+
+    <section class="guide-section" id="scaling">
+      <h2>Difficulty scaling for 2, 3 and 4 players</h2>
+      <p>
+        PokeSurvivor co-op scales the horde to the number of players, <em>n</em>. The official design document gives two
+        formulas:
+      </p>
+      <ul>
+        <li>Enemy count × (1 + 0.75 × (n − 1))</li>
+        <li>Enemy HP × (1 + 0.3 × (n − 1))</li>
+      </ul>
+      <p>
+        We worked the numbers out. "Per player" divides the enemy count by the number of players, and the total HP pool is
+        count × HP compared with solo. Here is a visual breakdown of how each player count scales.
+      </p>
+      <div class="scaling-cards">
+        <div class="scaling-card">
+          <div class="scaling-head">
+            <span class="player-count">2p</span>
+            <span class="scaling-badge">+75% enemies</span>
+          </div>
+          <dl class="scaling-stats">
+            <div><dt>Enemy count</dt><dd>×1.75</dd></div>
+            <div><dt>Enemy HP</dt><dd>×1.30</dd></div>
+            <div><dt>Enemies per player</dt><dd>×0.88</dd></div>
+            <div><dt>HP pool/player</dt><dd>×1.14</dd></div>
+          </dl>
+        </div>
+        <div class="scaling-card">
+          <div class="scaling-head">
+            <span class="player-count">3p</span>
+            <span class="scaling-badge">+150% enemies</span>
+          </div>
+          <dl class="scaling-stats">
+            <div><dt>Enemy count</dt><dd>×2.50</dd></div>
+            <div><dt>Enemy HP</dt><dd>×1.60</dd></div>
+            <div><dt>Enemies per player</dt><dd>×0.83</dd></div>
+            <div><dt>HP pool/player</dt><dd>×1.33</dd></div>
+          </dl>
+        </div>
+        <div class="scaling-card">
+          <div class="scaling-head">
+            <span class="player-count">4p</span>
+            <span class="scaling-badge">+225% enemies</span>
+          </div>
+          <dl class="scaling-stats">
+            <div><dt>Enemy count</dt><dd>×3.25</dd></div>
+            <div><dt>Enemy HP</dt><dd>×1.90</dd></div>
+            <div><dt>Enemies per player</dt><dd>×0.81</dd></div>
+            <div><dt>HP pool/player</dt><dd>×1.54</dd></div>
+          </dl>
+        </div>
+      </div>
+      <div class="data-table">
+        <table>
+          <caption>PokeSurvivor co-op difficulty multipliers vs solo (our calculation from the official formulas)</caption>
+          <thead>
+            <tr>
+              <th scope="col">Players</th>
+              <th scope="col">Enemy count</th>
+              <th scope="col">Enemy HP</th>
+              <th scope="col">Enemies per player</th>
+              <th scope="col">Total HP pool</th>
+              <th scope="col">HP pool per player</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><th scope="row">1 (solo)</th><td>×1.00</td><td>×1.00</td><td>×1.00</td><td>×1.00</td><td>×1.00</td></tr>
+            <tr><th scope="row">2</th><td>×1.75</td><td>×1.30</td><td>×0.88</td><td>×2.28</td><td>×1.14</td></tr>
+            <tr><th scope="row">3</th><td>×2.50</td><td>×1.60</td><td>×0.83</td><td>×4.00</td><td>×1.33</td></tr>
+            <tr><th scope="row">4</th><td>×3.25</td><td>×1.90</td><td>×0.81</td><td>×6.18</td><td>×1.54</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>
+        So each player faces slightly fewer enemies than in solo, but every enemy is tankier. In a 4-player PokeSurvivor
+        co-op run, there is about 54% more enemy HP to chew through per person. Our reading is that bigger groups need more
+        damage per player, not just more players. Power cards and move evolutions matter even more with friends.
+      </p>
+    </section>
+
+    <section class="guide-section" id="host">
+      <h2>The host, pausing and privacy</h2>
+      <p>
+        Group runs follow different rules from solo. The official <a href="https://pokesurvivor.com/en/news/" rel="noopener">news
+        page</a> sets three of them, and they all revolve around the host:
+      </p>
+      <ul>
+        <li><strong>Pausing doesn't stop the run.</strong> In PokeSurvivor co-op, the enemies keep coming if you open the pause menu, so don't treat it as a safe break.</li>
+        <li><strong>The host switching tabs pauses everyone.</strong> If the host's browser tab loses focus, the run pauses for the whole team.</li>
+        <li><strong>The host leaving ends the run.</strong> If the host closes the game or drops out, the run ends for every player.</li>
+      </ul>
+      <p>
+        The connection explains why the host is so central. According to the official home page, PokeSurvivor multiplayer
+        connects browser to browser using WebRTC (the same technology as a video call), with a Firebase relay as a
+        fallback when a direct link can't be made. A direct connection also means your teammates may be able to see your
+        IP address, so the official advice is to play only with people you know. We agree: add friends you trust, not
+        strangers from a comment section.
+      </p>
+      <p>
+        Fan advice that follows from all this: the host should keep the game tab in front for the whole run and avoid
+        shaky connections such as mobile data on the move. Everyone else should step away only when the group agrees.
+      </p>
+    </section>
+
+    <section class="guide-section" id="rifts">
+      <h2>Rifts in a group</h2>
+      <p>
+        Mysterious rifts open during a PokeSurvivor co-op run too. In a group, everyone enters the rift together and
+        fights the legendary as a team in its type arena. A rift fight lasts 2 minutes. You lose when all of you are down
+        or time runs out, and a loss sends you back to the map with 30% HP and no prize. A win can pay a ×10 gacha ticket (in the current code the legendary drops one half the time).
+      </p>
+      <p>
+        Because the whole team goes in at once, we call out "rift" before anyone walks in, so nobody is pulled in mid-dodge
+        with low HP. Our <a href="/rifts/">legendary rift guide with all 18 arenas</a> covers terrain, weather and
+        how we fight each one.
+      </p>
+    </section>
+
+
+
+    <section class="guide-section" id="leaderboards">
+      <h2>Leaderboards and the offline version</h2>
+      <p>
+        There are two leaderboards, Solo and Group, and both rank by survival time. A PokeSurvivor co-op run goes on the
+        Group board, so it doesn't compete with solo times.
+      </p>
+      <p>
+        The <a href="https://jpter78.itch.io/pokesurvivor" rel="noopener">itch.io page</a> also offers an offline HTML5
+        package ("Unzip and double-click index.html"). In its own words: "The offline version is solo only and saves in
+        your browser." Co-op, cloud saves and leaderboards are only online at pokesurvivor.com. If you want to play
+        PokeSurvivor with friends, use the website, not the download.
+      </p>
+    </section>
+
+    <section class="guide-section" id="tips">
+      <h2>Team tips (fan opinion)</h2>
+      <p>
+        Here is how we like to build a PokeSurvivor co-op team. These are opinions, not official advice, but each one builds on a documented mechanic.
+      </p>
+      <ul>
+        <li>
+          <strong>Mix move patterns.</strong> Starting moves differ a lot. Bubble is an 8-bubble nova that slows, Vine Whip
+          is a wide melee arc with knockback, and Water Gun pierces and is "reliable at any distance". A team that pairs a
+          close-range clearer with a ranged damage dealer covers more angles than four of the same move.
+        </li>
+        <li>
+          <strong>Cover different types.</strong> The softened type chart works both ways: super effective ×1.6, not very
+          effective ×0.6, immunity ×0.3. Different types across the team mean someone almost always hits a legendary or
+          boss for good damage. See the <a href="https://pokesurvivor.com/en/types/" rel="noopener">official type chart</a>.
+        </li>
+        <li>
+          <strong>Have one support-minded player.</strong> Stat cards such as Synthesis (+0.9 HP/s, community observation), Armor (+6% damage
+          reduction, community observation) and Vigor (+20 max HP, community observation) keep the designated reviver alive through the 3-second revive.
+        </li>
+        <li>
+          <strong>Focus the right enemies.</strong> The official guide says to kill healers and shielders first. With the
+          extra enemy HP in a group, a Shielder adding 35% HP shields (community observation) to six allies hurts even more.
+        </li>
+        <li>
+          <strong>Stack damage.</strong> Given the HP-pool table above, we lean toward Power cards and evolving moves early
+          in 3 and 4 player runs.
+        </li>
+      </ul>
+      <p>
+        For which partners to bring, see the <a href="/tier-list/">strongest partners on our tier list</a>, and pick types that complement each other rather than four copies of the top pick. Still choosing who to start with? Our <a href="/best-pokemon/">guide to the best starter Pokémon</a> compares the early options.
+      </p>
+    </section>
+
+    <FAQ
+      heading="Co-op FAQ"
+      items={[
+        { q: 'How many players can join?', a: 'A PokeSurvivor co-op run holds up to 4 players: you plus 3 friends.' },
+        { q: 'Can I play co-op as a guest?', a: 'No. Every player in a PokeSurvivor co-op run needs an account, because guests save nothing.' },
+        { q: 'Does the itch.io download have multiplayer?', a: 'No. The offline version is solo only.' },
+        { q: 'What happens if the host disconnects?', a: 'The run ends for everyone. The host section above also explains what tab switching and pausing do.' },
+        { q: 'Is PokeSurvivor multiplayer free?', a: 'Yes. The game is a free, non-profit fan game with no ads or purchases, according to the official site.' },
+      ]}
+    />
+
+    <aside class="sources" aria-labelledby="how-we-wrote">
+      <h2 id="how-we-wrote">Where these co-op rules come from</h2>
+      <p>
+        Game rules on this page come from the
+        <a href="https://pokesurvivor.com/en/guide/" rel="noopener">official guide</a>, the
+        <a href="https://pokesurvivor.com/en/news/" rel="noopener">official news</a>, the
+        <a href="https://jpter78.itch.io/pokesurvivor" rel="noopener">itch.io page</a> and the design document in the
+        <a href="https://github.com/JPTER78/pokesurvivor" rel="noopener">official GitHub repository</a>, checked on
+        2026-10-15. The scaling table is our own arithmetic. Tips are fan opinion. PokéSurvivor is not affiliated with
+        Nintendo, GAME FREAK or The Pokémon Company.
+      </p>
+    </aside>
+  </article>
+</BaseLayout>
+
+<style>
+  .guide { max-width: 860px; margin: 0 auto; }
+  .guide h1 { font-size: clamp(1.9rem, 4.5vw, 2.6rem); line-height: 1.15; margin-bottom: 0.5rem; }
+  .guide h2 { font-size: clamp(1.35rem, 3vw, 1.75rem); color: var(--accent); margin: 2.5rem 0 0.9rem; line-height: 1.25; }
+  .guide h3 { font-size: 1.1rem; margin: 1.4rem 0 0.4rem; }
+  .guide p, .guide li { color: var(--text-secondary); }
+  .guide p { margin-bottom: 1rem; }
+  .guide ul, .guide ol { padding-left: 1.4rem; margin-bottom: 1rem; }
+  .guide li { margin-bottom: 0.45rem; }
+  .guide strong { color: var(--text-primary); }
+  .meta { font-size: 0.9rem; }
+  .lead { font-size: 1.08rem; }
+  figure { margin: 1.5rem 0; }
+  figure img { display: block; width: 100%; border-radius: var(--radius-md); }
+  figcaption { font-size: 0.88rem; color: var(--text-secondary); margin-top: 0.4rem; }
+  .guide-header h1 { font-size: var(--font-size-4xl); line-height: var(--leading-tight); }
+
+  .toc { background: var(--surface-elevated); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: var(--space-md) var(--space-lg); margin: var(--space-lg) 0; }
+  .toc-title { font-weight: var(--font-bold); color: var(--text-primary); margin-bottom: var(--space-sm); }
+  .toc ul { margin: 0; padding-left: var(--space-md); }
+  .toc li { margin-bottom: var(--space-2); }
+
+  .data-table { overflow-x: auto; margin: var(--space-lg) 0; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); }
+  .data-table table { width: 100%; border-collapse: collapse; font-size: var(--font-size-sm); }
+  .data-table caption { text-align: left; padding: var(--space-sm) var(--space-md); font-weight: var(--font-semibold); background: var(--surface-elevated); }
+  .data-table th, .data-table td { padding: var(--space-2) var(--space-md); text-align: left; border-bottom: 1px solid var(--border-subtle); }
+  .data-table thead th { background: var(--surface-elevated); color: var(--text-primary); }
+  .data-table tbody th { color: var(--text-primary); font-weight: var(--font-semibold); }
+
+  .setup-list { list-style: none; padding: 0 !important; display: grid; gap: var(--space-md); margin: var(--space-lg) 0; }
+  .setup-step { display: grid; grid-template-columns: auto 1fr; gap: var(--space-md); padding: var(--space-md); margin: 0 !important; background: var(--surface-elevated); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); }
+  .step-number { display: flex; align-items: center; justify-content: center; width: 2.5rem; height: 2.5rem; background: var(--accent-primary); color: var(--surface-deep); border-radius: var(--radius-pill); font-weight: var(--font-bold); font-size: var(--font-size-lg); }
+  .step-content h3 { margin: 0 0 var(--space-2); font-size: var(--font-size-base); }
+  .step-content p { margin: 0; font-size: var(--font-size-sm); }
+
+  .scaling-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); gap: var(--space-md); margin: var(--space-lg) 0; }
+  .scaling-card { background: var(--surface-elevated); border: 1px solid var(--border-subtle); border-top: 3px solid var(--action-primary); border-radius: var(--radius-md); padding: var(--space-md); }
+  .scaling-head { display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-2); margin-bottom: var(--space-sm); }
+  .player-count { font-family: var(--font-display); font-size: var(--font-size-3xl); font-weight: var(--font-bold); color: var(--text-primary); }
+  .scaling-badge { font-size: var(--font-size-xs); color: var(--text-tertiary); text-transform: uppercase; letter-spacing: var(--tracking-wide); }
+  .scaling-stats { margin: 0; display: grid; gap: var(--space-2); }
+  .scaling-stats div { display: flex; justify-content: space-between; gap: var(--space-2); border-bottom: 1px solid var(--border-subtle); padding-bottom: var(--space-1); }
+  .scaling-stats dt { font-size: var(--font-size-xs); color: var(--text-tertiary); }
+  .scaling-stats dd { margin: 0; font-weight: var(--font-semibold); color: var(--text-primary); font-variant-numeric: tabular-nums; }
+
+  .sources { margin-top: var(--space-xl); padding: var(--space-md) var(--space-lg); background: var(--surface-elevated); border-left: 3px solid var(--accent-primary); border-radius: var(--radius-md); }
+  .sources h2 { margin-top: 0; font-size: var(--font-size-xl); }
+</style>

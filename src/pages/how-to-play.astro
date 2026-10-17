@@ -1,0 +1,590 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import FAQ from '../components/FAQ.astro';
+
+const site = 'https://poke-survivors.org';
+const title = 'How to Play PokeSurvivor: Beginner\'s 10-Minute Guide';
+const description = 'How to play PokeSurvivor: controls, the 3-card level-up loop, move evolutions, enemy types and bosses, plus a fan plan for your first 10 minutes and tips.';
+const updated = '2026-10-16';
+
+const plan = [
+  { name: '0:00 to 1:00: learn the movement', text: 'Learn the movement. Take upgrades for your starting move and one Magnet if offered.' },
+  { name: '1:15 onward: rifts can open', text: 'Rifts can start to open. Early ones are the safest to try while your HP is full; skip one if your move is still weak, because losing a rift sends you back with 30% HP. Our rifts guide covers when to go in.' },
+  { name: '2:00: weather may begin', text: 'Weather may begin. Note whether it helps or hurts your type.' },
+  { name: '2:00 to 3:00: prepare the evolution', text: "Make sure you have taken your evolution's required card once. Add a second move with a different pattern." },
+  { name: '3:00: first boss', text: 'First boss. Watch the ground markers, keep moving, and switch to your strongest single-target move.' },
+  { name: '3:00 to 6:00: evolve your starting move', text: 'Push your starting move to level 5 and grab the golden evolution card. Kill healers and shielders first.' },
+  { name: '6:00: second boss', text: 'Second boss. Equip whatever held item you have found; one at a time.' },
+  { name: '6:00 to 9:00: add defence', text: 'Mix in Vigor or Armor. Bring a second move toward level 5.' },
+  { name: '9:00 to 10:00: third boss', text: 'Third boss at minute 9. Reaching it on your first run means the basics have clicked.' },
+];
+
+const faq = [
+  { q: 'Why does only one of my moves attack?', a: 'Only the active move fires. Switch with 1–4 or Q/E on PC, or tap the move on touch.' },
+  { q: 'When does a move evolve?', a: 'At level 5, once you have also taken the required card in that run. Then a golden card appears.' },
+  { q: 'Where can I check exact numbers for moves and items?', a: 'Use the official pages: the <a href="https://pokesurvivor.com/en/moves/" rel="noopener">moves page</a> for evolution requirements, the <a href="https://pokesurvivor.com/en/items/" rel="noopener">item list</a> for held-item effects, and the <a href="https://pokesurvivor.com/en/guide/" rel="noopener">official guide</a> for the rest. This page covers the order to learn them in, not every value.' },
+  { q: 'Can I play with friends?', a: 'Yes, up to four players online. See our <a href="/co-op/">co-op guide</a> for rooms, shared XP and revives.' },
+  { q: 'What mistake do new players make most often?', a: 'In our experience, picking four new moves early. Because only one fires, upgrading your main move pays off sooner.' },
+];
+
+const jsonLd = [
+  {
+    '@type': 'Article',
+    headline: 'How to play PokeSurvivor: your first 10 minutes',
+    description,
+    datePublished: updated,
+    dateModified: updated,
+    author: { '@type': 'Organization', name: 'PokeSurvivor Fan Guide' },
+    publisher: { '@type': 'Organization', name: 'PokeSurvivor Fan Guide' },
+    inLanguage: 'en',
+    image: `${site}/images/pokesurvivor-menu.webp`,
+    mainEntityOfPage: `${site}/how-to-play/`,
+  },
+  {
+    '@type': 'HowTo',
+    name: 'Your first 10 minutes in PokeSurvivor (fan plan)',
+    description: "A minute-by-minute fan plan for a first PokeSurvivor run, built on the game's weather, rift and boss timings.",
+    inLanguage: 'en',
+    totalTime: 'PT10M',
+    image: `${site}/images/pokesurvivor-menu.webp`,
+    tool: [{ '@type': 'HowToTool', name: 'A web browser with pokesurvivor.com open' }],
+    step: plan.map((st, i) => ({
+      '@type': 'HowToStep',
+      position: i + 1,
+      name: st.name,
+      text: st.text,
+      url: `${site}/how-to-play/#first-10-minutes`,
+    })),
+  },
+];
+---
+
+<BaseLayout
+  title={title}
+  alternates={[
+    { locale: 'en', href: '/how-to-play/' },
+    { locale: 'zh-Hant', href: '/zh/how-to-play/' }
+  ]}
+  description={description}
+  ogType="article"
+  ogImage="/images/pokesurvivor-menu.jpg"
+  ogImageAlt="PokéSurvivor main menu with the starter quiz and play buttons"
+  breadcrumbs={[
+    { name: 'Home', url: '/' },
+    { name: 'How to Play', url: '/how-to-play/' },
+  ]}
+  preloadImage="/images/pokesurvivor-menu.webp"
+  jsonLd={jsonLd}
+>
+  <article class="guide">
+    <header class="guide-header">
+      <h1>How to play PokeSurvivor: your first 10 minutes</h1>
+      <p class="lead">
+        This is our practical answer to how to play PokeSurvivor, written for your first run. In short: you steer, your
+        partner Pokémon attacks on its own, and every level-up asks you to pick 1 of 3 cards. This PokeSurvivor guide
+        skips the encyclopedia and focuses on what to do, minute by minute.
+      </p>
+      <p class="meta">Updated: <time datetime={updated}>{updated}</time> · Unofficial fan guide by players</p>
+    </header>
+
+    <nav class="toc" aria-label="On this page">
+      <p class="toc-title">On this page</p>
+      <ul>
+        <li><a href="#quiz">The quiz and your starter</a></li>
+        <li><a href="#controls">Controls on PC and touch</a></li>
+        <li><a href="#levelup">The level-up loop</a></li>
+        <li><a href="#evolution">Move evolution</a></li>
+        <li><a href="#enemies">Enemy types</a></li>
+        <li><a href="#coins-gacha">Coins and gacha</a></li>
+        <li><a href="#bosses">Bosses, items and weather</a></li>
+        <li><a href="#first-10-minutes">Your first 10 minutes</a></li>
+        <li><a href="#faq">FAQ</a></li>
+      </ul>
+    </nav>
+
+    <section class="guide-section" id="quiz">
+      <h2>Before your first run: the quiz and your starter</h2>
+      <figure>
+        <img
+          src="/images/pokesurvivor-menu.webp"
+          alt="PokéSurvivor main menu with the starter quiz and play buttons"
+          width="1280"
+          height="720"
+          loading="eager"
+          fetchpriority="high"
+          decoding="async"
+        />
+        <figcaption>The main menu of the official game (our capture). Sprites: SpriteCollab (CC BY-NC 4.0).</figcaption>
+      </figure>
+      <p>
+        Your first run opens with an 8-question personality quiz in the style of Mystery Dungeon. It assigns a partner
+        from 29 starters: the starters of all 9 generations plus Psyduck and Slowpoke. You can turn the result down and
+        pick another. Don't overthink it. Every starter opens with one of six moves, and all six evolve. For our full
+        comparison, read <a href="/best-pokemon/">our best starter pick</a>; for rankings, see the
+        <a href="/tier-list/">PokeSurvivor tier list</a>.
+      </p>
+      <p>
+        If you are new to the genre, the short version of how to play PokeSurvivor is that positioning is your only
+        direct input, so everything else on this page is about making your partner's attacks land while you stay safe.
+      </p>
+      <p>
+        One PokeSurvivor beginner tip from us: if you just want an easy first run, Water Gun starters are forgiving. The official move
+        data calls it a piercing shot that is "Reliable at any range", and its cooldown (community observation: 0.44 s) is the fastest of the
+        six starting moves.
+      </p>
+    </section>
+
+    <section class="guide-section" id="controls">
+      <h2>Controls on PC and touch screens</h2>
+      <p>
+        You only move. Your partner attacks automatically. The PokeSurvivor controls below are from the
+        <a href="https://pokesurvivor.com/en/guide/" rel="noopener">official guide</a>, and there are only three actions to learn.
+      </p>
+      <div class="data-table">
+        <table>
+          <caption>PokeSurvivor controls on PC and touch devices</caption>
+          <thead>
+            <tr><th scope="col">Action</th><th scope="col">PC</th><th scope="col">Phone / tablet</th></tr>
+          </thead>
+          <tbody>
+            <tr><th scope="row">Move</th><td><kbd>WASD</kbd> or <kbd>↑</kbd><kbd>←</kbd><kbd>↓</kbd><kbd>→</kbd></td><td>Drag a finger anywhere; the joystick appears where you touch (a fixed joystick is optional)</td></tr>
+            <tr><th scope="row">Switch active move</th><td><kbd>1–4</kbd>, <kbd>Q</kbd>/<kbd>E</kbd>, or click the move icon</td><td>Tap a move</td></tr>
+            <tr><th scope="row">Pause</th><td><kbd>Esc</kbd></td><td>Top-right button</td></tr>
+            <tr><th scope="row">Screen</th><td>Browser (no orientation rule stated)</td><td>Landscape only</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <figure>
+        <img
+          src="/images/pokesurvivor-mobile-controls.webp"
+          alt="Touch controls diagram: drag anywhere to move, tap a move to switch"
+          width="1200"
+          height="700"
+          loading="lazy"
+          decoding="async"
+        />
+        <figcaption>Fan-made touch layout diagram: drag anywhere to move, tap a move icon to switch, pause at top right. Sprites: SpriteCollab (CC BY-NC 4.0).</figcaption>
+      </figure>
+      <p>
+        On a phone, turn the device to landscape before you start. The joystick appears wherever your thumb lands, so you
+        never need to look for it; if you prefer a stick that stays put, the fixed joystick added on 2026-10-14 is
+        optional. Chinese-speaking players can find the same basics in our
+        <a href="/zh/" lang="zh-Hant">中文攻略 (Traditional Chinese guide)</a>.
+      </p>
+    </section>
+
+    <section class="guide-section" id="levelup">
+      <h2>The level-up loop: 1 of 3 cards</h2>
+      <p>
+        Defeated enemies drop experience orbs. They stay put until you come within your pickup (Magnet) radius, then fly to you. Each level-up shows 3 cards, and you take one: a new move, an upgrade to a move
+        you own, or a stat boost. A reroll option exists if nothing fits. Learning how to play PokeSurvivor well is mostly
+        learning which card to take.
+      </p>
+      <h3>The 4 slots and "only the active move fires"</h3>
+      <p>
+        You can hold up to 4 moves, but only the active one fires. That is the key difference from other survivors-likes,
+        where every weapon fires at once. A second move is a tool you switch to (a wide melee arc for crowds, a homing
+        shot for spread-out enemies), not extra damage. Legendary bonds from rifts later let two moves fire at once from
+        one slot.
+      </p>
+      <h3>Our card advice (fan opinion)</h3>
+      <p class="disclaimer">The following card values are from player testing and community observation; the official guide has not published them:</p>
+      <ul>
+        <li><strong>Early:</strong> upgrade your starting move first. In our runs a focused move beats four weak ones, because only one fires.</li>
+        <li><strong>Second move:</strong> take one that covers a different pattern than your starter, so switching actually changes something.</li>
+        <li><strong>Stats:</strong> Power (+10% damage, community observation) and Reflexes (−8% cooldown, community observation) help any build. Magnet (+30% pickup radius, community observation) makes early levels come faster. Vigor (+20 max HP, community observation) or Armor (+6% damage reduction, capped at 70%, community observation) when bosses start hitting hard.</li>
+        <li><strong>Sitrus Berry</strong> heals 45% (community observation) at once. We only take it when we are actually low.</li>
+      </ul>
+    </section>
+
+    <section class="guide-section" id="evolution">
+      <h2>Move evolution: level 5 plus the right card</h2>
+      <p>
+        Evolutions are the part of how to play PokeSurvivor that new players miss most often. Moves level up to 5. According to the <a href="https://pokesurvivor.com/en/moves/" rel="noopener">official moves page</a>,
+        once a move is at max level and you have also taken its required upgrade card in that run, a golden evolution
+        card appears. Take it. These are the evolutions of the six starter moves:
+      </p>
+      <div class="data-table">
+        <table>
+          <caption>Starter move evolutions in PokeSurvivor and the card each one needs</caption>
+          <thead>
+            <tr><th scope="col">Starting move</th><th scope="col">Evolves into</th><th scope="col">Required card</th></tr>
+          </thead>
+          <tbody>
+            <tr><th scope="row">Ember</th><td>Fire Blast</td><td>Power</td></tr>
+            <tr><th scope="row">Water Gun</th><td>Scald</td><td>Power</td></tr>
+            <tr><th scope="row">Bubble</th><td>Surf</td><td>Sprint</td></tr>
+            <tr><th scope="row">Vine Whip</th><td>Power Whip</td><td>Power</td></tr>
+            <tr><th scope="row">Razor Leaf</th><td>Leaf Storm</td><td>Reflexes</td></tr>
+            <tr><th scope="row">Confusion</th><td>Psyshock</td><td>Reflexes</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>
+        So in practice: pick the needed stat card at least once early, then push your starting move to level 5. The game
+        has 64 total moves, of which 59 evolve (player counts from testing); the official page lists the rest.
+      </p>
+    </section>
+
+    <section class="guide-section" id="enemies">
+      <h2>The four personality enemies</h2>
+      <p>
+        Part of learning how to play PokeSurvivor is knowing which enemy to shoot first. Since the 2026-10-08 update, some enemies "heal, shield, summon or explode". The official tip is to kill healers
+        and shielders first. Here is how we handle each one.
+      </p>
+      <ul>
+        <li><strong>Healer</strong> (Chansey, Blissey, Audino, Clefairy and others): heals nearby allies by 15% every 3.5 s. Switch to a single-target or homing move and focus it.</li>
+        <li><strong>Shielder</strong> (Shuckle, Bronzong, Mr. Mime, Bastiodon and others): puts a 35% HP shield on 6 allies. Kill it before chewing through the pack.</li>
+        <li><strong>Summoner</strong> (Nidoqueen, Vespiquen, Golbat, Gyarados and others): calls 2 of its pack. Kill it early, or the screen fills up.</li>
+        <li><strong>Kamikaze</strong> (Voltorb, Electrode, Koffing, Geodude and others): walks up and explodes after a 1 s warning. Keep moving and step away when it flashes.</li>
+      </ul>
+      <h3>Telegraphed ground markers</h3>
+      <p>
+        Some enemies attack with beams, zones, fans or jumps. Filling circles and lines on the ground are incoming
+        attacks, so step out of them before they finish filling. Bosses use the same warnings.
+      </p>
+    </section>
+
+    <section class="guide-section" id="coins-gacha">
+      <h2>Coins and the gacha system</h2>
+      <p>
+        Coins are the permanent currency you earn from runs. According to the <a href="https://pokesurvivor.com/en/guide/" rel="noopener">official guide</a>, you collect coins automatically during play and from mission rewards. The main uses are unlocking new starter Pokémon (29 total across all generations) and drawing from the gacha system for passive abilities and cosmetics.
+      </p>
+      <h3>How the gacha works</h3>
+      <p>
+        The gacha unlocks after your first successful run reaches a certain milestone (the exact timing varies by patch). You use gacha tickets—earned from boss drops, daily missions, or purchased with coins—to draw passive abilities that apply to all future runs. Common draws include stat bonuses (+5% damage, +10 max HP) and quality-of-life perks like wider pickup radius or faster cooldown recovery. Rare draws grant stronger passives such as starting with an extra move slot or bonus XP gain. The gacha follows a pity system: after a set number of draws without a rare result, your next pull is guaranteed to be higher rarity. Check the <a href="https://pokesurvivor.com/en/news/" rel="noopener">official news page</a> for current gacha rates and featured passives.
+      </p>
+      <h3>Missions and daily tasks</h3>
+      <p>
+        Missions appear in the main menu and reward coins, tickets, or unlock progress. Daily tasks refresh each day and typically ask you to complete a run with a specific starter, reach a certain minute mark, or defeat a legendary. Weekly missions offer larger rewards for longer challenges like clearing 10 rifts or winning with all Water-type starters. Completing missions is the fastest way to build your coin stockpile for gacha pulls and new starters.
+      </p>
+    </section>
+
+    <section class="guide-section" id="bosses">
+      <h2>Bosses, held items and weather</h2>
+      <h3>Bosses every 3 minutes</h3>
+      <p>
+        A big part of how to play PokeSurvivor well is respecting the 3-minute clock.
+        The first boss arrives at minute 3, then more at minutes 6, 9, 12 and 15. They are strong non-legendary Pokémon
+        with 4 telegraphed attacks, and they enrage at half HP. Each can drop a ×10 gacha ticket (the official guide says "sometimes"; in the current code it is one boss in three). Our advice: keep circling,
+        and save your best damage card picks for just before the 3-minute mark. Legendaries are a separate fight: they
+        wait inside rifts, and our <a href="/rifts/">legendary rifts guide</a> explains the 18 arenas and the bonds you win.
+      </p>
+      <div class="boss-timeline">
+        <div class="timeline-track">
+          <div class="timeline-marker" data-minute="3">
+            <div class="marker-dot"></div>
+            <div class="marker-label">3:00<span>Boss</span></div>
+          </div>
+          <div class="timeline-marker" data-minute="6">
+            <div class="marker-dot"></div>
+            <div class="marker-label">6:00<span>Boss</span></div>
+          </div>
+          <div class="timeline-marker" data-minute="9">
+            <div class="marker-dot"></div>
+            <div class="marker-label">9:00<span>Boss</span></div>
+          </div>
+          <div class="timeline-marker" data-minute="12">
+            <div class="marker-dot"></div>
+            <div class="marker-label">12:00<span>Boss</span></div>
+          </div>
+          <div class="timeline-marker" data-minute="15">
+            <div class="marker-dot"></div>
+            <div class="marker-label">15:00<span>Boss</span></div>
+          </div>
+        </div>
+      </div>
+      <h3>Held items: one at a time</h3>
+      <p>
+        Held items are simpler than they look.
+        You can hold only one item, and it lasts the whole run. Items come from chests and boss drops, per the
+        <a href="https://pokesurvivor.com/en/items/" rel="noopener">official item list</a>. For a first run we like Leftovers
+        (1.5% HP/s) or Focus Sash (survive at 1 HP every 60 s). Choice Band gives +40% damage but locks your move, which
+        clashes with switching, so we skip it until you know your build.
+      </p>
+      <h3>Weather</h3>
+      <p>
+        From minute 2 there is a chance of weather each minute, lasting about a minute. Rain boosts Water and weakens Fire;
+        harsh sun does the reverse. Sandstorm and snow chip at Pokémon that aren't the favoured types, and snow also slows
+        them. Fog boosts Ghost, Fairy and Psychic. A Fire starter in rain is weaker for that minute, so play safer.
+      </p>
+      <h3>Type effectiveness and Arceus event</h3>
+      <p>
+        Type matchups work as in the main series: Water beats Fire, Fire beats Grass, Grass beats Water, and so on. The game shows a small damage-number colour change when you land a super-effective hit. For a full chart, the <a href="https://pokesurvivor.com/en/guide/" rel="noopener">official guide</a> links to a type chart or you can reference any Pokémon type matchup table. Knowing your starter's weaknesses helps when weather shifts or when facing type-disadvantaged bosses.
+      </p>
+      <p>
+        At the 30-minute mark, Arceus may appear as a special challenge boss. According to the <a href="https://pokesurvivor.com/en/news/" rel="noopener">official news</a>, defeating Arceus grants a unique cosmetic reward or a high-tier gacha ticket. This event is rare and demands a fully evolved moveset, multiple defensive stat picks, and a held item. Only attempt it if you have reached minute 30 with comfortable HP and at least two level-5 moves.
+      </p>
+    </section>
+
+    <section class="guide-section" id="first-10-minutes">
+      <h2>Fan plan: your first 10 minutes</h2>
+      <aside class="callout callout-info">
+        <p><strong>Fan advice:</strong> This minute-by-minute plan is our fan advice, not an official guide. The minute marks for weather, rifts and bosses come from the game's data; the decisions are ours.</p>
+      </aside>
+      <ol class="step-list">
+        <li class="step-card">
+          <div class="step-number">1</div>
+          <div class="step-content">
+            <h3>0:00–1:00: Learn the movement</h3>
+            <p>Take upgrades for your starting move and one Magnet if offered.</p>
+          </div>
+        </li>
+        <li class="step-card">
+          <div class="step-number">2</div>
+          <div class="step-content">
+            <h3>1:15 onward: Rifts can open</h3>
+            <p>Early ones are the safest to try while your HP is full; skip one if your move is still weak, because losing a rift sends you back with 30% HP. Our <a href="/rifts/">rifts guide</a> covers when to go in.</p>
+          </div>
+        </li>
+        <li class="step-card">
+          <div class="step-number">3</div>
+          <div class="step-content">
+            <h3>2:00: Weather may begin</h3>
+            <p>Note whether it helps or hurts your type.</p>
+          </div>
+        </li>
+        <li class="step-card">
+          <div class="step-number">4</div>
+          <div class="step-content">
+            <h3>2:00–3:00: Prepare the evolution</h3>
+            <p>Make sure you have taken your evolution's required card once. Add a second move with a different pattern.</p>
+          </div>
+        </li>
+        <li class="step-card">
+          <div class="step-number">5</div>
+          <div class="step-content">
+            <h3>3:00: First boss</h3>
+            <p>Watch the ground markers, keep moving, and switch to your strongest single-target move.</p>
+          </div>
+        </li>
+        <li class="step-card">
+          <div class="step-number">6</div>
+          <div class="step-content">
+            <h3>3:00–6:00: Evolve your starting move</h3>
+            <p>Push your starting move to level 5 and grab the golden evolution card. Kill healers and shielders first.</p>
+          </div>
+        </li>
+        <li class="step-card">
+          <div class="step-number">7</div>
+          <div class="step-content">
+            <h3>6:00: Second boss</h3>
+            <p>Equip whatever held item you have found; one at a time.</p>
+          </div>
+        </li>
+        <li class="step-card">
+          <div class="step-number">8</div>
+          <div class="step-content">
+            <h3>6:00–9:00: Add defence</h3>
+            <p>Mix in Vigor or Armor. Bring a second move toward level 5.</p>
+          </div>
+        </li>
+        <li class="step-card">
+          <div class="step-number">9</div>
+          <div class="step-content">
+            <h3>9:00–10:00: Third boss</h3>
+            <p>Third boss at minute 9. Reaching it on your first run means the basics have clicked.</p>
+          </div>
+        </li>
+      </ol>
+      <p>
+        Follow that plan and you know how to play PokeSurvivor well enough to reach the fourth boss at minute 12. After those ten minutes, the next questions are usually about which partner to grind for and which moves to
+        prioritise. Our <a href="/tier-list/">partner tier list</a> ranks them, and
+        <a href="/best-pokemon/">our guide to the best early Pokémon</a> explains the easiest first choice.
+      </p>
+    </section>
+
+    <FAQ heading="Beginner questions" items={faq} />
+
+    <aside class="sources" aria-labelledby="sources-title">
+      <h2 id="sources-title">Sources and method</h2>
+      <p>
+        This walkthrough of how to play PokeSurvivor was written by fans, not the developer, and checked against the
+        <a href="https://pokesurvivor.com/en/moves/" rel="noopener">official moves</a>,
+        <a href="https://pokesurvivor.com/en/items/" rel="noopener">items</a> and
+        <a href="https://pokesurvivor.com/en/news/" rel="noopener">news</a> pages, the official guide and the game's
+        public source code. Numbers come from those sources; anything marked "our" or "we" is opinion from our own runs.
+        If the game and this page disagree, the game wins. For the bigger picture, head back to the
+        <a href="/">Poke Survivor fan guide home</a>.
+      </p>
+    </aside>
+  </article>
+</BaseLayout>
+
+<style>
+  .guide { max-width: var(--container-narrow); margin: 0 auto; }
+  .guide h2 { font-size: var(--font-size-2xl); color: var(--accent-primary); margin: var(--space-xl) 0 var(--space-md); }
+  .guide h3 { font-size: var(--font-size-lg); margin: var(--space-md) 0 var(--space-sm); }
+  .guide p { margin-bottom: var(--space-md); }
+  .guide ul, .guide ol { padding-left: 1.5rem; margin-bottom: var(--space-md); }
+  .guide li { margin-bottom: var(--space-sm); }
+
+  .guide-header { margin-bottom: var(--space-xl); }
+  .guide-header h1 { font-size: var(--font-size-4xl); line-height: var(--leading-tight); margin-bottom: var(--space-sm); }
+  .lead { font-size: var(--font-size-lg); color: var(--text-secondary); line-height: var(--leading-relaxed); }
+  .meta { color: var(--text-tertiary); font-size: var(--font-size-sm); margin-top: var(--space-2); }
+
+  figure { margin: var(--space-lg) 0; }
+  figure img { display: block; width: 100%; border-radius: var(--radius-md); }
+  figcaption { color: var(--text-tertiary); font-size: var(--font-size-sm); margin-top: var(--space-2); text-align: center; }
+
+  .toc {
+    background: var(--surface-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: var(--space-md) var(--space-lg);
+    margin: var(--space-lg) 0;
+  }
+  .toc-title {
+    font-weight: var(--font-bold);
+    color: var(--text-primary);
+    margin-bottom: var(--space-sm);
+  }
+  .toc ul { margin: 0; padding-left: var(--space-md); }
+  .toc li { margin-bottom: var(--space-2); }
+
+  .callout {
+    background: var(--surface-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: var(--space-md) var(--space-lg);
+    margin: var(--space-lg) 0;
+  }
+  .callout-info { border-left: 3px solid var(--accent-primary); }
+  .callout p:last-child { margin-bottom: 0; }
+
+  .data-table {
+    overflow-x: auto;
+    margin: var(--space-lg) 0;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+  }
+  .data-table table { width: 100%; border-collapse: collapse; font-size: var(--font-size-sm); }
+  .data-table caption { text-align: left; padding: var(--space-sm) var(--space-md); font-weight: var(--font-semibold); background: var(--surface-elevated); }
+  .data-table th, .data-table td { padding: var(--space-2) var(--space-md); text-align: left; border-bottom: 1px solid var(--border-subtle); }
+  .data-table thead th { background: var(--surface-elevated); color: var(--text-primary); font-weight: var(--font-semibold); }
+  .data-table tbody th { font-weight: var(--font-semibold); color: var(--text-primary); }
+  .data-table tbody td { color: var(--text-secondary); }
+  .data-table tbody tr:last-child th,
+  .data-table tbody tr:last-child td { border-bottom: none; }
+
+  .step-list {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: var(--space-md);
+    margin: var(--space-lg) 0;
+  }
+
+  .step-card {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: var(--space-md);
+    background: var(--surface-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: var(--space-md);
+    margin: 0;
+  }
+
+  .step-number {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    background: var(--accent-primary);
+    color: var(--surface-deep);
+    border-radius: var(--radius-pill);
+    font-weight: var(--font-bold);
+    font-size: var(--font-size-lg);
+    flex-shrink: 0;
+  }
+
+  .step-content h3 { margin: 0 0 var(--space-2); font-size: var(--font-size-base); }
+  .step-content p { margin: 0; font-size: var(--font-size-sm); color: var(--text-secondary); }
+
+  kbd {
+    display: inline-block;
+    padding: 0.125rem 0.375rem;
+    font-family: var(--font-mono);
+    font-size: 0.875em;
+    font-weight: var(--font-semibold);
+    line-height: 1;
+    color: var(--text-primary);
+    background: var(--surface-elevated);
+    border: 1px solid var(--border-subtle);
+    border-bottom-width: 2px;
+    border-radius: var(--radius-sm);
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.2);
+  }
+
+  .boss-timeline {
+    margin: var(--space-lg) 0;
+    padding: var(--space-lg);
+    background: var(--surface-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+  }
+
+  .timeline-track {
+    position: relative;
+    padding-left: var(--space-xl);
+  }
+
+  .timeline-track::before {
+    content: "";
+    position: absolute;
+    left: 1rem;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: linear-gradient(to bottom, var(--accent-primary) 0%, var(--accent-primary) 100%);
+    border-radius: var(--radius-pill);
+  }
+
+  .timeline-marker {
+    position: relative;
+    padding-bottom: var(--space-lg);
+  }
+
+  .timeline-marker:last-child {
+    padding-bottom: 0;
+  }
+
+  .marker-dot {
+    position: absolute;
+    left: -2.125rem;
+    top: 0.25rem;
+    width: 1.25rem;
+    height: 1.25rem;
+    background: var(--accent-primary);
+    border: 3px solid var(--surface-elevated);
+    border-radius: 50%;
+    box-shadow: 0 0 0 3px var(--border-subtle);
+  }
+
+  .marker-label {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-bold);
+    color: var(--text-primary);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+
+  .marker-label span {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-normal);
+    color: var(--text-secondary);
+  }
+
+  .sources {
+    margin-top: var(--space-xl);
+    padding: var(--space-md) var(--space-lg);
+    background: var(--surface-elevated);
+    border-radius: var(--radius-md);
+    border-left: 3px solid var(--accent-primary);
+  }
+  .sources h2 { margin-top: 0; font-size: var(--font-size-xl); }
+</style>

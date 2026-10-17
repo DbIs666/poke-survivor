@@ -1,0 +1,549 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import FAQ from '../components/FAQ.astro';
+import TypeBadge from '../components/TypeBadge.astro';
+import { itemListSchema } from '../lib/schema';
+
+const title = 'PokeSurvivor Rifts Guide: 18 Legendary Arenas and Rewards';
+const description = 'PokeSurvivor rifts guide: when a mysterious rift opens, you get 2 minutes to beat a legendary. Spawn timers, rewards, bonds and tactics for 18 arenas.';
+const image = 'https://poke-survivors.org/images/pokesurvivor-rift-arenas.webp';
+const jsonLd: Array<Record<string, unknown>> = [
+  {
+    '@type': 'Article',
+    headline: title,
+    description,
+    datePublished: '2026-10-16',
+    dateModified: '2026-10-16',
+    author: { '@type': 'Organization', name: 'PokeSurvivor Fan Guide' },
+    publisher: { '@type': 'Organization', name: 'PokeSurvivor Fan Guide' },
+    inLanguage: 'en',
+    image,
+    mainEntityOfPage: 'https://poke-survivors.org/rifts/',
+  },
+];
+
+type Arena = { type: string; arena: string; terrain: string; weather: string; legends: string; tip: string };
+const arenas: Arena[] = [
+  { type: 'Normal', arena: 'Eternal Meadow', terrain: 'Columns', weather: 'None', legends: 'Regigigas, Arceus, Meloetta, Type: Null, Silvally, Terapagos',
+    tip: 'No hazard or weather: a pure dodging test. Break line of sight behind columns. Normal is weak only to Fighting (×1.6). A Ghost partner takes Normal hits at ×0.3, though its Ghost moves also do only ×0.3.' },
+  { type: 'Fire', arena: 'Igneous Volcano', terrain: 'Lava rivers (burn)', weather: 'Sun', legends: 'Moltres, Entei, Ho-Oh, Heatran, Victini, Reshiram, Volcanion, Chi-Yu',
+    tip: 'Sun lifts Fire to ×1.5 and cuts Water to ×0.5 (Water does 1.6 × 0.5 = 0.8, worse than neutral). Rock and Ground keep their full ×1.6. Fire partners are immune to the lava.' },
+  { type: 'Water', arena: 'Sea Grotto', terrain: 'Puddles (slow)', weather: 'Rain', legends: 'Suicune, Kyogre, Palkia, Phione, Manaphy, Keldeo, Volcanion, Tapu Fini',
+    tip: 'Rain boosts Water ×1.5 and Electric ×1.2 and halves Fire. Super-effective Electric reaches 1.6 × 1.2 = 1.92 (the code multiplies type and weather). Grass is also ×1.6. Plan escapes on dry ground.' },
+  { type: 'Grass', arena: 'Emerald Jungle', terrain: 'Swamp (slows a lot), trees', weather: 'None', legends: 'Celebi, Shaymin, Virizion, Tapu Bulu, Calyrex, Ogerpon',
+    tip: 'The swamp slows you a lot. Only Water partners ignore it (since 2026-10-10), so kite around the trees on firm ground. Grass has five weaknesses (Fire, Ice, Poison, Flying, Bug), and with no weather Fire works at its full ×1.6.' },
+  { type: 'Electric', arena: 'Volt Plant', terrain: 'Charged puddles', weather: 'Rain', legends: 'Zapdos, Raikou, Thundurus, Zekrom, Tapu Koko, Zeraora, Regieleki',
+    tip: 'Electric and Ground partners are immune to the charged puddles. Ground is the only weakness of Electric and takes Electric hits at ×0.3, so a Ground partner is our pick. Rain boosts the legendary’s Electric too, and halves Fire.' },
+  { type: 'Ice', arena: 'Eternal Glacier', terrain: 'Ice plates (slippery)', weather: 'Snow', legends: 'Articuno, Regice, Kyurem, Glastrier',
+    tip: 'The hardest arena to move in, in our runs. Snow boosts Ice and chips and slows other types, and the plates are slippery (Ice partners are immune). Fire, Fighting, Rock and Steel all hit Ice for ×1.6. Dodge early, because you slide.' },
+  { type: 'Fighting', arena: 'Ancient Dojo', terrain: 'Many columns', weather: 'None', legends: 'Cobalion, Terrakion, Virizion, Keldeo, Marshadow, Zamazenta, Kubfu, Urshifu, Koraidon',
+    tip: 'Columns block projectiles, so homing Confusion and boomerang Razor Leaf beat straight shots, in our view. Flying, Psychic and Fairy are super effective, and a Ghost partner takes Fighting hits at only ×0.3.' },
+  { type: 'Poison', arena: 'Toxic Swamp', terrain: 'Poison puddles', weather: 'None', legends: 'Eternatus, Munkidori, Fezandipiti',
+    tip: 'Poison and Steel partners are immune to the puddles, and Steel takes Poison hits at ×0.3, the safest choice. Ground and Psychic are super effective. Eternatus is part Dragon and Munkidori part Psychic, so the roll decides the arena.' },
+  { type: 'Ground', arena: 'Red Desert', terrain: 'Quicksand', weather: 'Sandstorm', legends: 'Groudon, Landorus, Zygarde',
+    tip: 'Sandstorm boosts Rock, Ground and Steel and chips everyone else; bring Synthesis or Leftovers. Water, Grass and Ice hit Ground for ×1.6, and with no rain or sun, Water keeps full value. Avoid the quicksand.' },
+  { type: 'Flying', arena: 'Sky Peak', terrain: 'Cloud-trees', weather: 'None', legends: 'Articuno, Zapdos, Moltres, Lugia, Ho-Oh, Rayquaza, Tornadus, Thundurus, Landorus, Yveltal, Enamorus',
+    tip: '11 eligible legendaries. Electric, Ice and Rock are super effective. A Ground partner takes Electric hits from Zapdos or Thundurus at ×0.3, but Ground moves only do ×0.3 to Flying: defensive only.' },
+  { type: 'Psychic', arena: 'Mind Temple', terrain: 'Pink crystals, columns', weather: 'None', legends: 'Mewtwo, Mew, Lugia, Celebi, Latias, Latios, Jirachi, Deoxys, Uxie, Mesprit, Azelf, Cresselia, Victini, Meloetta, Hoopa, Tapu Lele, Cosmog, Cosmoem, Solgaleo, Lunala, Necrozma, Calyrex, Munkidori',
+    tip: 'The largest pool, with 23 eligible legendaries. Bug, Ghost and Dark hit Psychic for ×1.6, and a Dark partner takes Psychic hits at only ×0.3. Circle the crystals instead of running into corners.' },
+  { type: 'Bug', arena: 'Hive Forest', terrain: 'Swamp, tall grass', weather: 'None', legends: 'Genesect',
+    tip: 'Genesect is the only eligible legendary. It is Bug/Steel, so it can also land in the Steel Fortress, and Fire hits both types. Fight on open ground, away from the swamp.' },
+  { type: 'Rock', arena: 'Ancient Quarry', terrain: 'Columns and rocks', weather: 'Sandstorm', legends: 'Regirock, Terrakion, Diancie',
+    tip: 'Sandstorm boosts Rock, including the legendary’s attacks, and chips non-Rock/Ground/Steel players. Rock has five weaknesses: Water, Grass, Fighting, Ground and Steel. Ground or Steel partners avoid the chip and hit for ×1.6.' },
+  { type: 'Ghost', arena: 'Gloomy Graveyard', terrain: 'Dead trees', weather: 'Fog', legends: 'Giratina, Hoopa, Lunala, Marshadow, Spectrier',
+    tip: 'Fog boosts Ghost, Fairy and Psychic, including the legendary’s attacks. Ghost and Dark are super effective. Avoid Normal and Fighting partners (×0.3). Use the dead trees as cover.' },
+  { type: 'Dragon', arena: 'Dragon Sanctuary', terrain: 'Draconic flames (burn)', weather: 'None', legends: 'Latias, Latios, Rayquaza, Dialga, Palkia, Giratina, Reshiram, Zekrom, Kyurem, Zygarde, Eternatus, Regidrago, Koraidon',
+    tip: 'The flames burn. The design document lists no immunity, but the code uses the lava hazard, so Fire partners appear safe in them (our reading of the code). Ice, Dragon and Fairy are super effective, and a Fairy partner takes Dragon hits at ×0.3, our favourite pick here.' },
+  { type: 'Dark', arena: 'Dark Alley', terrain: 'Columns', weather: 'None', legends: 'Darkrai, Yveltal, Urshifu, Chi-Yu',
+    tip: 'Fighting, Bug and Fairy hit Dark for ×1.6. Psychic is the trap pick: its moves only do ×0.3 against Dark. No hazards, so focus on the four telegraphed attacks.' },
+  { type: 'Steel', arena: 'Steel Fortress', terrain: 'Many columns', weather: 'None', legends: 'Registeel, Jirachi, Dialga, Heatran, Cobalion, Genesect, Solgaleo, Magearna, Meltan, Melmetal',
+    tip: 'Steel resists many types, so bring Fire, Fighting or Ground for ×1.6. Many columns block straight shots. Fire, Water, Electric and Steel partners resist Steel attacks.' },
+  { type: 'Fairy', arena: 'Enchanted Forest', terrain: 'Pink trees, fountains', weather: 'None', legends: 'Xerneas, Diancie, Tapu Koko, Tapu Lele, Tapu Bulu, Tapu Fini, Magearna, Zacian, Enamorus, Fezandipiti',
+    tip: 'Poison and Steel hit Fairy for ×1.6, while Dragon moves do only ×0.3, so leave Dragon partners for another arena. With no hazards or weather, it is one of the gentler arenas.' },
+];
+
+/** Internal links shown under arenas where the advice names a partner type. */
+const partnerLinks: Record<string, string> = {
+  Water: 'Electric and Grass partners do the most here; the tier list shows <a href="/tier-list/">where Electric partners such as Jolteon rank</a>.',
+  Ground: 'Water starters are a natural fit here; our <a href="/best-pokemon/">best starter Pokémon picks</a> explain how the Water options play.',
+  Bug: 'Fire answers both Genesect arenas; the <a href="/best-pokemon/">starter guide covers the Fire starters</a> you can open a run with.',
+};
+
+jsonLd.push(itemListSchema(
+  'PokeSurvivor rifts: the 18 legendary arenas',
+  arenas.map((a) => ({ name: `${a.type}: ${a.arena}`, url: `/rifts/#arena-${a.type.toLowerCase()}`, description: `Terrain: ${a.terrain}. Weather: ${a.weather}.` })),
+  { ordered: false },
+));
+---
+
+<BaseLayout
+  title={title}
+  alternates={[
+    { locale: 'en', href: '/rifts/' },
+    { locale: 'zh-Hant', href: '/zh/rifts/' }
+  ]}
+  description={description}
+  locale="en"
+  ogType="article"
+  ogImage="/images/pokesurvivor-rift-arenas.jpg"
+  ogImageAlt="Grid of the 18 legendary arenas with one eligible legendary each"
+  breadcrumbs={[
+    { name: 'Home', url: '/' },
+    { name: 'Rifts Guide', url: '/rifts/' },
+  ]}
+  preloadImage="/images/pokesurvivor-rift-arenas.webp"
+  jsonLd={jsonLd}
+>
+  <article class="guide">
+    <header class="guide-header">
+      <h1>PokeSurvivor Rifts: Legendary Arenas and How to Win Them</h1>
+      <p class="lead">
+        PokeSurvivor rifts are the game's legendary fights. When a mysterious portal opens on the map, you walk in and get two
+        minutes to beat a legendary Pokémon in an arena of its type. A win pays a bond, coins and a chance at a gacha
+        ticket, and you can always skip one. This guide covers when these encounters spawn, what they pay and how we fight all 18 arenas.
+        Rules come from official sources, tactics are our opinion. Play the game for free at
+        <a href="https://pokesurvivor.com/en/" rel="noopener">pokesurvivor.com</a>.
+      </p>
+      <p class="meta">Updated: 2026-10-16 · Unofficial fan guide</p>
+      <figure>
+        <img
+          src="/images/pokesurvivor-rift-arenas.webp"
+          width="1300"
+          height="790"
+          loading="eager"
+          fetchpriority="high"
+          decoding="async"
+          alt="Grid of the 18 legendary arenas, each tile showing one eligible legendary Pokémon for that type"
+        />
+        <figcaption>Fan-made overview, one sample legendary per arena. Not an in-game screenshot. Sprites: SpriteCollab (CC BY-NC 4.0).</figcaption>
+      </figure>
+    </header>
+
+    <nav class="toc" aria-label="On this page">
+      <p class="toc-title">On this page</p>
+      <ul>
+        <li><a href="#appear">When a mysterious rift appears</a></li>
+        <li><a href="#fight">Entering and the 2-minute fight</a></li>
+        <li><a href="#rewards">Rewards, losses and bonds</a></li>
+        <li><a href="#arenas">All 18 legendary arenas</a></li>
+        <li><a href="#how-to-fight">How we fight each arena</a></li>
+        <li><a href="#general">Rift tips</a></li>
+        <li><a href="#faq">FAQ</a></li>
+      </ul>
+    </nav>
+
+    <section class="guide-section" id="appear">
+      <h2>When a mysterious rift appears</h2>
+      <p>
+        A mysterious rift is a portal that opens on the map during a normal run, with no menu, wave or level requirement.
+        Here is how the game's code schedules these portals, according to the
+        <a href="https://github.com/JPTER78/pokesurvivor" rel="noopener">official source code</a> and the
+        <a href="https://pokesurvivor.com/en/news/" rel="noopener">official news</a>:
+      </p>
+      <ul>
+        <li><strong>Escalating chance from early on.</strong> Rifts can appear very rarely as early as game start. After that, the game checks for a new one every 30 seconds.</li>
+        <li><strong>Guaranteed spawns.</strong> They show up at least every 2.5 minutes (official news).</li>
+        <li><strong>45 seconds to enter.</strong> The portal stays open for 45 seconds, then closes.</li>
+        <li><strong>Missing legendaries are weighted.</strong> Ones you haven't got yet appear more often.</li>
+        <li><strong>No rifts from 28:00.</strong> New portals stop spawning at 28:00, ahead of Arceus at minute 30.</li>
+      </ul>
+      <p>
+        So a normal run shows several of these encounters before 28:00, and none is mandatory. We usually clear the
+        nearby wave during the 45-second window first.
+      </p>
+    </section>
+
+    <section class="guide-section" id="fight">
+      <h2>Entering a legendary rift and the 2-minute fight</h2>
+      <p>
+        Walk into the portal to enter. The fight takes place in one of 18 type arenas, each with its own terrain and
+        weather, and lasts 2 minutes. Like bosses, legendaries in this mode have four telegraphed attacks and
+        enrage at half HP. Ground markers (filling circles and lines) show where an attack will land.
+      </p>
+      <p>
+        A dual-type legendary picks one of its two type arenas at random. In co-op everyone enters together, so call
+        it out first. Our
+        <a href="/co-op/">guide to rifts and revives in co-op</a> explains how the mode works in a group.
+      </p>
+    </section>
+
+    <section class="guide-section" id="rewards">
+      <h2>Rift rewards, losses and bonds</h2>
+      <ul>
+        <li><strong>Win:</strong> you get a bond and coins. The official legendaries page promises a ×10 gacha ticket for every win.</li>
+        <li><strong>Lose:</strong> if every player is down or the 2 minutes run out, you return to the map with 30% HP and no prize. The run continues.</li>
+        <li><strong>Bonds:</strong> each legendary you beat grants a bond, which links two of your moves so both fire from one slot. You can have up to 4 bonds.</li>
+      </ul>
+      <p>
+        Bonds are why we take these fights seriously: only the active move fires,
+        so a bond effectively doubles one slot. A loss costs no run, but 30% HP on a busy map is risky, so we play the
+        next minute defensively. Each challenge is worth it for the bond first and the guaranteed ×10 ticket second.
+      </p>
+    </section>
+
+    <section class="guide-section" id="arenas">
+      <h2>All 18 legendary arenas</h2>
+      <p>
+        Terrain and weather for each arena come from the official design document. The legendary column lists every legendary of that
+        type on the <a href="https://pokesurvivor.com/en/legendaries/" rel="noopener">official legendaries page</a>, so
+        dual types appear in both of their arenas. Use that page for portraits and stats.
+      </p>
+      <div class="data-table">
+        <table>
+          <caption>The 18 legendary arenas: terrain, weather and eligible legendaries (by type)</caption>
+          <thead>
+            <tr>
+              <th scope="col">Type</th>
+              <th scope="col">Arena</th>
+              <th scope="col">Terrain</th>
+              <th scope="col">Weather</th>
+              <th scope="col">Eligible legendaries (by type)</th>
+            </tr>
+          </thead>
+          <tbody>
+            {arenas.map((a) => (
+              <tr>
+                <th scope="row">{a.type}</th>
+                <td>{a.arena}</td>
+                <td>{a.terrain}</td>
+                <td>{a.weather}</td>
+                <td>{a.legends}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <h3>Rules that shape every arena</h3>
+      <p>Four rules apply to every arena, whatever the type:</p>
+      <ul>
+        <li><strong>Terrain:</strong> "lava burns, ice is slippery, water slows you down" (official legendaries page).</li>
+        <li><strong>Terrain immunities:</strong> Fire is immune to lava, Poison and Steel to poison, Electric and Ground to shock puddles, and Ice to ice. The legendary is never hurt by its own arena, and since 2026-10-10 Water partners can move at full speed through water puddles and swamp.</li>
+        <li><strong>Weather:</strong> sun gives Fire ×1.5 and Water ×0.5. Rain gives Water ×1.5, Electric ×1.2 and Fire ×0.5. Sandstorm boosts Rock, Ground and Steel and chips others. Snow boosts Ice and chips and slows others. Fog boosts Ghost, Fairy and Psychic.</li>
+        <li><strong>Softened type chart:</strong> super effective ×1.6, not very effective ×0.6, immunity ×0.3, dual-type cap ×2.4, applied both ways. See the <a href="https://pokesurvivor.com/en/types/" rel="noopener">official type chart</a>.</li>
+      </ul>
+    </section>
+
+    <section class="guide-section" id="how-to-fight">
+      <h2>How we fight each arena</h2>
+      <p>
+        This is our fan advice for these encounters, built on the rules above. Weather affects everyone, you and the enemies (design document
+        section 4.1), and the combat code multiplies type and weather values, so 1.6 × 1.2 really is 1.92. Your
+        partner's moves set the damage you deal, and its type sets the damage you take.
+      </p>
+      <div class="arena-filter" role="group" aria-label="Filter arenas by type" data-arena-filter hidden>
+        <label for="type-filter" class="sr-only">Filter by type</label>
+        <select id="type-filter" class="type-select">
+          <option value="all">All 18 types</option>
+          {arenas.map((a) => (
+            <option value={a.type.toLowerCase()}>{a.type}</option>
+          ))}
+        </select>
+      </div>
+      <p class="sr-only" aria-live="polite" data-arena-status></p>
+      <div class="arena-grid">
+        {arenas.map((a) => (
+          <section class="arena-card" id={`arena-${a.type.toLowerCase()}`} data-type={a.type.toLowerCase()} data-arena>
+            <div class="arena-card-header">
+              <h3><TypeBadge type={a.type.toLowerCase()} /> {a.arena}</h3>
+            </div>
+            <dl class="arena-facts">
+              <div><dt>Terrain:</dt><dd>{a.terrain}</dd></div>
+              <div><dt>Weather:</dt><dd>{a.weather}</dd></div>
+            </dl>
+            <p>{a.tip}</p>
+            {partnerLinks[a.type] && <p class="arena-link" set:html={partnerLinks[a.type]} />}
+          </section>
+        ))}
+      </div>
+    </section>
+
+    <section class="guide-section" id="general">
+      <h2>Rift tips</h2>
+      <ul class="tip-list">
+        <li><strong>Enter healthy.</strong> A lost fight leaves you at 30% HP, so we don't walk in at 40%.</li>
+        <li><strong>Read the type before you commit.</strong> Inside the arena, terrain and weather reveal the legendary's type. If your active move is resisted (×0.6) or near-immune (×0.3), switch slots if you can.</li>
+        <li><strong>Respect the enrage.</strong> Legendaries enrage at half HP, so save your full attention for that phase.</li>
+        <li><strong>Hunt missing legendaries.</strong> They are weighted to appear more often, so early portals fill your collection fast.</li>
+      </ul>
+      <h3>Fitting rifts into a run</h3>
+      <p>
+        These time-limited encounters start at 1:15 and stop at 28:00, sharing the clock with bosses and the Arceus fight at
+        minute 30. Early ones are the safest to take while your HP is full and the map is quiet. Skip one when your HP
+        is low, a boss is close, or your move is still weak: a loss later in the run drops you to 30% HP in a much busier
+        horde, and more portals usually open before 28:00.
+      </p>
+      <p>
+        For partners that suit this mode, see our <a href="/tier-list/">partner rankings on the tier
+        list</a>. For controls and cards, see the <a href="/how-to-play/">beginner guide to how PokeSurvivor plays</a>.
+        Reading in Chinese? Our <a href="/zh/" lang="zh-Hant">繁體中文攻略</a> has a run timeline that marks when the portals
+        open, plus an English-Chinese glossary.
+      </p>
+    </section>
+
+    <FAQ
+      heading="PokeSurvivor rifts FAQ"
+      items={[
+        { q: 'How do I unlock rifts?', a: "You don't need to unlock anything: a mysterious portal can open from 1:15 in any run. Walk in while it is open." },
+        { q: 'How long does a legendary rift last?', a: 'The portal stays open 45 seconds, and the fight inside lasts 2 minutes.' },
+        { q: 'What happens if I lose?', a: 'If you lose the fight, you return to the map with 30% HP and no prize. The run goes on.' },
+        { q: 'Why do I keep getting the same legendary?', a: 'Legendaries you have not beaten yet are weighted to appear more often, but the pick is still random, so repeats happen.' },
+        { q: 'What do rifts reward?', a: 'Every win pays a bond and coins, plus a 50% chance at the ×10 gacha ticket in the current code. A loss pays nothing.' },
+        { q: 'Can I skip a rift?', a: 'Yes, they are always optional. Ignore the portal and it closes after 45 seconds, costing only that prize.' },
+      ]}
+    />
+
+    <aside class="sources" aria-labelledby="how-we-wrote">
+      <h2 id="how-we-wrote">Sources for this rift guide</h2>
+      <p>
+        We are fans, not the developer (jpter78). Spawn timings, rewards, terrain and weather come from the
+        <a href="https://pokesurvivor.com/en/legendaries/" rel="noopener">official legendaries page</a>, the
+        <a href="https://pokesurvivor.com/en/news/" rel="noopener">official news</a>, the
+        <a href="https://pokesurvivor.com/en/types/" rel="noopener">official type chart</a> and the official
+        <a href="https://github.com/JPTER78/pokesurvivor" rel="noopener">GitHub repository</a> (game code and design
+        document), checked on 2026-10-15. The arena advice is fan opinion. PokéSurvivor is not affiliated with Nintendo,
+        GAME FREAK or The Pokémon Company.
+      </p>
+    </aside>
+  </article>
+</BaseLayout>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const select = document.getElementById('type-filter') as HTMLSelectElement | null;
+    const cards = document.querySelectorAll('[data-arena]');
+    const status = document.querySelector('[data-arena-status]') as HTMLElement | null;
+
+    if (!select || cards.length === 0) return;
+
+    // Progressive enhancement: the filter stays hidden until JS can drive it.
+    document.querySelector('[data-arena-filter]')?.removeAttribute('hidden');
+
+    select.addEventListener('change', () => {
+      const selectedType = select.value;
+      let visibleCount = 0;
+
+      cards.forEach((card) => {
+        const cardType = card.getAttribute('data-type');
+        if (selectedType === 'all' || cardType === selectedType) {
+          card.classList.remove('hidden');
+          visibleCount++;
+        } else {
+          card.classList.add('hidden');
+        }
+      });
+
+      if (status) {
+        if (selectedType === 'all') {
+          status.textContent = 'Showing all 18 arenas';
+        } else {
+          status.textContent = `Showing ${visibleCount} arena${visibleCount !== 1 ? 's' : ''}: ${selectedType}`;
+        }
+      }
+    });
+  });
+</script>
+
+<style>
+  .guide { max-width: var(--container-narrow); margin: 0 auto; }
+
+  .guide h1 { font-size: clamp(1.9rem, 4.5vw, 2.6rem); line-height: 1.15; margin-bottom: 0.5rem; }
+  .guide h2 { font-size: clamp(1.35rem, 3vw, 1.75rem); color: var(--accent-primary); margin: 2.5rem 0 0.9rem; line-height: 1.25; }
+  .guide h3 { font-size: 1.1rem; margin: 1.4rem 0 0.4rem; }
+  .guide p, .guide li { color: var(--text-secondary); }
+  .guide p { margin-bottom: 1rem; }
+  .guide ul, .guide ol { padding-left: 1.4rem; margin-bottom: 1rem; }
+  .guide li { margin-bottom: 0.45rem; }
+  .guide strong { color: var(--text-primary); }
+
+  .guide-header h1 { font-size: var(--font-size-4xl); line-height: var(--leading-tight); }
+  .lead { font-size: var(--font-size-lg); color: var(--text-secondary); line-height: var(--leading-relaxed); }
+  .meta { color: var(--text-tertiary); font-size: var(--font-size-sm); margin-top: var(--space-2); }
+
+  figure { margin: var(--space-lg) 0; }
+  figure img { display: block; width: 100%; border-radius: var(--radius-md); }
+  figcaption { font-size: 0.88rem; color: var(--text-tertiary); margin-top: var(--space-2); text-align: center; }
+
+  .toc {
+    background: var(--surface-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: var(--space-md) var(--space-lg);
+    margin: var(--space-lg) 0;
+  }
+  .toc-title {
+    font-weight: var(--font-bold);
+    color: var(--text-primary);
+    margin-bottom: var(--space-sm);
+  }
+  .toc ul { margin: 0; padding-left: var(--space-md); }
+  .toc li { margin-bottom: var(--space-2); }
+
+  .data-table {
+    overflow-x: auto;
+    margin: var(--space-lg) 0;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+  }
+  .data-table table { width: 100%; border-collapse: collapse; font-size: var(--font-size-sm); }
+  .data-table caption { text-align: left; padding: var(--space-sm) var(--space-md); font-weight: var(--font-semibold); background: var(--surface-elevated); }
+  .data-table th, .data-table td { padding: var(--space-2) var(--space-md); text-align: left; border-bottom: 1px solid var(--border-subtle); }
+  .data-table thead th { background: var(--surface-elevated); color: var(--text-primary); font-weight: var(--font-semibold); }
+  .data-table tbody th { font-weight: var(--font-semibold); color: var(--text-primary); }
+  .data-table tbody td { color: var(--text-secondary); }
+  .data-table tbody tr:last-child th,
+  .data-table tbody tr:last-child td { border-bottom: none; }
+
+  .arena-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 350px), 1fr));
+    gap: var(--space-md);
+    margin: var(--space-lg) 0;
+  }
+
+  .arena-card {
+    background: var(--surface-elevated);
+    border: 1px solid var(--border-subtle);
+    border-left-width: 4px;
+    border-radius: var(--radius-md);
+    padding: var(--space-md);
+    transition: border-color var(--transition-fast);
+  }
+
+  .arena-card[data-type="normal"] { border-left-color: var(--type-normal); }
+  .arena-card[data-type="fire"] { border-left-color: var(--type-fire); }
+  .arena-card[data-type="water"] { border-left-color: var(--type-water); }
+  .arena-card[data-type="electric"] { border-left-color: var(--type-electric); }
+  .arena-card[data-type="grass"] { border-left-color: var(--type-grass); }
+  .arena-card[data-type="ice"] { border-left-color: var(--type-ice); }
+  .arena-card[data-type="fighting"] { border-left-color: var(--type-fighting); }
+  .arena-card[data-type="poison"] { border-left-color: var(--type-poison); }
+  .arena-card[data-type="ground"] { border-left-color: var(--type-ground); }
+  .arena-card[data-type="flying"] { border-left-color: var(--type-flying); }
+  .arena-card[data-type="psychic"] { border-left-color: var(--type-psychic); }
+  .arena-card[data-type="bug"] { border-left-color: var(--type-bug); }
+  .arena-card[data-type="rock"] { border-left-color: var(--type-rock); }
+  .arena-card[data-type="ghost"] { border-left-color: var(--type-ghost); }
+  .arena-card[data-type="dragon"] { border-left-color: var(--type-dragon); }
+  .arena-card[data-type="dark"] { border-left-color: var(--type-dark); }
+  .arena-card[data-type="steel"] { border-left-color: var(--type-steel); }
+  .arena-card[data-type="fairy"] { border-left-color: var(--type-fairy); }
+
+  .arena-card.hidden {
+    display: none;
+  }
+
+  .arena-card-header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin-bottom: var(--space-sm);
+  }
+
+  .arena-card h3 {
+    font-size: var(--font-size-base);
+    margin: 0;
+    color: var(--text-primary);
+  }
+
+  .arena-type {
+    font-weight: var(--font-bold);
+  }
+
+  .arena-filter {
+    margin: var(--space-lg) 0 var(--space-md);
+  }
+
+  .type-select {
+    width: 100%;
+    max-width: 300px;
+    padding: var(--space-2) var(--space-md);
+    font-size: var(--font-size-sm);
+    font-family: var(--font-sans);
+    color: var(--text-primary);
+    background: var(--surface-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+  }
+
+  .type-select:focus {
+    outline: 2px solid var(--focus-ring);
+    outline-offset: 2px;
+  }
+
+  .arena-facts {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-2) var(--space-md);
+    padding: var(--space-3);
+    background: var(--surface-base);
+    border-radius: var(--radius-sm);
+    margin-bottom: var(--space-sm);
+  }
+
+  .arena-facts div {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-2);
+  }
+
+  .arena-facts dt {
+    font-size: var(--font-size-xs);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-wide);
+    color: var(--text-tertiary);
+    font-weight: var(--font-medium);
+  }
+
+  .arena-facts dd {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    margin: 0;
+  }
+
+  .arena-card > p {
+    font-size: var(--font-size-sm);
+    line-height: var(--leading-normal);
+    margin-bottom: var(--space-sm);
+  }
+
+  .arena-card > p:last-child {
+    margin-bottom: 0;
+  }
+
+  .arena-link {
+    font-size: var(--font-size-sm);
+    padding-top: var(--space-sm);
+    border-top: 1px solid var(--border-subtle);
+  }
+
+  .tip-list {
+    list-style: none;
+    padding: 0;
+  }
+
+  .tip-list li {
+    padding-left: var(--space-sm);
+    position: relative;
+  }
+
+  .tip-list li::before {
+    content: "→";
+    position: absolute;
+    left: 0;
+    color: var(--accent-primary);
+  }
+
+  .sources {
+    margin-top: 2.5rem;
+    padding: var(--space-md) var(--space-lg);
+    background: var(--surface-elevated);
+    border-left: 3px solid var(--accent-primary);
+    border-radius: var(--radius-sm);
+  }
+
+  .sources h2 {
+    margin-top: 0;
+    font-size: var(--font-size-xl);
+  }
+</style>

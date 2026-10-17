@@ -1,0 +1,815 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import TypeBadge from '../components/TypeBadge.astro';
+import FAQ from '../components/FAQ.astro';
+import pokemon from '../data/pokemon.json';
+
+const title = 'PokeSurvivor Pokédex: All 966 Pokémon by Type & Region';
+const description = `Browse the PokeSurvivor Pokédex: all ${pokemon.length} Pokémon from Kanto to Paldea. Search by name or number, and filter by type, region, starter or legendary status.`;
+
+// Group by region
+const regions = ['Kanto', 'Johto', 'Hoenn', 'Sinnoh', 'Unova', 'Kalos', 'Alola', 'Galar', 'Paldea'];
+const byRegion = regions.map(region => ({
+  name: region,
+  generation: pokemon.find(p => p.region === region)?.generation || 1,
+  pokemon: pokemon.filter(p => p.region === region)
+}));
+
+const stats = {
+  total: pokemon.length,
+  regions: regions.length,
+  starters: pokemon.filter(p => p.starter).length,
+  legendaries: pokemon.filter(p => p.legendary).length,
+  types: 18
+};
+
+// National Dex numbers the game's roster skips (computed from the data, not hard-coded).
+const maxDex = Math.max(...pokemon.map(p => p.id));
+const dexSet = new Set(pokemon.map(p => p.id));
+const missingDex = Array.from({ length: maxDex }, (_, i) => i + 1).filter(n => !dexSet.has(n));
+
+// Hand-written region notes. Every Pokémon named here is in src/data/pokemon.json;
+// tier-list numbers come from the tier list and best Pokémon pages.
+const regionNotes: Record<string, string> = {
+  Kanto: 'The original 151 and the biggest single block in the list. Five of the 29 starters come from Kanto: Bulbasaur, Charmander and Squirtle, plus Psyduck and Slowpoke, the two starters that open with homing Confusion. Gengar, Alakazam, Jolteon and Snorlax, all ranked on our tier list, are here too, along with Pikachu and Eevee, which are not in the starter pool.',
+  Johto: 'Johto adds 100 Pokémon. Chikorita, Cyndaquil and Totodile are the Johto starters, and Totodile is one of the steadier Water Gun picks. Look for the Larvitar, Pupitar and Tyranitar line, and Blissey, which has the highest HP of any partner we list (185). Lugia, Ho-Oh and the three legendary beasts round out the region.',
+  Hoenn: 'Treecko, Torchic and Mudkip are all here, and Torchic is an S-tier early pick for its Ember attack. Mudkip evolves into Swampert, a tanky late-game option. Hoenn also holds the Beldum line that ends in Metagross, the Bagon line, and ten legendaries, including Kyogre, Groudon and Rayquaza.',
+  Sinnoh: 'Turtwig, Chimchar and Piplup are the starters. The Gible, Gabite and Garchomp line is the headline: Garchomp is our top pick for the Arceus phase. Arceus itself is a Sinnoh legendary, and Sinnoh carries 14 legendaries in total, from Dialga and Palkia to Giratina and Darkrai.',
+  Unova: 'The second-largest region after Kanto. Snivy, Tepig and Oshawott are the starters. Axew, Fraxure and Haxorus form the line with the biggest attack multiplier we list (×1.51), and the Deino line ends in Hydreigon. Reshiram, Zekrom and Kyurem lead its 13 legendaries.',
+  Kalos: 'The smallest region in the game. Chespin, Fennekin and Froakie are the starters, and Froakie is the fastest of all 29 (108 speed). Its final form, Greninja, appears in our mid-game rankings. The Goomy line and the legendaries Xerneas, Yveltal and Zygarde are also here.',
+  Alola: 'Rowlet, Litten and Popplio are the starters; Litten is an S-tier early pick and Popplio opens with Bubble. Alola has more legendaries than any other region (16), including the four Tapu, the Cosmog line, Solgaleo, Lunala and Necrozma. The Jangmo-o line is its pseudo-legendary family.',
+  Galar: 'Grookey, Scorbunny and Sobble are the starters, and two of them top our early rankings: Scorbunny has the highest starter attack (×1.09) and Sobble pairs Water Gun with 107 speed. Scorbunny evolves into Cinderace. The Dreepy, Drakloak and Dragapult line ends in the fastest partner we list (138), and Zacian, Zamazenta and Eternatus lead the legendaries.',
+  Paldea: 'Sprigatito, Fuecoco and Quaxly are the starters. Fuecoco has the second-highest starter HP, and Quaxly is a balanced Water Gun user. Watch for the Frigibax line, and for Koraidon and Terapagos among the six legendaries.',
+};
+
+const regionInfo = byRegion.map(r => ({
+  ...r,
+  starters: r.pokemon.filter(p => p.starter).map(p => p.name.en),
+  legends: r.pokemon.filter(p => p.legendary).map(p => p.name.en),
+  note: regionNotes[r.name],
+}));
+
+// Popular picks, taken from the tier list and best Pokémon pages (fan opinion, stats from the official files).
+const pick = (id: number, why: string) => {
+  const p = pokemon.find(x => x.id === id)!;
+  return { id, name: p.name.en, types: p.types, region: p.region, why };
+};
+const popular = [
+  {
+    heading: 'Early game: starters worth checking first',
+    intro: 'Your first partner comes from the personality quiz, and you can turn the pick down. These are the starters we rank highest.',
+    mons: [
+      pick(813, 'Highest starter attack (×1.09) on Ember, with 107 speed.'),
+      pick(816, 'Water Gun pierce, 107 speed and ×1.08 attack.'),
+      pick(79, 'Most starter HP (110) and homing Confusion. The forgiving pick.'),
+      pick(255, 'Second-best Ember attack, a little slower.'),
+    ],
+  },
+  {
+    heading: 'Mid game: gacha partners for the bosses',
+    intro: 'Once tickets bring in new partners, attack multipliers jump well above any starter.',
+    mons: [
+      pick(612, 'The biggest attack multiplier we list (×1.51).'),
+      pick(94, 'Shadow Ball pierces 2, good for reaching healers behind a pack.'),
+      pick(65, 'Homing Confusion with ×1.44 attack and 128 speed.'),
+    ],
+  },
+  {
+    heading: 'Late game: picks for the Arceus phase',
+    intro: 'After minute 30 you need HP, speed and attack together.',
+    mons: [
+      pick(445, 'Our best mix of HP, speed and attack.'),
+      pick(887, 'The fastest partner we list (138) for dodging telegraphs.'),
+      pick(376, 'High attack, and its Psychic type adds homing moves to the pool.'),
+    ],
+  },
+];
+
+const faqItems = [
+  {
+    q: 'How many Pokémon are in PokeSurvivor?',
+    a: `${stats.total} Pokémon across nine regions, from Kanto to Paldea, per the <a href="https://pokesurvivor.com/en/guide/" rel="noopener">official guide</a>. This Pokédex lists every one of them. The numbers are not a gapless run: the roster skips ${missingDex.length} National Dex numbers between #1 and #${maxDex}.`,
+  },
+  {
+    q: 'Which regions are included?',
+    a: `All nine main-series regions: ${byRegion.map(r => `${r.name} (${r.pokemon.length})`).join(', ')}. Use the region menu or the jump links above the grid to view one at a time.`,
+  },
+  {
+    q: 'Can I filter by starter Pokémon?',
+    a: `Yes. Tick "Starters only" to show the ${stats.starters} starters the personality quiz can give you. Combine it with a type to compare partners, or read our <a href="/best-pokemon/">best starter picks</a> for rankings.`,
+  },
+  {
+    q: 'Where do I find legendary Pokémon?',
+    a: `${stats.legendaries} Pokémon carry the Legendary tag. They only appear in <a href="/rifts/">legendary rifts</a> during a run. Beating one pays a bond and coins, and legendaries you have not beaten yet are weighted to show up more often.`,
+  },
+  {
+    q: 'How do I get Pokémon that are not starters?',
+    a: 'Through the ticket gacha, which has 9 region banners. Regular Pokémon drop tickets now and then, and bosses and rift legendaries sometimes drop a ×10 ticket. Tickets cannot be bought with real money.',
+  },
+  {
+    q: 'Does the Pokédex show stats or evolution data?',
+    a: 'No. Each card shows the Dex number, sprite, types, region and starter or legendary tag. Evolution families sit next to each other in Dex order. For HP, speed and attack numbers, see the <a href="/tier-list/">tier list</a>.',
+  },
+];
+
+const jsonLd = [
+  {
+    '@type': 'CollectionPage',
+    name: 'PokeSurvivor Pokédex',
+    description,
+    mainEntity: {
+      '@type': 'ItemList',
+      name: 'Complete Pokémon List',
+      numberOfItems: pokemon.length,
+      itemListElement: pokemon.slice(0, 100).map((p, i) => ({
+        '@type': 'ListItem',
+        position: i + 1,
+        name: p.name.en,
+        url: `/pokedex/#pokemon-${p.id}`,
+        description: `#${String(p.id).padStart(4, '0')} · ${p.types.join('/')} type · ${p.region}`,
+      })),
+    },
+  },
+];
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Pokédex', url: '/pokedex/' },
+];
+---
+
+<BaseLayout
+  title={title}
+  alternates={[
+    { locale: 'en', href: '/pokedex/' },
+    { locale: 'zh-Hant', href: '/zh/pokedex/' }
+  ]}
+  description={description}
+  breadcrumbs={breadcrumbs}
+  jsonLd={jsonLd}
+>
+  <article class="pokedex-page">
+    <header class="page-header">
+      <h1>PokeSurvivor Pokédex</h1>
+      <p class="lead">
+        Complete list of all {stats.total} Pokémon available in PokeSurvivor with sprites, types, regions, and starter/legendary tags.
+      </p>
+    </header>
+
+    <section class="pokedex-intro" aria-labelledby="intro-title">
+      <h2 id="intro-title">What the PokeSurvivor Pokédex covers</h2>
+      <p>
+        This Pokédex is a fan-made reference for every Pokémon you can meet in PokeSurvivor, the free browser
+        survivor game. Each card shows the National Dex number, sprite, one or two types, home region, and a tag
+        if the Pokémon is a starter partner or a legendary. Entries are grouped by region, from Kanto
+        (Generation 1) to Paldea (Generation 9), so you can scan one generation at a time.
+      </p>
+      <p>
+        Use it to check a partner's typing before a run, spot which legendaries guard the
+        <a href="/rifts/">Rift arenas</a>, or look up an unfamiliar sprite you saw on the field. For rankings and
+        build advice, pair it with the <a href="/tier-list/">PokeSurvivor tier list</a> and our picks for the
+        <a href="/best-pokemon/">best Pokémon for new players</a>.
+      </p>
+    </section>
+
+    <!-- Stats strip -->
+    <div class="stats-strip">
+      <div class="stat-tile">
+        <div class="stat-tile-value">{stats.total}</div>
+        <div class="stat-tile-label">Pokémon</div>
+      </div>
+      <div class="stat-tile">
+        <div class="stat-tile-value">{stats.regions}</div>
+        <div class="stat-tile-label">Regions</div>
+      </div>
+      <div class="stat-tile">
+        <div class="stat-tile-value">{stats.starters}</div>
+        <div class="stat-tile-label">Starters</div>
+      </div>
+      <div class="stat-tile">
+        <div class="stat-tile-value">{stats.legendaries}</div>
+        <div class="stat-tile-label">Legendaries</div>
+      </div>
+      <div class="stat-tile">
+        <div class="stat-tile-value">{stats.types}</div>
+        <div class="stat-tile-label">Types</div>
+      </div>
+    </div>
+
+    <!-- Region jump links -->
+    <nav class="region-nav" aria-label="Jump to region">
+      {byRegion.map(r => (
+        <a href={`#${r.name.toLowerCase()}`} class="region-link">
+          {r.name} <span class="region-count">{r.pokemon.length}</span>
+        </a>
+      ))}
+    </nav>
+
+    <!-- Filters -->
+    <div class="filters" data-filters>
+      <label class="filter-search">
+        <span class="sr-only">Search Pokémon</span>
+        <input
+          type="search"
+          placeholder="Search by name or number..."
+          data-search
+          aria-label="Search Pokémon by name or number"
+        />
+      </label>
+
+      <label class="filter-select">
+        <span class="sr-only">Filter by region</span>
+        <select data-region aria-label="Filter by region">
+          <option value="">All regions</option>
+          {byRegion.map(r => (
+            <option value={r.name}>{r.name} ({r.pokemon.length})</option>
+          ))}
+        </select>
+      </label>
+
+      <label class="filter-select">
+        <span class="sr-only">Filter by type</span>
+        <select data-type aria-label="Filter by type">
+          <option value="">All types</option>
+          <option value="Normal">Normal</option>
+          <option value="Fire">Fire</option>
+          <option value="Water">Water</option>
+          <option value="Electric">Electric</option>
+          <option value="Grass">Grass</option>
+          <option value="Ice">Ice</option>
+          <option value="Fighting">Fighting</option>
+          <option value="Poison">Poison</option>
+          <option value="Ground">Ground</option>
+          <option value="Flying">Flying</option>
+          <option value="Psychic">Psychic</option>
+          <option value="Bug">Bug</option>
+          <option value="Rock">Rock</option>
+          <option value="Ghost">Ghost</option>
+          <option value="Dragon">Dragon</option>
+          <option value="Dark">Dark</option>
+          <option value="Steel">Steel</option>
+          <option value="Fairy">Fairy</option>
+        </select>
+      </label>
+
+      <label class="filter-checkbox">
+        <input type="checkbox" data-starter />
+        <span>Starters only</span>
+      </label>
+
+      <label class="filter-checkbox">
+        <input type="checkbox" data-legendary />
+        <span>Legendaries only</span>
+      </label>
+
+      <div class="filter-count" data-count aria-live="polite" aria-atomic="true">
+        {stats.total} of {stats.total} shown
+      </div>
+    </div>
+
+    <!-- Shared sprite fallback: defined inline before the grid so every card's onerror can call it.
+         onerror is cleared first, so a missing fallback cannot loop. -->
+    <script is:inline>function psFb(i){i.onerror=null;i.src='/sprites/fallback.svg';i.alt='Sprite unavailable'}</script>
+    <!-- Pokémon by region -->
+    {byRegion.map(region => (
+      <section class="region-section" id={region.name.toLowerCase()} data-region-section={region.name}>
+        <h2 class="region-heading">
+          {region.name} <span class="region-meta">Generation {region.generation} · {region.pokemon.length} Pokémon</span>
+        </h2>
+        <ul class="pokemon-grid">
+          {region.pokemon.map(p => (
+            <li
+              class="pokemon-card"
+              id={`pokemon-${p.id}`}
+              data-pokemon
+              data-name={p.name.en.toLowerCase()}
+              data-dex={p.id}
+              data-types={p.types.join(',')}
+              data-region={p.region}
+              data-starter={p.starter ? 'true' : 'false'}
+              data-legendary={p.legendary ? 'true' : 'false'}
+            >
+              <img
+                src={`/sprites/pokemon/${p.id}.png`}
+                alt={p.name.en}
+                width="40"
+                height="40"
+                loading="lazy"
+                class="pokemon-sprite"
+                onerror="psFb(this)"
+              />
+              <div class="pokemon-dex">#{String(p.id).padStart(4, '0')}</div>
+              <div class="pokemon-name">{p.name.en}</div>
+              <div class="pokemon-types">
+                {p.types.map(type => (
+                  <TypeBadge type={type} variant="tinted" />
+                ))}
+              </div>
+              {p.starter && <span class="pokemon-badge badge-starter">Starter</span>}
+              {p.legendary && <span class="pokemon-badge badge-legendary">Legendary</span>}
+            </li>
+          ))}
+        </ul>
+      </section>
+    ))}
+
+    <!-- Region overviews -->
+    <section class="region-overviews" aria-labelledby="regions-title">
+      <h2 id="regions-title">Regions and their best Pokémon</h2>
+      <p>
+        PokeSurvivor covers nine main-series regions. Here is what each region offers and which Pokémon from it make
+        the tier list and our best starter picks. Evolution families sit together in the grid, so scan left to right within a region to
+        trace them.
+      </p>
+      {regionInfo.map(r => (
+        <div class="region-overview">
+          <h3>{r.name} ({r.pokemon.length})</h3>
+          <p>{r.note}</p>
+          {r.starters.length > 0 && (
+            <p>
+              <strong>Starters:</strong> {r.starters.join(', ')}.
+            </p>
+          )}
+          {r.legends.length > 0 && (
+            <p>
+              <strong>Legendaries ({r.legends.length}):</strong> {r.legends.slice(0, 5).join(', ')}{r.legends.length > 5 ? ` and ${r.legends.length - 5} more` : ''}.
+            </p>
+          )}
+        </div>
+      ))}
+    </section>
+
+    <section class="popular-picks" aria-labelledby="popular-title">
+      <h2 id="popular-title">Popular Pokémon to look up first</h2>
+      <p>
+        With {stats.total} entries it helps to know where to start. These picks come from our
+        <a href="/tier-list/">PokeSurvivor tier list</a> and <a href="/best-pokemon/">best Pokémon guide</a>; each name
+        jumps to its card in the grid above.
+      </p>
+      {popular.map(group => (
+        <div class="popular-group">
+          <h3>{group.heading}</h3>
+          <p>{group.intro}</p>
+          <ul>
+            {group.mons.map(m => (
+              <li>
+                <a href={`#pokemon-${m.id}`}>{m.name}</a> (#{String(m.id).padStart(4, '0')}, {m.types.join('/')}, {m.region}): {m.why}
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </section>
+
+    <div class="pokedex-faq">
+      <FAQ heading="Pokédex questions, answered" items={faqItems} />
+    </div>
+
+    <section class="pokedex-guide" aria-labelledby="guide-title">
+      <h2 id="guide-title">How to use this list</h2>
+      <ul>
+        <li>
+          <strong>Search by name or number.</strong> Type "pika" or "25" in the search box to jump straight to
+          Pikachu. Partial names work, so "char" returns the whole Charmander line.
+        </li>
+        <li>
+          <strong>Filter by type.</strong> Pick one of the 18 types to see every Pokémon that has it as a primary
+          or secondary type. This is the quickest way to plan coverage against a Rift boss's weakness.
+        </li>
+        <li>
+          <strong>Narrow by region.</strong> The region menu and the jump links above the grid show one
+          generation at a time, which keeps the page fast on mobile.
+        </li>
+        <li>
+          <strong>Combine filters.</strong> Tick "Starters only" with a type to compare partner options, or
+          "Legendaries only" to preview Rift rewards.
+        </li>
+      </ul>
+
+      <h3>Practical use cases</h3>
+      <p>
+        <strong>Planning for Rift bosses.</strong> When you face a Fire-type legendary Rift, filter by Water type
+        to see every Water Pokémon in the roster, then cross-reference the results with the
+        <a href="/tier-list/">tier list</a> to find which ones have the highest attack multipliers. For example,
+        filtering for Water shows Slowpoke (a homing Confusion starter), Totodile (steady Water Gun), and late-game
+        options like Swampert, so you can pick the partner that matches your current progression.
+      </p>
+      <p>
+        <strong>Comparing starter partners.</strong> Tick "Starters only" to see all 29 starters at once. Combine
+        it with a type filter—say, Fire—to compare Charmander, Litten, Torchic, and the other Fire starters side
+        by side. Once you narrow the field, check the <a href="/best-pokemon/">best Pokémon guide</a> for HP, speed,
+        and attack stats to decide which one fits your playstyle. This workflow is faster than scanning the full
+        grid or visiting the official guide, which lists every Pokémon but has no filtering.
+      </p>
+      <p>
+        <strong>Tracing evolution families.</strong> Evolution lines sit together in National Dex order, so if you
+        want to see Bulbasaur's full evolution chain, search for "Bulba" or jump to Kanto and scan left to right:
+        you will find Bulbasaur (#0001), Ivysaur (#0002), and Venusaur (#0003) in sequence. The same pattern holds
+        for every family, from Charmander to Charizard and Gible to Garchomp. This Pokédex does not show evolution
+        arrows or stat changes, but the Dex order makes the relationships clear without extra diagrams.
+      </p>
+
+      <h3>Types, starters, and evolution lines</h3>
+      <p>
+        Types decide damage matchups, so a Water partner hits Fire foes harder and takes less from them.
+        Dual-typed Pokémon carry both strengths and both weaknesses. Starter tags mark the partners you can choose
+        at the start of a run; evolution families sit next to each other in Dex order, so you can read a full
+        evolution chain by scanning left to right within a region.
+      </p>
+      <h3>How this Pokédex differs from the official guide</h3>
+      <p>
+        The <a href="https://pokesurvivor.com/en/pokedex/" rel="noopener">official PokeSurvivor Pokédex</a> lists
+        every Pokémon with sprites and basic data, but it does not offer search, type filtering, or starter/legendary
+        toggles. This fan-made Pokédex adds those tools and works offline once the page loads, so you can filter by
+        type mid-run without switching tabs or waiting for a new page. It also links directly to the tier list and
+        best Pokémon rankings, which the official guide does not integrate. For official artwork, lore, and canonical
+        data, the <a href="https://www.pokemon.com/us/pokedex" rel="noopener">Pokémon Company's Pokédex</a> is the
+        definitive source. New to the game? Start with the <a href="/how-to-play/">beginner guide</a>.
+      </p>
+    </section>
+  </article>
+</BaseLayout>
+
+<style is:global>
+  /* Global (prefixed with .pokedex-page) so Astro does not stamp a scoped cid attribute on all ~5,000 card elements. */
+  .pokedex-page {
+    max-width: var(--container-max);
+    margin: 0 auto;
+    padding: var(--space-xl) var(--container-padding);
+  }
+
+  .pokedex-page .page-header {
+    text-align: center;
+    margin-bottom: var(--space-xl);
+  }
+
+  .pokedex-page .page-header h1 {
+    font-size: var(--font-size-3xl);
+    margin-bottom: var(--space-sm);
+  }
+
+  .pokedex-page .lead {
+    font-size: var(--font-size-lg);
+    color: var(--text-secondary);
+    max-width: 60ch;
+    margin: 0 auto;
+  }
+
+  
+  /* Explanatory content */
+  .pokedex-page .pokedex-intro,
+  .pokedex-page .pokedex-guide,
+  .pokedex-page .region-overviews,
+  .pokedex-page .popular-picks,
+  .pokedex-page .pokedex-faq {
+    max-width: 72ch;
+    margin: 0 auto var(--space-xl);
+    color: var(--text-secondary);
+    line-height: 1.7;
+  }
+
+  .pokedex-page .pokedex-guide {
+    margin-top: var(--space-2xl);
+  }
+
+  .pokedex-page .region-overviews,
+  .pokedex-page .popular-picks,
+  .pokedex-page .pokedex-faq {
+    margin-top: var(--space-2xl);
+  }
+
+  .pokedex-page .region-overviews h2,
+  .pokedex-page .region-overviews h3,
+  .pokedex-page .popular-picks h2,
+  .pokedex-page .popular-picks h3,
+  .pokedex-page .pokedex-faq h2,
+  .pokedex-page .pokedex-faq h3,
+  .pokedex-page .pokedex-intro h2,
+  .pokedex-page .pokedex-guide h2,
+  .pokedex-page .pokedex-guide h3 {
+    color: var(--text-primary);
+    margin-bottom: var(--space-sm);
+  }
+
+  .pokedex-page .region-overview {
+    margin-bottom: var(--space-lg);
+  }
+
+  .pokedex-page .region-overviews p,
+  .pokedex-page .popular-picks p,
+  .pokedex-page .popular-picks li,
+  .pokedex-page .pokedex-faq p,
+  .pokedex-page .pokedex-intro p,
+  .pokedex-page .pokedex-guide p,
+  .pokedex-page .pokedex-guide li {
+    margin-bottom: var(--space-sm);
+  }
+
+  .pokedex-page .popular-picks a,
+  .pokedex-page .pokedex-faq a,
+  .pokedex-page .pokedex-intro a,
+  .pokedex-page .pokedex-guide a {
+    color: var(--accent-primary);
+    text-decoration: underline;
+  }
+
+  
+  /* Stats strip */
+  .pokedex-page .stats-strip {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: var(--space-md);
+    margin-bottom: var(--space-xl);
+  }
+
+  
+  /* Region navigation */
+  .pokedex-page .region-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-xs);
+    margin-bottom: var(--space-lg);
+    padding: var(--space-md);
+    background: var(--surface-elevated);
+    border-radius: var(--radius-md);
+  }
+
+  .pokedex-page .region-link {
+    padding: var(--space-xs) var(--space-sm);
+    background: var(--surface-card);
+    border-radius: var(--radius-pill);
+    color: var(--text-primary);
+    text-decoration: none;
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    transition: all 0.2s;
+  }
+
+  .pokedex-page .region-link:hover {
+    background: var(--accent-primary);
+    color: white;
+  }
+
+  .pokedex-page .region-count {
+    color: var(--text-tertiary);
+    margin-left: var(--space-1);
+  }
+
+  
+  /* Filters */
+  .pokedex-page .filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+    align-items: center;
+    padding: var(--space-md);
+    background: var(--surface-elevated);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--space-lg);
+  }
+
+  .pokedex-page .filter-search {
+    flex: 1;
+    min-width: 200px;
+  }
+
+  .pokedex-page .filter-search input {
+    width: 100%;
+    padding: var(--space-xs) var(--space-sm);
+    background: var(--surface-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    color: var(--text-primary);
+    font-size: var(--font-size-sm);
+  }
+
+  .pokedex-page .filter-search input:focus {
+    outline: none;
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.1);
+  }
+
+  .pokedex-page .filter-select select {
+    padding: var(--space-xs) var(--space-sm);
+    background: var(--surface-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    color: var(--text-primary);
+    font-size: var(--font-size-sm);
+    cursor: pointer;
+  }
+
+  .pokedex-page .filter-checkbox {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+    font-size: var(--font-size-sm);
+    cursor: pointer;
+  }
+
+  .pokedex-page .filter-checkbox input {
+    cursor: pointer;
+  }
+
+  .pokedex-page .filter-count {
+    margin-left: auto;
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    color: var(--accent-primary);
+  }
+
+  
+  /* Region sections */
+  .pokedex-page .region-section {
+    margin-bottom: var(--space-2xl);
+  }
+
+  .pokedex-page .region-heading {
+    font-size: var(--font-size-xl);
+    margin-bottom: var(--space-md);
+    padding-bottom: var(--space-sm);
+    border-bottom: 2px solid var(--border-subtle);
+  }
+
+  .pokedex-page .region-meta {
+    font-size: var(--font-size-base);
+    font-weight: normal;
+    color: var(--text-tertiary);
+  }
+
+  
+  /* Pokémon grid */
+  .pokedex-page .pokemon-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: var(--space-sm);
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .pokedex-page .pokemon-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-xs);
+    padding: var(--space-sm);
+    background: var(--surface-card);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-subtle);
+    transition: all 0.2s;
+    cursor: pointer;
+  }
+
+  .pokedex-page .pokemon-card:hover {
+    background: var(--surface-elevated);
+    border-color: var(--accent-primary);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  }
+
+  .pokedex-page .pokemon-sprite {
+    image-rendering: pixelated;
+    width: 40px;
+    height: 40px;
+  }
+
+  .pokedex-page .pokemon-dex {
+    font-size: var(--font-size-xs);
+    color: var(--text-tertiary);
+    font-family: var(--font-mono);
+  }
+
+  .pokedex-page .pokemon-name {
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    text-align: center;
+    color: var(--text-primary);
+  }
+
+  .pokedex-page .pokemon-types {
+    display: flex;
+    gap: var(--space-1);
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .pokedex-page .pokemon-badge {
+    font-size: var(--font-size-xs);
+    padding: 2px var(--space-xs);
+    border-radius: var(--radius-pill);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .pokedex-page .badge-starter {
+    background: rgba(110, 231, 183, 0.2);
+    color: #6ee7b7;
+  }
+
+  .pokedex-page .badge-legendary {
+    background: rgba(251, 191, 36, 0.2);
+    color: #fbbf24;
+  }
+
+  
+  /* Hidden class for filtering */
+  .pokedex-page .pokemon-card[hidden] {
+    display: none;
+  }
+
+  .pokedex-page .region-section[hidden] {
+    display: none;
+  }
+
+  @media (max-width: 640px) {
+    .pokedex-page .pokemon-grid {
+      grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+      gap: var(--space-xs);
+    }
+
+    .pokedex-page .filters {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .pokedex-page .filter-search {
+      min-width: 0;
+    }
+
+    .pokedex-page .filter-count {
+      margin-left: 0;
+      text-align: center;
+    }
+  }
+</style>
+
+<script>
+  // Progressive enhancement: filters work only with JS
+  const filters = document.querySelector('[data-filters]');
+  const searchInput = document.querySelector('[data-search]') as HTMLInputElement;
+  const regionSelect = document.querySelector('[data-region]') as HTMLSelectElement;
+  const typeSelect = document.querySelector('[data-type]') as HTMLSelectElement;
+  const starterCheck = document.querySelector('[data-starter]') as HTMLInputElement;
+  const legendaryCheck = document.querySelector('[data-legendary]') as HTMLInputElement;
+  const countEl = document.querySelector('[data-count]');
+  const allCards = Array.from(document.querySelectorAll('[data-pokemon]')) as HTMLElement[];
+  const allSections = Array.from(document.querySelectorAll('[data-region-section]')) as HTMLElement[];
+
+  function applyFilters() {
+    const searchTerm = searchInput.value.toLowerCase().trim();
+    const selectedRegion = regionSelect.value;
+    const selectedType = typeSelect.value;
+    const starterOnly = starterCheck.checked;
+    const legendaryOnly = legendaryCheck.checked;
+
+    let visibleCount = 0;
+    const visibleRegions = new Set<string>();
+
+    allCards.forEach(card => {
+      const name = card.dataset.name || '';
+      const dex = card.dataset.dex || '';
+      const types = (card.dataset.types || '').split(',');
+      const region = card.dataset.region || '';
+      const isStarter = card.dataset.starter === 'true';
+      const isLegendary = card.dataset.legendary === 'true';
+
+      const matchesSearch = !searchTerm || name.includes(searchTerm) || dex.includes(searchTerm);
+      const matchesRegion = !selectedRegion || region === selectedRegion;
+      const matchesType = !selectedType || types.includes(selectedType);
+      const matchesStarter = !starterOnly || isStarter;
+      const matchesLegendary = !legendaryOnly || isLegendary;
+
+      const visible = matchesSearch && matchesRegion && matchesType && matchesStarter && matchesLegendary;
+
+      if (visible) {
+        card.removeAttribute('hidden');
+        visibleCount++;
+        visibleRegions.add(region);
+      } else {
+        card.setAttribute('hidden', '');
+      }
+    });
+
+    // Hide empty region sections
+    allSections.forEach(section => {
+      const regionName = section.dataset.regionSection || '';
+      if (visibleRegions.has(regionName)) {
+        section.removeAttribute('hidden');
+      } else {
+        section.setAttribute('hidden', '');
+      }
+    });
+
+    if (countEl) {
+      countEl.textContent = `${visibleCount} of ${allCards.length} shown`;
+    }
+  }
+
+  if (searchInput) searchInput.addEventListener('input', applyFilters);
+  if (regionSelect) regionSelect.addEventListener('change', applyFilters);
+  if (typeSelect) typeSelect.addEventListener('change', applyFilters);
+  if (starterCheck) starterCheck.addEventListener('change', applyFilters);
+  if (legendaryCheck) legendaryCheck.addEventListener('change', applyFilters);
+</script>

@@ -1,0 +1,52 @@
+---
+/**
+ * Visible FAQ section + matching FAQPage JSON-LD.
+ * Answers may contain HTML; the JSON-LD gets the same answers as plain text.
+ *
+ * Usage:
+ *   import FAQ from '../components/FAQ.astro';
+ *   <FAQ heading="PokeSurvivor co-op FAQ" items={[{ q: 'How many players can join?', a: 'Up to 4 in one online run.' }]} />
+ */
+import { htmlToText } from '../lib/schema';
+
+interface Props {
+  items: Array<{ q: string; a: string }>;
+  /** Visible heading text. Defaults by locale. */
+  heading?: string;
+  /** Heading level for the section title; questions use the next level. Default 2 (H2 + H3 questions). */
+  headingLevel?: 2 | 3;
+  /** id on the <section>, for in-page anchors. Default "faq". Pass "" to omit. */
+  id?: string;
+  locale?: 'en' | 'zh';
+  /** Set false to skip the FAQPage JSON-LD (e.g. when a page renders two FAQ blocks). */
+  schema?: boolean;
+}
+
+const { items, heading, headingLevel = 2, id = 'faq', locale = 'en', schema = true } = Astro.props;
+
+const title = heading ?? (locale === 'zh' ? '常見問題' : 'Frequently asked questions');
+const H = `h${headingLevel}` as 'h2' | 'h3';
+const Q = `h${headingLevel + 1}` as 'h3' | 'h4';
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  inLanguage: locale === 'zh' ? 'zh-Hant' : 'en',
+  mainEntity: items.map((item) => ({
+    '@type': 'Question',
+    name: htmlToText(item.q),
+    acceptedAnswer: { '@type': 'Answer', text: htmlToText(item.a) },
+  })),
+};
+---
+
+<section id={id || undefined}>
+  <H>{title}</H>
+  {items.map((item) => (
+    <Fragment>
+      <Q>{item.q}</Q>
+      <p set:html={item.a} />
+    </Fragment>
+  ))}
+</section>
+{schema && items.length > 0 && <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />}

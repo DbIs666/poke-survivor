@@ -1,0 +1,240 @@
+---
+/**
+ * Language-mismatch banner: detects browser language and offers to switch
+ * when it differs from the current page language.
+ */
+interface Props {
+  locale: 'en' | 'zh';
+}
+
+const { locale } = Astro.props;
+const currentPath = Astro.url.pathname;
+const isZh = locale === 'zh';
+
+// Determine alternate language URL and label - handle pages that don't exist in both languages
+let alternatePath: string;
+let alternateLabel: string;
+
+if (isZh) {
+  // Chinese → English
+  // Remove /zh/ prefix
+  alternatePath = currentPath.replace(/^\/zh/, '');
+  if (alternatePath === '' || alternatePath === '/') {
+    alternatePath = '/';
+  }
+  alternateLabel = 'English';
+} else {
+  // English → Chinese
+  // Check if the English page has a Chinese equivalent
+  const hasChineseVersion = ['/', '/tier-list/', '/pokedex/', '/best-pokemon/', '/co-op/', '/rifts/', '/how-to-play/', '/mobile/'].includes(currentPath);
+
+  if (currentPath === '/' || currentPath === '') {
+    alternatePath = '/zh/';
+  } else if (hasChineseVersion) {
+    // Page exists in Chinese - add /zh prefix
+    alternatePath = '/zh' + currentPath;
+  } else {
+    // Page doesn't exist in Chinese → redirect to Chinese home
+    alternatePath = '/zh/';
+  }
+  alternateLabel = '中文';
+}
+---
+
+<div
+  class="language-banner"
+  data-page-locale={locale}
+  data-alternate-url={alternatePath}
+  data-alternate-label={alternateLabel}
+  role="alert"
+  aria-live="polite"
+  hidden
+>
+  <div class="banner-container">
+    <p class="banner-message"></p>
+    <div class="banner-actions">
+      <a href={alternatePath} class="banner-switch" data-action="switch" hreflang={isZh ? 'en' : 'zh-Hant'}></a>
+      <button type="button" class="banner-dismiss" data-action="dismiss">
+        <span aria-hidden="true">×</span>
+        <span class="sr-only">Close</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const STORAGE_KEY = 'pokesurvivor:lang-banner-dismissed';
+  const DISMISS_DURATION = 7 * 24 * 60 * 60 * 1000; // 7 days
+
+  function detectAndShowBanner() {
+    const banner = document.querySelector('.language-banner') as HTMLElement | null;
+    if (!banner) return;
+
+    const pageLocale = banner.dataset.pageLocale as 'en' | 'zh';
+    const alternateUrl = banner.dataset.alternateUrl!;
+    const alternateLabel = banner.dataset.alternateLabel!;
+
+    // Check if user dismissed recently
+    const dismissed = localStorage.getItem(STORAGE_KEY);
+    if (dismissed) {
+      const ts = parseInt(dismissed, 10);
+      if (Date.now() - ts < DISMISS_DURATION) return;
+    }
+
+    // Detect browser language
+    const userLang = navigator.language.toLowerCase();
+    const isUserZh = /^zh(-|$)/.test(userLang);
+    const isPageZh = pageLocale === 'zh';
+
+    // Show banner if mismatch
+    if (isUserZh !== isPageZh) {
+      const message = banner.querySelector('.banner-message')!;
+      const switchLink = banner.querySelector('.banner-switch') as HTMLAnchorElement;
+
+      if (isPageZh) {
+        // Page is Chinese, but user's browser language is NOT Chinese (e.g., English)
+        // Show message in CHINESE because they're on a Chinese page
+        message.textContent = '您的瀏覽器語言設置為英文';
+        switchLink.textContent = `切換到${alternateLabel}`;
+      } else {
+        // Page is English, but user's browser language IS Chinese
+        // Show message in ENGLISH because they're on an English page
+        message.textContent = 'Your browser language is set to Chinese';
+        switchLink.textContent = `Switch to ${alternateLabel}`;
+      }
+
+      switchLink.href = alternateUrl;
+      banner.hidden = false;
+    }
+  }
+
+  // Dismiss handler
+  document.addEventListener('click', (e) => {
+    const target = e.target as HTMLElement;
+    const dismissBtn = target.closest('[data-action="dismiss"]');
+    if (!dismissBtn) return;
+
+    const banner = dismissBtn.closest('.language-banner') as HTMLElement;
+    banner.hidden = true;
+    localStorage.setItem(STORAGE_KEY, Date.now().toString());
+  });
+
+  // Run detection on load
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', detectAndShowBanner);
+  } else {
+    detectAndShowBanner();
+  }
+</script>
+
+<style>
+  .language-banner {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 9999;
+    background: var(--surface-3);
+    border-top: 1px solid var(--surface-4);
+    box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.3);
+    animation: slide-up 0.3s ease-out;
+  }
+
+  @keyframes slide-up {
+    from {
+      transform: translateY(100%);
+    }
+    to {
+      transform: translateY(0);
+    }
+  }
+
+  .banner-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1rem 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .banner-message {
+    margin: 0;
+    font-size: 0.938rem;
+    color: var(--text-primary);
+  }
+
+  .banner-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .banner-switch {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    background: var(--accent);
+    color: var(--surface-1);
+    text-decoration: none;
+    border-radius: 999px;
+    font-weight: 500;
+    font-size: 0.875rem;
+    transition: opacity 0.2s;
+  }
+
+  .banner-switch:hover {
+    opacity: 0.9;
+  }
+
+  .banner-dismiss {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    padding: 0;
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 1.5rem;
+    line-height: 1;
+    cursor: pointer;
+    border-radius: 50%;
+    transition: background 0.2s;
+  }
+
+  .banner-dismiss:hover {
+    background: var(--surface-4);
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  @media (max-width: 640px) {
+    .banner-container {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0.75rem;
+    }
+
+    .banner-actions {
+      justify-content: space-between;
+    }
+
+    .banner-switch {
+      flex: 1;
+      justify-content: center;
+    }
+  }
+</style>

@@ -1,0 +1,712 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import FAQ from '../../components/FAQ.astro';
+import TypeBadge from '../../components/TypeBadge.astro';
+import Sprite from '../../components/Sprite.astro';
+import { itemListSchema } from '../../lib/schema';
+
+const site = 'https://poke-survivors.org';
+const title = 'PokeSurvivor 強度排行 2026：29 隻初始夥伴早期、中期、後期 S 到 C 完整排名與推薦配隊';
+const description = 'PokeSurvivor 強度排行：全部 29 隻初始夥伴依早期、中期、後期從 S 到 C 分級，附已驗證的招式數據、進化路線與策略註解，幫你挑出最強主力夥伴。';
+const updated = '2026-10-16';
+const gameVersion = '2026-10-14';
+
+type Tier = 'S' | 'A' | 'B' | 'C';
+type Phase = 'early' | 'mid' | 'late';
+interface Mon { name: string; dex: number; move: string; hp: number; speed: number; atk: number; note: string; types: string[]; tier: Tier; phase: Phase }
+
+// Move stats: docs/FACTS.md (official js/data/moves.js, commit c31715d).
+// Evolutions and their required cards are only documented for the six starter moves.
+const moves: Record<string, { cd: number; dmg: number; pattern: string; extra: string; type: string; evo?: string; card?: string }> = {
+  'Ember': { cd: 0.52, dmg: 18, pattern: 'Projectile', extra: 'burns', type: 'fire', evo: 'Fire Blast', card: 'Power' },
+  'Water Gun': { cd: 0.44, dmg: 14, pattern: 'Piercing projectile', extra: 'pierce 1, reliable at any distance', type: 'water', evo: 'Scald', card: 'Power' },
+  'Bubble': { cd: 1.0, dmg: 9, pattern: 'Nova, 8 bubbles', extra: 'slows', type: 'water', evo: 'Surf', card: 'Sprint' },
+  'Vine Whip': { cd: 0.62, dmg: 16, pattern: 'Melee wide arc', extra: 'radius 68, knockback', type: 'grass', evo: 'Power Whip', card: 'Power' },
+  'Razor Leaf': { cd: 0.9, dmg: 10, pattern: 'Boomerang, 2 leaves', extra: 'out and back', type: 'grass', evo: 'Leaf Storm', card: 'Reflexes' },
+  'Confusion': { cd: 0.58, dmg: 13, pattern: 'Homing projectile', extra: 'auto-aims', type: 'psychic', evo: 'Psyshock', card: 'Reflexes' },
+  'Thunder Shock': { cd: 0.4, dmg: 13, pattern: 'Projectile', extra: 'pierce 2', type: 'electric' },
+  'Shadow Ball': { cd: 0.66, dmg: 19, pattern: 'Projectile', extra: 'pierce 2', type: 'ghost' },
+  'Dragon Rage': { cd: 1.0, dmg: 24, pattern: 'Beam', extra: 'length 230', type: 'dragon' },
+  'Tackle': { cd: 0.5, dmg: 13, pattern: 'Melee arc', extra: 'radius 48, knockback', type: 'normal' },
+  'Metal Claw': { cd: 0.5, dmg: 15, pattern: 'Melee arc', extra: 'radius 50', type: 'steel' },
+};
+
+// Fan ranking of the six starting moves (opinion, based on the stats above).
+const moveTiers: Array<{ name: string; tier: Tier; why: string }> = [
+  { name: 'Water Gun', tier: 'S', why: '六招中冷卻最快且能貫穿，任何距離都可靠。' },
+  { name: 'Vine Whip', tier: 'S', why: '廣角擊退能清理周圍敵群。' },
+  { name: 'Ember', tier: 'A', why: '六招中單發最重且會灼傷，但只打中一個目標。' },
+  { name: 'Bubble', tier: 'A', why: '八發減速泡沫覆蓋所有方向，每發 9 傷害。' },
+  { name: 'Razor Leaf', tier: 'B', why: '兩片迴旋飛葉考驗走位；每擊傷害最低。' },
+  { name: 'Confusion', tier: 'B', why: '追蹤意味不用瞄準，但傷害中等。' },
+];
+
+// Stat cards that unlock the starter move evolutions (FACTS: levelup.js + moves page).
+const evoCards = [
+  { card: 'Power', effect: '+10% 傷害', unlocks: 'Ember → Fire Blast, Water Gun → Scald, Vine Whip → Power Whip' },
+  { card: 'Sprint', effect: '+7% 移動速度', unlocks: 'Bubble → Surf' },
+  { card: 'Reflexes', effect: '−8% 冷卻', unlocks: 'Razor Leaf → Leaf Storm, Confusion → Psyshock' },
+];
+// Stats: FACTS.md (js/data/pokedex.js). Tier placement and notes are fan opinion.
+const t = (tier: Tier, phase: Phase, name: string, dex: number, types: string[], move: string, hp: number, speed: number, atk: number, note: string): Mon =>
+  ({ tier, phase, name, dex, types, move, hp, speed, atk, note });
+
+const early: Mon[] = [
+  t('S', 'early', 'Scorbunny', 813, ['fire'], 'Ember', 92, 107, 1.09, '初始夥伴最高攻擊（×1.09）搭配 Ember，加上 107 速度可以放風箏。'),
+  t('S', 'early', 'Sobble', 816, ['water'], 'Water Gun', 92, 107, 1.08, 'Water Gun 貫穿加 107 速度與 ×1.08 攻擊。'),
+  t('S', 'early', 'Litten', 725, ['fire'], 'Ember', 90, 107, 1.06, 'Ember 配 107 速度。'),
+  t('S', 'early', 'Torchic', 255, ['fire'], 'Ember', 90, 97, 1.08, 'Ember 第二高攻擊，稍慢一點。'),
+  t('A', 'early', 'Mudkip', 258, ['water'], 'Water Gun', 92, 95, 1.08, '與 Sobble 同攻擊，速度少 12。'),
+  t('A', 'early', 'Totodile', 158, ['water'], 'Water Gun', 92, 96, 1.06, '穩健全能的 Water Gun 使用者。'),
+  t('A', 'early', 'Quaxly', 912, ['water'], 'Water Gun', 95, 99, 1.06, '平衡的 HP、速度與攻擊。'),
+  t('A', 'early', 'Oshawott', 501, ['water'], 'Water Gun', 95, 97, 1.05, '稍微肉一點的 Water Gun 選項。'),
+  t('A', 'early', 'Froakie', 656, ['water'], 'Water Gun', 88, 108, 1.04, '初始夥伴最快（108），HP 最低。'),
+  t('A', 'early', 'Fuecoco', 909, ['fire'], 'Ember', 100, 93, 1.05, '初始夥伴第二高 HP，用 Ember。'),
+  t('A', 'early', 'Tepig', 498, ['fire'], 'Ember', 99, 97, 1.05, '坦克型 Ember 使用者。'),
+  t('A', 'early', 'Slowpoke', 79, ['water', 'psychic'], 'Confusion', 110, 84, 1.06, '初始夥伴最高 HP（110）且有追蹤射擊，但最慢。'),
+  t('B', 'early', 'Charmander', 4, ['fire'], 'Ember', 88, 105, 1.03, '平均攻擊與低 HP。'),
+  t('B', 'early', 'Cyndaquil', 155, ['fire'], 'Ember', 88, 105, 1.03, '數值與 Charmander 相同。'),
+  t('B', 'early', 'Chimchar', 390, ['fire'], 'Ember', 90, 104, 1.02, 'Ember 使用者中低於平均的攻擊。'),
+  t('B', 'early', 'Fennekin', 653, ['fire'], 'Ember', 88, 103, 1.04, '脆皮但可行。'),
+  t('B', 'early', 'Psyduck', 54, ['water'], 'Confusion', 92, 101, 1.06, '追蹤 Confusion 且速度比 Slowpoke 好。'),
+  t('B', 'early', 'Grookey', 810, ['grass'], 'Vine Whip', 92, 105, 1.06, 'Vine Whip 最佳身體素質。'),
+  t('B', 'early', 'Turtwig', 387, ['grass'], 'Vine Whip', 95, 91, 1.07, '好攻擊，但近戰重新走位慢。'),
+  t('B', 'early', 'Bulbasaur', 1, ['grass', 'poison'], 'Vine Whip', 90, 97, 1.06, '各方面平均數值。'),
+  t('B', 'early', 'Treecko', 252, ['grass'], 'Razor Leaf', 88, 107, 1.06, '拜 107 速度所賜，最佳 Razor Leaf 使用者。'),
+  t('B', 'early', 'Popplio', 728, ['water'], 'Bubble', 92, 95, 1.06, 'Bubble 新星覆蓋所有方向但每擊弱。'),
+  t('B', 'early', 'Piplup', 393, ['water'], 'Bubble', 94, 95, 1.04, '稍微肉一點的 Bubble 使用者。'),
+  t('C', 'early', 'Chespin', 650, ['grass'], 'Vine Whip', 95, 94, 1.04, '近戰招式在慢身體上。'),
+  t('C', 'early', 'Rowlet', 722, ['grass', 'flying'], 'Razor Leaf', 101, 96, 1.0, '純粹 ×1.00 攻擊。'),
+  t('C', 'early', 'Sprigatito', 906, ['grass'], 'Razor Leaf', 88, 105, 1.04, '快但脆。'),
+  t('C', 'early', 'Squirtle', 7, ['water'], 'Water Gun', 90, 96, 0.97, '好招式，低於 1.00 攻擊。'),
+  t('C', 'early', 'Chikorita', 152, ['grass'], 'Vine Whip', 90, 97, 0.97, '近戰招式上的低於 1.00 攻擊。'),
+  t('C', 'early', 'Snivy', 495, ['grass'], 'Razor Leaf', 90, 104, 0.95, '初始夥伴最低攻擊（×0.95）。'),
+];
+
+const mid: Mon[] = [
+  t('S', 'mid', 'Haxorus', 612, ['dragon'], 'Dragon Rage', 104, 119, 1.51, '我們列出的最大攻擊倍率（×1.51）在 24 傷害光束上。'),
+  t('S', 'mid', 'Gengar', 94, ['ghost', 'poison'], 'Shadow Ball', 97, 124, 1.42, 'Shadow Ball 貫穿 2，適合打到包後面的補師。'),
+  t('A', 'mid', 'Alakazam', 65, ['psychic'], 'Confusion', 95, 128, 1.44, '追蹤 Confusion 配 ×1.44 攻擊與 128 速度。'),
+  t('A', 'mid', 'Jolteon', 135, ['electric'], 'Thunder Shock', 99, 133, 1.31, 'Thunder Shock：0.40 秒冷卻，貫穿 2。'),
+  t('A', 'mid', 'Cinderace', 815, ['fire'], 'Ember', 106, 128, 1.34, 'Ember 在比任何初始夥伴強得多的身體上。'),
+  t('B', 'mid', 'Greninja', 658, ['water', 'dark'], 'Water Gun', 102, 129, 1.27, '快，而且兩屬性擴展招式池。'),
+];
+
+const late: Mon[] = [
+  t('S', 'late', 'Garchomp', 445, ['dragon', 'ground'], 'Dragon Rage', 119, 121, 1.42, 'Arceus 階段的 HP、速度與攻擊最佳組合。'),
+  t('S', 'late', 'Dragapult', 887, ['dragon', 'ghost'], 'Dragon Rage', 110, 138, 1.36, '我們列出的最快夥伴（138）用於閃避預告。'),
+  t('A', 'late', 'Metagross', 376, ['steel', 'psychic'], 'Metal Claw', 106, 107, 1.44, '高攻擊；其超能力屬性將追蹤招式加入池中。'),
+  t('A', 'late', 'Snorlax', 143, ['normal'], 'Tackle', 142, 91, 1.31, '巨大 HP，但慢。'),
+  t('B', 'late', 'Blissey', 242, ['normal'], 'Tackle', 185, 101, 1.11, '我們列出的最高 HP（185），低傷害。'),
+  t('B', 'late', 'Swampert', 260, ['water', 'ground'], 'Water Gun', 115, 103, 1.31, '肉，且水系在雨天 ×1.5。'),
+];
+
+const tiers: Tier[] = ['S', 'A', 'B', 'C'];
+const tierBlurb: Record<Tier, string> = {
+  S: '此階段最佳選擇',
+  A: '強勢，小權衡',
+  B: '可行，明顯弱點',
+  C: '不推薦',
+};
+
+const phases: Array<{ id: Phase; label: string; heading: string; intro: string; list: Mon[] }> = [
+  {
+    id: 'early', label: '早期', heading: '早期：29 隻初始夥伴',
+    intro: '你的第一批跑局，用性格測驗給你的夥伴（或你選擇的那隻）。初始招式與攻擊倍率決定這裡的大部分傷害，所以 PokeSurvivor 強度排行的這部分優先權重這兩者，然後是放風箏用的速度。',
+    list: early,
+  },
+  {
+    id: 'mid', label: '中期', heading: '中期：用抽蛋夥伴打 BOSS',
+    intro: '一旦抽蛋券帶來新夥伴，第 3、6、9、12 與 15 分鐘的 BOSS 成為考驗。攻擊倍率跳到 ×1.27–×1.51，所以原始傷害主導此階段。',
+    list: mid,
+  },
+  {
+    id: 'late', label: '後期', heading: '後期：第 30 分鐘與 Arceus',
+    intro: '第 30 分鐘 Arceus 將你帶到裁決遺跡。Arceus 無敵且加速，每 5 秒加入一隻傳說，HP 與傷害是前一隻的兩倍。生存是目標，所以 HP 與速度比傷害更重要。',
+    list: late,
+  },
+];
+
+const allMons = [...early, ...mid, ...late];
+const allMoves = [...new Set(allMons.map((m) => m.move))].sort();
+const slug = (m: Mon) => `${m.phase}-${m.name.toLowerCase()}`;
+const maxHp = Math.max(...allMons.map((m) => m.hp));
+const maxSpeed = Math.max(...allMons.map((m) => m.speed));
+const maxAtk = Math.max(...allMons.map((m) => m.atk));
+const phaseLabel: Record<Phase, string> = { early: '早期', mid: '中期', late: '後期' };
+
+const evoPath = (move: string) => {
+  const m = moves[move];
+  return m.evo ? `${move} → ${m.evo}（需要 ${m.card} 卡）` : `${move} 也會進化；查看官方招式頁面了解進化路徑`;
+};
+
+// Data for the client-side detail dialog, serialised into a JSON script tag.
+const clientData = Object.fromEntries(allMons.map((m) => {
+  const mv = moves[m.move];
+  return [slug(m), {
+    name: m.name, dex: m.dex, tier: m.tier, phase: phaseLabel[m.phase], types: m.types,
+    hp: m.hp, speed: m.speed, atk: m.atk, note: m.note,
+    hpPct: Math.round((m.hp / maxHp) * 100), speedPct: Math.round((m.speed / maxSpeed) * 100), atkPct: Math.round((m.atk / maxAtk) * 100),
+    move: m.move, moveLine: `${mv.pattern}，${mv.cd.toFixed(2)} 秒冷卻，${mv.dmg} 傷害（${mv.extra}）`,
+    evo: evoPath(m.move),
+  }];
+}));
+
+const changelog = [
+  { date: '2026-10-16', text: '將 PokeSurvivor 強度排行重建為帶階段標籤、篩選器、細節面板與可排序數據表的排行板。根據官方 moves.js 修正全部六個初始招式數據（例如 Ember 是 0.52 秒與 18 傷害）。移除遊戲未固定的 BOSS HP 數字，並修正傳說羈絆的運作方式。' },
+  { date: '2026-10-14', text: '遊戲更新：拖曳攻擊、暫停按鈕、任意位置搖桿與可選固定搖桿。沒有影響此列表的數值變更。' },
+  { date: '2026-10-12', text: '遊戲更新：跑局變成無盡，第 30 分鐘出現 Arceus。這是後期列表偏好 HP 與速度的原因。' },
+  { date: '2026-10-10', text: '遊戲更新：BOSS HP ×1.35 與 BOSS 傷害 ×1.2，提升高攻擊倍率在中期的價值。' },
+  { date: '2026-10-08', text: '遊戲更新：會治療、護盾、召喚或爆炸的敵人。貫穿招式因能打到補師而獲得價值。' },
+];
+
+const faqItems = [
+  {
+    q: 'PokeSurvivor 強度排行上誰是最佳夥伴？',
+    a: '取決於階段。在 29 隻初始夥伴中，Scorbunny（Ember 上 ×1.09 攻擊）領先我們的早期 S 級。中期 Haxorus 擁有我們列出的最大倍率（×1.51）。第 30 分鐘與 Arceus 我們將 Garchomp 與 Dragapult 排在最高，因其 HP 與速度的組合。',
+  },
+  {
+    q: 'PokeSurvivor 強度排行是否按階段變化？',
+    a: '是。早期獎勵強初始招式上的攻擊，中期獎勵五個 BOSS 的高倍率，後期權重無盡 Arceus 階段的 HP 與速度。',
+  },
+  {
+    q: '哪個初始招式最好？',
+    a: '我們將 Water Gun 與 Vine Whip 排在最高。Water Gun 有最快冷卻（0.44 秒）且貫穿；Vine Whip 擊中廣角且擊退。兩者都用 Power 卡進化。Ember 每發擊中最重（18）且排在剛後面。',
+  },
+  {
+    q: 'C 級夥伴還能贏跑局嗎？',
+    a: '能。此列表僅評估基礎數值與預設招式。如 Choice Band（+40% 傷害）的持有物、傳說羈絆與你抽到的卡片能在特定跑局中提升任何夥伴。',
+  },
+  {
+    q: '傳說羈絆做什麼？',
+    a: '你擊敗的每個裂縫傳說授予一個羈絆，將兩個招式連結起來從一個槽位同時發射，最多 4 個羈絆。沒有羈絆時只有主動招式發射。',
+  },
+  {
+    q: '此強度排行多久更新一次？',
+    a: '當遊戲變更平衡時，我們根據官方來源重新檢查數字。此版本匹配 2026-10-14 的遊戲，並在 2026-10-16 更新。查看此頁面上的變更日誌。',
+  },
+];
+
+const jsonLd = [
+  {
+    '@type': 'Article',
+    headline: title,
+    description,
+    datePublished: updated,
+    dateModified: updated,
+    author: { '@type': 'Organization', name: 'PokeSurvivor 粉絲攻略' },
+    publisher: { '@type': 'Organization', name: 'PokeSurvivor 粉絲攻略' },
+    inLanguage: 'zh-Hant',
+    image: `${site}/images/pokesurvivor-tier-list.webp`,
+    mainEntityOfPage: `${site}/zh/tier-list/`,
+  },
+  itemListSchema(
+    'PokéSurvivor 各階段 S 級夥伴',
+    [
+      ...early.filter((m) => m.tier === 'S').map((r) => ({ name: r.name, url: '/zh/tier-list/#early', description: `早期 S 級，${r.move}` })),
+      ...mid.filter((m) => m.tier === 'S').map((r) => ({ name: r.name, url: '/zh/tier-list/#mid', description: '中期 S 級' })),
+      ...late.filter((m) => m.tier === 'S').map((r) => ({ name: r.name, url: '/zh/tier-list/#late', description: '後期 S 級' })),
+    ],
+  ),
+];
+---
+<BaseLayout
+  title={title}
+  alternates={[
+    { locale: 'en', href: '/tier-list/' },
+    { locale: 'zh-Hant', href: '/zh/tier-list/' }
+  ]}
+  description={description}
+  ogType="article"
+  ogImage="/images/pokesurvivor-tier-list.jpg"
+  ogImageAlt="PokeSurvivor 強度排行，29 隻初始夥伴從 S 到 C 排名"
+  locale="zh"
+  breadcrumbs={[
+    { name: '首頁', url: '/zh/' },
+    { name: '強度排行', url: '/zh/tier-list/' },
+  ]}
+  preloadImage="/images/pokesurvivor-tier-list.webp"
+  jsonLd={jsonLd}
+>
+  <article class="tl">
+    <header class="tl-hero">
+      <div class="flex flex-wrap gap-2 justify-center">
+        <span class="badge">更新於 {updated}</span>
+        <span class="badge badge-success">遊戲版本 {gameVersion}</span>
+      </div>
+      <h1>PokeSurvivor 強度排行</h1>
+      <p class="lead">
+        此全面的角色評級系統將全部 29 隻初始夥伴從 S 到 C 分級，加上我們為中期 BOSS 與 Arceus 階段評為最高的抽蛋夥伴。切換遊戲階段、按招式類型篩選或搜尋名稱，並開啟任何卡片查看詳細數據、招式資訊、進化路徑與我們的評級理由。還不知道第一局該選誰？先看<a href="/zh/best-pokemon/">新手最強寶可夢推薦</a>。
+      </p>
+      <p class="lead">
+        了解夥伴強度對於在更長的跑局中生存至關重要。每個寶可夢的有效性在不同遊戲階段差異巨大，這使得了解哪些選擇在早期遭遇戰中表現出色與在後期持久戰中的選擇變得必要。本指南幫助玩家就隊伍組成與初始夥伴選擇做出明智的決策。
+      </p>
+      <figure class="tl-hero-img">
+        <img
+          src="/images/pokesurvivor-tier-list.webp"
+          alt="PokeSurvivor 強度排行圖片，29 隻初始夥伴精靈圖分類到 S、A、B 與 C 列"
+          width="1280"
+          height="722"
+          loading="eager"
+          fetchpriority="high"
+          decoding="async"
+        />
+        <figcaption>PokeSurvivor 強度排行板範例。精靈圖：SpriteCollab (CC BY-NC 4.0)。</figcaption>
+      </figure>
+    </header>
+
+    <section aria-labelledby="glance-title">
+      <h2 id="glance-title" class="sr-only">PokeSurvivor 強度排行概覽</h2>
+      <div class="stat-tiles">
+        <div class="stat-tile"><span class="stat-tile-value">29</span><span class="stat-tile-label">初始夥伴</span></div>
+        <div class="stat-tile"><span class="stat-tile-value">12</span><span class="stat-tile-label">抽蛋選擇</span></div>
+        <div class="stat-tile"><span class="stat-tile-value">3</span><span class="stat-tile-label">階段</span></div>
+        <div class="stat-tile"><span class="stat-tile-value">6</span><span class="stat-tile-label">初始招式</span></div>
+      </div>
+      <ul class="tl-legend" aria-label="分級意義">
+        {tiers.map((tier) => (
+          <li><span class={`tier-letter tier-letter-${tier.toLowerCase()}`} aria-hidden="true">{tier}</span><span><strong>{tier}：</strong> {tierBlurb[tier]}</span></li>
+        ))}
+      </ul>
+      <p class="callout callout-info">
+        這些等級評定代表我們的粉絲意見，建立自遊戲公開原始碼中的官方數字（提交 c31715d 的 pokedex.js 與 moves.js）。只有主動招式發射，持有物、羈絆與卡片運氣能改變任何跑局。
+      </p>
+
+      <h2>理解角色等級評定</h2>
+      <p>
+        角色等級評定系統幫助玩家識別哪些寶可夢夥伴在遊戲不同階段表現最佳。S 級代表頂級表現者且弱點極少，而 A 級表示強勢選項但有小權衡。B 級角色可行但有明顯劣勢，C 級選擇面臨顯著挑戰，相較於替代方案更難成功。
+      </p>
+      <p>
+        夥伴評估考慮多個因素：基礎數據（HP、速度、攻擊倍率）、初始招式有效性、進化路徑，以及與遊戲環境的協同。早期遭遇優先考慮爆發傷害與放風箏能力，而後期生存則高度依賴防禦數據與機動性。環境在第 30 分鐘後戲劇性轉變，當 Arceus 將跑局轉化為持久測試，此時走位與可持續性比原始傷害輸出更重要。
+      </p>
+
+      <h2>遊戲階段如何影響表現</h2>
+      <p>
+        遊戲階段代表不同的力量曲線，其中不同屬性變得關鍵。早期階段涵蓋你使用來自性格測驗的初始寶可夢的第一批遭遇。在此期間，你夥伴的初始招式與攻擊倍率決定清理速度與傷害輸出。玩家應專注於將強基礎招式（Water Gun 的貫穿、Ember 的燃燒傷害）與 1.05 以上攻擊倍率結合的夥伴。
+      </p>
+      <p>
+        中期引入顯著更高數據倍率的抽蛋夥伴，範圍從 ×1.27 到 ×1.51。第 3、6、9、12 與 15 分鐘的 BOSS 遭遇測試你對高 HP 目標的傷害輸出，這些目標在半血時會暴怒。像 Haxorus（×1.51）這樣具有出色攻擊倍率的夥伴在此表現出色，因其能在暴怒機制危險地延長戰鬥前爆發 BOSS 血量。
+      </p>
+      <p>
+        後期根本改變評估標準。第 30 分鐘後，Arceus 啟動無盡模式，傳說寶可夢每 5 秒生成一次，生命值與傷害呈指數擴展。生存成為主要目標，使 HP 池與移動速度比攻擊力更有價值。像 Garchomp 與 Dragapult 這樣的角色在後期排名最高，特別是因其平衡防禦數據與無限閃避預告攻擊所需的機動性。
+      </p>
+    </section>
+
+    <section id="board" aria-labelledby="board-title" class="tl-board-section">
+      <h2 id="board-title">互動式角色評級板</h2>
+
+      <div class="tl-filters" data-js-only hidden>
+        <div class="tl-filter">
+          <label class="form-label" for="tl-move">招式</label>
+          <select id="tl-move" class="select">
+            <option value="">全部招式</option>
+            {allMoves.map((m) => <option value={m}>{m}</option>)}
+          </select>
+        </div>
+        <div class="tl-filter">
+          <label class="form-label" for="tl-search">搜尋</label>
+          <input id="tl-search" class="input search-input" type="search" placeholder="寶可夢名稱" autocomplete="off" />
+        </div>
+        <p class="tl-count" id="tl-count" role="status" aria-live="polite"></p>
+      </div>
+
+      <div class="tl-tabs" role="tablist" aria-label="遊戲階段" data-js-only hidden>
+        {phases.map((p, i) => (
+          <button type="button" role="tab" id={`tab-${p.id}`} aria-controls={p.id}
+            aria-selected={i === 0 ? 'true' : 'false'} tabindex={i === 0 ? 0 : -1} class="tl-tab">{p.label}</button>
+        ))}
+      </div>
+      {phases.map((ph) => (
+        <section role="tabpanel" id={ph.id} aria-labelledby={`tab-${ph.id}`} tabindex="0" class="tl-panel">
+          <h3>{ph.heading}</h3>
+          <p>{ph.intro}</p>
+          <div class="tl-rows">
+            {tiers.map((tier) => {
+              const rows = ph.list.filter((m) => m.tier === tier);
+              if (rows.length === 0) return null;
+              return (
+                <div class={`tl-row tl-row-${tier.toLowerCase()}`}>
+                  <h4 class="tl-row-label"><span class={`tier-letter tier-letter-${tier.toLowerCase()}`}>{tier}</span><span class="sr-only"> 級，{ph.label}</span></h4>
+                  <ul class="tl-row-cards">
+                    {rows.map((m) => (
+                      <li class="tl-card" data-move={m.move} data-name={m.name.toLowerCase()}>
+                        <button type="button" class="tl-card-btn" data-slug={slug(m)} aria-haspopup="dialog">
+                          <Sprite dex={m.dex} name={m.name} size={48} />
+                          <span class="tl-card-name">{m.name}</span>
+                          <span class="tl-card-move">{m.move}</span>
+                        </button>
+                        <p class="tl-card-note">{m.note}</p>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              );
+            })}
+          </div>
+        </section>
+      ))}
+      <p class="tl-empty" id="tl-empty" hidden>沒有夥伴符合該篩選器。</p>
+    </section>
+
+    <dialog id="tl-dialog" class="tl-dialog" aria-labelledby="tl-d-name">
+      <div class="tl-d-head">
+        <img id="tl-d-sprite" class="sprite" src="/sprites/813.png" alt="Scorbunny 角色精靈圖" width="64" height="64" />
+        <div>
+          <h3 id="tl-d-name">夥伴</h3>
+          <p id="tl-d-meta" class="tl-d-meta"></p>
+          <div id="tl-d-types" class="flex gap-2"></div>
+        </div>
+      </div>
+      <dl class="tl-d-bars">
+        <div><dt>HP</dt><dd><span class="stat-bar" id="tl-d-hpbar"></span><span id="tl-d-hp"></span></dd></div>
+        <div><dt>速度</dt><dd><span class="stat-bar" id="tl-d-spbar"></span><span id="tl-d-sp"></span></dd></div>
+        <div><dt>攻擊</dt><dd><span class="stat-bar" id="tl-d-atbar"></span><span id="tl-d-at"></span></dd></div>
+      </dl>
+      <p><strong>招式：</strong> <span id="tl-d-move"></span></p>
+      <p><strong>進化：</strong> <span id="tl-d-evo"></span></p>
+      <p><strong>為何此級：</strong> <span id="tl-d-why"></span></p>
+      <form method="dialog"><button class="btn btn-secondary btn-sm" type="submit">關閉</button></form>
+    </dialog>
+    <script type="application/json" id="tl-data" set:html={JSON.stringify(clientData)} />
+
+    <section id="stats" aria-labelledby="stats-title">
+      <h2 id="stats-title">完整夥伴數據表</h2>
+      <p>
+        此角色評級指南上的每個夥伴及其經驗證的遊戲內 HP、速度與攻擊倍率。選擇任何欄位標題以排序表格並跨不同夥伴比較數據。這些數字直接來自遊戲原始碼，代表卡片加成或持有物效果前的基礎值。想查全部 966 隻寶可夢的屬性與數據，請看<a href="/zh/pokedex/">PokeSurvivor 寶可夢圖鑑</a>。
+      </p>
+      <div class="table-wrap">
+        <table id="tl-stats">
+          <caption class="sr-only">夥伴數據</caption>
+          <thead>
+            <tr>
+              <th scope="col">寶可夢</th>
+              <th scope="col">階段</th>
+              <th scope="col">級別</th>
+              <th scope="col" aria-sort="none"><button type="button" class="tl-sort" data-col="3">HP</button></th>
+              <th scope="col" aria-sort="none"><button type="button" class="tl-sort" data-col="4">速度</button></th>
+              <th scope="col" aria-sort="none"><button type="button" class="tl-sort" data-col="5">攻擊 ×</button></th>
+            </tr>
+          </thead>
+          <tbody>
+            {allMons.map((m) => (
+              <tr>
+                <th scope="row">{m.name}</th>
+                <td>{phaseLabel[m.phase]}</td>
+                <td>{m.tier}</td>
+                <td data-v={m.hp}>{m.hp}</td>
+                <td data-v={m.speed}>{m.speed}</td>
+                <td data-v={m.atk}>{m.atk.toFixed(2)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
+    <section id="moves" aria-labelledby="moves-title">
+      <h2 id="moves-title">初始招式等級評定與分析</h2>
+      <p>
+        初始招式決定你的早期傷害輸出並定義你的進化路徑。六個初始招式各提供獨特模式與權衡。以下招式數據來自官方 moves.js 檔案；等級評定反映我們對這些數字如何轉化為實際表現的分析。
+      </p>
+      <p>
+        Water Gun 以其 0.44 秒冷卻（初始招式中最快）與貫穿屬性領先，使傷害可擊中一線上的多個敵人。Vine Whip 以其廣角近戰弧與擊退效果在群體控制上表現出色，在角色周圍清理空間。Ember 提供每擊 18 的最高單體傷害加燃燒狀態，但缺乏區域覆蓋。了解這些招式特性有助於預測哪些夥伴在不同遭遇類型中表現更好。
+      </p>
+      <div class="table-wrap">
+        <table>
+          <caption class="sr-only">初始招式</caption>
+          <thead>
+            <tr>
+              <th scope="col">級別</th>
+              <th scope="col">招式</th>
+              <th scope="col">冷卻</th>
+              <th scope="col">傷害</th>
+              <th scope="col">模式</th>
+              <th scope="col">進化成</th>
+              <th scope="col">卡片</th>
+            </tr>
+          </thead>
+          <tbody>
+            {moveTiers.map((mt) => {
+              const mv = moves[mt.name];
+              return (
+                <tr>
+                  <td><span class={`tier-letter tier-letter-${mt.tier.toLowerCase()}`}>{mt.tier}</span></td>
+                  <th scope="row"><TypeBadge type={mv.type} /> {mt.name}</th>
+                  <td>{mv.cd.toFixed(2)} 秒</td>
+                  <td>{mv.dmg}</td>
+                  <td>{mv.pattern}（{mv.extra}）</td>
+                  <td>{mv.evo}</td>
+                  <td>{mv.card}</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+      <ul>
+        {moveTiers.map((mt) => <li><strong>{mt.name}：</strong>{mt.why}</li>)}
+      </ul>
+
+      <h3>進化卡片</h3>
+      <p>
+        招式升級到 5 級。達到最大等級並在同一跑局中取得所需數值卡，金色進化卡就會出現。
+      </p>
+      <div class="table-wrap">
+        <table>
+          <caption class="sr-only">進化卡片</caption>
+          <thead><tr><th scope="col">卡片</th><th scope="col">效果</th><th scope="col">解鎖</th></tr></thead>
+          <tbody>
+            {evoCards.map((ec) => (
+              <tr><th scope="row">{ec.card}</th><td>{ec.effect}</td><td>{ec.unlocks}</td></tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="strategy" aria-labelledby="strategy-title">
+      <h2 id="strategy-title">角色選擇策略指南</h2>
+
+      <h3>早期遊戲策略</h3>
+      <p>
+        強初始招式上的攻擊倍率在早期遭遇中獲勝。Scorbunny、Sobble、Litten 與 Torchic 位居早期角色評級頂端，因其將 1.06 以上攻擊倍率與 S 級或 A 級招式結合。在你的第一批跑局中，優先擊殺補師與盾師，因其支援敵群並危險地延長戰鬥。走出地上預告的填充圓圈與線條以避免承受不必要的傷害。操作與升級卡片的基礎請先看<a href="/zh/how-to-play/">PokeSurvivor 新手玩法教學</a>。
+      </p>
+      <p>
+        移動與走位即使在早期階段也變得關鍵。105 以上速度的夥伴能有效放風箏，在造成傷害的同時保持在敵人近戰範圍前方。此放風箏策略對遠距離攻擊的投射招式如 Water Gun 與 Ember 特別有效。Confusion 的追蹤屬性移除精準瞄準的需求，使流派新手更容易造成穩定傷害。
+      </p>
+
+      <h3>中期 BOSS 策略</h3>
+      <p>
+        五個 BOSS 在第 3、6、9、12 與 15 分鐘抵達，各自擁有顯著高於普通敵人的血量。BOSS 與傳說用視覺指示器預告 4 個主要攻擊，給你時間閃避。它們在半血時暴怒，造成增加的傷害並加快攻擊模式。像 Haxorus（×1.51）這樣的高攻擊倍率在此表現出色，因其能快速爆發 BOSS 血池，理想地在暴怒機制使其危險前結束戰鬥。
+      </p>
+      <p>
+        BOSS 走位需要與清理群體不同的戰術。站在中距離清楚看到預告指示器同時維持傷害輸出時間。貫穿招式對 BOSS 獲得額外價值，因許多會生成支援敵人，讓你的攻擊同時擊中 BOSS 與其增援。進化卡在中期變得可用，所以計劃你的數值卡選擇以在第 15 分鐘 BOSS 前解鎖你招式的進化（如果可能）。
+      </p>
+
+      <h3>後期持久策略</h3>
+      <p>
+        從第 30 分鐘起跑局轉化為持久測試。Garchomp 與 Dragapult 領先後期評級，因其將高 HP（分別為 119 與 110）與出色速度（121 與 138）配對用於閃避。Arceus 階段每 5 秒生成傳說寶可夢，生命值與傷害每波加倍，使殺死所有東西數學上不可能。反之，通過走位與防守遊戲專注於生存。
+      </p>
+      <p>
+        速度在後期比傷害更重要，因你需要持續閃避同時與指數擴展的敵人維持安全距離。HP 池為預告重疊或生成模式暫時困住你時提供容錯空間。具有兩種屬性的夥伴能生存更久，給你更多時間攀登排行榜。避免將你置於危險的貪婪傷害嘗試——在無盡模式中，多存活 10 秒勝過單個額外擊殺。
+      </p>
+
+      <h3>持有物與羈絆</h3>
+      <ul>
+        <li><strong>Choice Band：</strong>+40% 傷害，但你不能切換招式。</li>
+        <li><strong>Quick Claw：</strong>−20% 冷卻。</li>
+        <li><strong>Life Orb：</strong>+30% 傷害，攻擊消耗 HP。</li>
+        <li><strong>Shell Bell：</strong>從造成的傷害治療。</li>
+        <li><strong>羈絆：</strong>每個擊敗的裂縫傳說連結兩個招式從一個槽位同時發射，最多 4 個羈絆。</li>
+      </ul>
+      <p>
+        持有物通過修改核心數據或添加新機制戲劇性改變夥伴表現。Choice Band 提供 +40% 的最大傷害加成，但鎖定你到單個招式槽位，移除靈活性。此權衡最適合擁有強力主招式且不依賴招式切換的夥伴。Quick Claw 的 −20% 冷卻減少通過讓你更頻繁攻擊有效增加 DPS，與高傷害招式如 Ember 或 Dragon Rage 配對良好。
+      </p>
+      <p>
+        Life Orb 以每次攻擊 HP 消耗的代價提供 +30% 傷害，創造適合能有效放風箏並避免受到傷害的高速夥伴的風險回報動態。Shell Bell 通過基於造成傷害的治療提供持續，將進攻性遊戲轉化為生存能力。傳說羈絆代表最強力的機制：每個擊敗的裂縫傳說連結兩個招式從一個槽位同時發射，最多 4 個羈絆。這有效地將你每槽位的傷害輸出加倍，使羈絆積累成為更長跑局中的關鍵目標。各傳說競技場的打法見<a href="/zh/rifts/">神秘裂縫攻略</a>。
+      </p>
+
+      <h3>合作隊伍組成</h3>
+      <p>
+        最多 4 名玩家在多人跑局中共享 XP，創造獨特的策略考量。倒下的玩家能由隊友站在旁邊 3 秒復活，使坦克型夥伴如 Slowpoke 或 Snorlax 成為有價值的團隊選擇，因其能安全接近倒下的盟友。貫穿招式在合作中獲得額外實用性，因敵群聚集更密集，讓貫穿效果擊中包括位於前線敵人後方的補師的多個目標。團隊組成應在傷害輸出者與至少一個防禦夥伴之間平衡以進行安全復活。房間設定與復活規則見<a href="/zh/co-op/">PokeSurvivor 多人合作攻略</a>。
+      </p>
+    </section>
+
+    <section id="changelog" aria-labelledby="changelog-title">
+      <h2 id="changelog-title">角色評級更新歷史</h2>
+      <p>
+        本指南接收定期更新以匹配遊戲平衡變更與新發現的策略。每次更新對照官方原始碼驗證夥伴數據以確保準確性。定期查看此部分以了解最近補丁如何影響角色表現與等級評定。
+      </p>
+      <ul>
+        {changelog.map((c) => <li><strong>{c.date}：</strong>{c.text}</li>)}
+      </ul>
+    </section>
+
+    <FAQ heading="PokeSurvivor 強度排行常見問題" items={faqItems} locale="zh" />
+
+    <aside class="callout callout-warning">
+      <p>
+        粉絲製作，非官方。遊戲事實來自官方指南、<a href="https://pokesurvivor.com/en/moves/" rel="noopener">官方招式頁面</a>與<a href="https://github.com/JPTER78/pokesurvivor" rel="noopener">公開原始碼</a>（提交 c31715d）。如果我們的 pokesurvivor 強度排行與遊戲不一致，信任遊戲。（一些玩家搜尋「Poké Survivor tier list」或「tier list PokeSurvivor」；它是同一個遊戲且這是同一個列表。）相關：<a href="/zh/best-pokemon/">最強初始寶可夢推薦</a>、<a href="/zh/rifts/">神秘裂縫攻略</a>、<a href="/zh/co-op/">多人合作攻略</a>、<a href="/zh/">寶可夢倖存者繁體中文攻略首頁</a>。
+      </p>
+    </aside>
+  </article>
+</BaseLayout>
+<style>
+  .tl { max-width: var(--container-max); margin: 0 auto; }
+  .tl section { margin-bottom: var(--space-2xl); }
+  .tl-hero { text-align: center; margin-bottom: var(--space-xl); }
+  .tl-hero .lead { max-width: 42em; margin-inline: auto; }
+  .tl-hero-img { max-width: 800px; margin: var(--space-lg) auto 0; }
+  .tl-hero-img img { border-radius: var(--radius-lg); border: 1px solid var(--border-subtle); }
+
+  .tl-legend { list-style: none; padding: 0; display: grid; gap: var(--space-2); grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); margin-block: var(--space-md); }
+  .tl-legend li { display: flex; align-items: center; gap: var(--space-3); margin: 0; }
+
+  .tl-filters { display: grid; gap: var(--space-md); grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); align-items: end; margin-bottom: var(--space-md); }
+  .tl-filters[hidden], .tl-tabs[hidden] { display: none; }
+  .tl-filter { display: flex; flex-direction: column; }
+  .tl-count { margin: 0; font-weight: var(--font-semibold); color: var(--text-primary); }
+
+  .tl-tabs { display: flex; gap: var(--space-2); border-bottom: 1px solid var(--border-base); margin-bottom: var(--space-md); }
+  .tl-tab { background: none; border: 0; border-bottom: 3px solid transparent; padding: var(--space-2) var(--space-4); color: var(--text-tertiary); font: inherit; font-weight: var(--font-semibold); cursor: pointer; margin-bottom: -1px; }
+  .tl-tab:hover { color: var(--text-primary); }
+  .tl-tab[aria-selected='true'] { color: var(--accent-primary); border-bottom-color: var(--accent-primary); }
+  .tl-panel[hidden] { display: none; }
+
+  /* Classic tiermaker-style board: coloured label column + sprite row */
+  .tl-rows { border: 1px solid var(--border-subtle); border-radius: var(--radius-md); overflow: hidden; }
+  .tl-row { display: grid; grid-template-columns: 4rem 1fr; border-top: 1px solid var(--border-subtle); }
+  .tl-row:first-child { border-top: 0; }
+  .tl-row-label { margin: 0; display: flex; align-items: center; justify-content: center; }
+  .tl-row-s .tl-row-label { background: var(--tier-s); }
+  .tl-row-a .tl-row-label { background: var(--tier-a); }
+  .tl-row-b .tl-row-label { background: var(--tier-b); }
+  .tl-row-c .tl-row-label { background: var(--tier-c); }
+  .tl-row-label .tier-letter { background: transparent; font-size: var(--font-size-2xl); }
+  .tl-row-cards { list-style: none; padding: var(--space-2); margin: 0; display: grid; gap: var(--space-2); grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); background: var(--surface-elevated); }
+  .tl-card { margin: 0; background: var(--surface-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); }
+  .tl-card[hidden] { display: none; }
+  .tl-card-btn { width: 100%; display: grid; justify-items: center; gap: var(--space-1); padding: var(--space-2); background: none; border: 0; color: inherit; font: inherit; cursor: pointer; border-radius: inherit; }
+  .tl-card-btn:hover { background: var(--surface-hover); }
+  .tl-card-name { font-weight: var(--font-semibold); color: var(--text-primary); }
+  .tl-card-move { font-size: var(--font-size-xs); color: var(--accent-primary); }
+  .tl-card-note { font-size: var(--font-size-xs); color: var(--text-tertiary); margin: 0; padding: 0 var(--space-2) var(--space-2); text-align: center; line-height: var(--leading-snug); }
+  .tl-empty { color: var(--text-tertiary); }
+
+  .tl-dialog { max-width: 32rem; width: calc(100% - 2rem); background: var(--surface-card); color: var(--text-secondary); border: 1px solid var(--border-base); border-radius: var(--radius-lg); padding: var(--space-lg); }
+  .tl-dialog::backdrop { background: rgb(0 0 0 / 0.7); }
+  .tl-d-head { display: flex; gap: var(--space-md); align-items: center; margin-bottom: var(--space-md); }
+  .tl-d-head h3 { margin: 0; }
+  .tl-d-meta { margin: 0 0 var(--space-2); font-size: var(--font-size-sm); }
+  .tl-d-bars { display: grid; gap: var(--space-2); margin: 0 0 var(--space-md); }
+  .tl-d-bars div { display: grid; grid-template-columns: 4rem 1fr; align-items: center; gap: var(--space-2); }
+  .tl-d-bars .stat-bar { display: block; }
+  .tl-d-bars dd { margin: 0; display: grid; grid-template-columns: 1fr 3rem; gap: var(--space-2); align-items: center; }
+
+  .tl-sort { background: none; border: 0; color: inherit; font: inherit; text-transform: inherit; letter-spacing: inherit; cursor: pointer; padding: 0; }
+  .tl-sort::after { content: ' ↕'; color: var(--text-muted); }
+  th[aria-sort='ascending'] .tl-sort::after { content: ' ↑'; color: var(--accent-primary); }
+  th[aria-sort='descending'] .tl-sort::after { content: ' ↓'; color: var(--accent-primary); }
+
+  @media (max-width: 640px) {
+    .tl-row { grid-template-columns: 3rem 1fr; }
+    .tl-row-cards { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); }
+  }
+</style>
+
+<script>
+  type Entry = {
+    name: string; dex: number; tier: string; phase: string; types: string[]; hp: number; speed: number; atk: number;
+    note: string; hpPct: number; speedPct: number; atkPct: number; move: string; moveLine: string; evo: string;
+  };
+  const $ = (id: string) => document.getElementById(id);
+
+  // ---- Phase tabs (progressive enhancement: without JS all panels show) ----
+  const tablist = document.querySelector<HTMLElement>('.tl-tabs');
+  const tabs = Array.from(document.querySelectorAll<HTMLButtonElement>('.tl-tab'));
+  const panels = Array.from(document.querySelectorAll<HTMLElement>('.tl-panel'));
+  const select = (tab: HTMLButtonElement, focus = false) => {
+    tabs.forEach((t) => {
+      const on = t === tab;
+      t.setAttribute('aria-selected', String(on));
+      t.tabIndex = on ? 0 : -1;
+      const p = $(t.getAttribute('aria-controls') || '');
+      if (p) p.hidden = !on;
+    });
+    if (focus) tab.focus();
+    update();
+  };
+  if (tablist && tabs.length) {
+    tablist.hidden = false;
+    tabs.forEach((tab, i) => {
+      tab.addEventListener('click', () => select(tab));
+      tab.addEventListener('keydown', (e) => {
+        const map: Record<string, number> = { ArrowRight: i + 1, ArrowLeft: i - 1, Home: 0, End: tabs.length - 1 };
+        if (!(e.key in map)) return;
+        e.preventDefault();
+        select(tabs[(map[e.key] + tabs.length) % tabs.length], true);
+      });
+    });
+    const fromHash = tabs.find((t) => `#${t.getAttribute('aria-controls')}` === location.hash);
+    select(fromHash || tabs[0]);
+  }
+
+  // ---- Move filter + search with live count (counts the active phase) ----
+  const filters = document.querySelector<HTMLElement>('.tl-filters');
+  const moveSel = $('tl-move') as HTMLSelectElement | null;
+  const search = $('tl-search') as HTMLInputElement | null;
+  const count = $('tl-count');
+  const empty = $('tl-empty');
+  function update() {
+    if (!moveSel || !search) return;
+    const mv = moveSel.value;
+    const q = search.value.trim().toLowerCase();
+    const panel = panels.find((p) => !p.hidden) || panels[0];
+    let shown = 0;
+    let total = 0;
+    panels.forEach((p) => p.querySelectorAll<HTMLElement>('.tl-card').forEach((c) => {
+      const ok = (!mv || c.dataset.move === mv) && (!q || (c.dataset.name || '').includes(q));
+      c.hidden = !ok;
+      if (p === panel) { total++; if (ok) shown++; }
+    }));
+    panels.forEach((p) => p.querySelectorAll<HTMLElement>('.tl-row').forEach((r) => {
+      r.hidden = !r.querySelector('.tl-card:not([hidden])');
+    }));
+    if (count) count.textContent = `顯示 ${shown} / ${total}`;
+    if (empty) empty.hidden = shown > 0;
+  }
+  if (filters && moveSel && search) {
+    filters.hidden = false;
+    moveSel.addEventListener('change', update);
+    search.addEventListener('input', update);
+    update();
+  }
+
+  // ---- Detail dialog ----
+  const dialog = $('tl-dialog') as HTMLDialogElement | null;
+  const data: Record<string, Entry> = JSON.parse($('tl-data')?.textContent || '{}');
+  const setText = (id: string, v: string) => { const el = $(id); if (el) el.textContent = v; };
+  const setBar = (id: string, pct: number) => { $(id)?.style.setProperty('--value', String(pct)); };
+  document.querySelectorAll<HTMLButtonElement>('.tl-card-btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const d = data[btn.dataset.slug || ''];
+      if (!d || !dialog || typeof dialog.showModal !== 'function') return;
+      const img = $('tl-d-sprite') as HTMLImageElement | null;
+      if (img) { img.src = `/sprites/${d.dex}.png`; img.alt = `${d.name} 精靈圖`; }
+      setText('tl-d-name', d.name);
+      setText('tl-d-meta', `${d.tier} 級，${d.phase}遊戲，#${String(d.dex).padStart(3, '0')}`);
+      const types = $('tl-d-types');
+      if (types) {
+        types.replaceChildren(...d.types.map((t) => {
+          const s = document.createElement('span');
+          s.className = `badge badge-type type-${t}`;
+          s.textContent = t.charAt(0).toUpperCase() + t.slice(1);
+          return s;
+        }));
+      }
+      setBar('tl-d-hpbar', d.hpPct); setText('tl-d-hp', String(d.hp));
+      setBar('tl-d-spbar', d.speedPct); setText('tl-d-sp', String(d.speed));
+      setBar('tl-d-atbar', d.atkPct); setText('tl-d-at', `×${d.atk.toFixed(2)}`);
+      setText('tl-d-move', `${d.move}：${d.moveLine}`);
+      setText('tl-d-evo', d.evo);
+      setText('tl-d-why', d.note);
+      dialog.showModal();
+    });
+  });
+
+  // ---- Sortable stat table ----
+  const table = $('tl-stats') as HTMLTableElement | null;
+  table?.querySelectorAll<HTMLButtonElement>('.tl-sort').forEach((b) => {
+    b.addEventListener('click', () => {
+      const col = Number(b.dataset.col);
+      const th = b.closest('th')!;
+      const dir = th.getAttribute('aria-sort') === 'descending' ? 'ascending' : 'descending';
+      table.querySelectorAll('th[aria-sort]').forEach((h) => h.setAttribute('aria-sort', 'none'));
+      th.setAttribute('aria-sort', dir);
+      const body = table.tBodies[0];
+      const rows = Array.from(body.rows);
+      const val = (r: HTMLTableRowElement) => Number((r.cells[col] as HTMLElement).dataset.v);
+      rows.sort((a, z) => (dir === 'ascending' ? val(a) - val(z) : val(z) - val(a)));
+      body.append(...rows);
+    });
+  });
+</script>

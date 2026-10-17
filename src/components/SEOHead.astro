@@ -1,0 +1,169 @@
+---
+import { getImageDimensions, getImageMimeType } from '../lib/image-dimensions';
+import { ORG_ID, SITE_NAME, WEBSITE_ID } from '../lib/schema';
+
+interface Props {
+  title: string;
+  description: string;
+  /** Accepted for backwards compatibility but NOT rendered (Google ignores meta keywords). */
+  keywords?: string;
+  /** Path or absolute URL. Defaults to the current page path. Always normalized to a trailing slash. Pass `false` to omit the canonical tag (e.g. 404). */
+  canonical?: string | false;
+  locale?: 'en' | 'zh';
+  ogType?: 'website' | 'article';
+  ogImage?: string;
+  /** Overrides the size looked up in src/lib/image-dimensions.ts. */
+  ogImageWidth?: number;
+  ogImageHeight?: number;
+  ogImageAlt?: string;
+  noindex?: boolean;
+  /** Only pass for true translations. Pages on this site are not translations, so none by default. */
+  alternates?: Array<{ locale: string; href: string }>;
+  /** Convenience: renders a BreadcrumbList. */
+  breadcrumbs?: Array<{ name: string; url: string }>;
+  /** Extra schema.org objects (Article, FAQPage, BreadcrumbList, ...). */
+  jsonLd?: Array<Record<string, unknown>>;
+}
+
+const {
+  title,
+  description,
+  canonical,
+  locale = 'en',
+  ogType = 'website',
+  ogImage = '/og-default.jpg',
+  ogImageWidth,
+  ogImageHeight,
+  ogImageAlt,
+  noindex = false,
+  alternates = [],
+  breadcrumbs = [],
+  jsonLd = [],
+} = Astro.props;
+
+const siteName = SITE_NAME;
+const siteOrigin = (Astro.site?.href || 'https://poke-survivors.org/').replace(/\/$/, '');
+
+/** Build an absolute URL with a trailing slash for page paths (not for files). */
+function absUrl(pathOrUrl: string): string {
+  const u = new URL(pathOrUrl, siteOrigin + '/');
+  const last = u.pathname.split('/').pop() || '';
+  if (!u.pathname.endsWith('/') && !last.includes('.')) u.pathname += '/';
+  return u.href;
+}
+function absFile(pathOrUrl: string): string {
+  return new URL(pathOrUrl, siteOrigin + '/').href;
+}
+
+const pageUrl = absUrl(Astro.url.pathname);
+const canonicalUrl = canonical === false ? null : absUrl(canonical ?? Astro.url.pathname);
+const ogImageUrl = absFile(ogImage);
+const knownDims = getImageDimensions(ogImage);
+const ogWidth = ogImageWidth ?? knownDims?.width;
+const ogHeight = ogImageHeight ?? knownDims?.height;
+const ogImageType = getImageMimeType(ogImage);
+const inLanguage = locale === 'zh' ? 'zh-Hant' : 'en';
+const fullTitle = title;
+
+const organizationSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  '@id': ORG_ID,
+  name: siteName,
+  url: siteOrigin + '/',
+  logo: {
+    '@type': 'ImageObject',
+    url: absFile('/apple-touch-icon.png'),
+    width: 180,
+    height: 180,
+  },
+};
+
+const websiteSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  '@id': WEBSITE_ID,
+  name: siteName,
+  url: siteOrigin + '/',
+  inLanguage,
+  publisher: { '@id': ORG_ID },
+};
+
+/** Article- and WebPage-family types that get publisher/author/isPartOf wired to the shared entities. */
+const CREATIVE_TYPES = new Set([
+  'Article', 'BlogPosting', 'NewsArticle', 'TechArticle', 'HowTo',
+  'WebPage', 'AboutPage', 'CollectionPage', 'ItemPage', 'FAQPage', 'QAPage',
+]);
+const orgRef = { '@id': ORG_ID };
+/** Inline `{ '@type': 'Organization', name: siteName }` objects are collapsed to the shared org @id. */
+function isSiteOrg(v: unknown): boolean {
+  if (!v || typeof v !== 'object') return false;
+  const o = v as Record<string, unknown>;
+  return o['@type'] === 'Organization' && o.name === siteName && Object.keys(o).every((k) => ['@type', 'name', 'url'].includes(k));
+}
+function linkEntities(s: Record<string, unknown>): Record<string, unknown> {
+  const types = ([] as unknown[]).concat(s['@type'] ?? []);
+  if (!types.some((t) => typeof t === 'string' && CREATIVE_TYPES.has(t))) return s;
+  const out = { ...s };
+  if (!out.publisher || isSiteOrg(out.publisher)) out.publisher = orgRef;
+  if (!out.author || isSiteOrg(out.author)) out.author = orgRef;
+  if (!out.isPartOf) out.isPartOf = { '@id': WEBSITE_ID };
+  return out;
+}
+
+const breadcrumbSchema = breadcrumbs.length > 0 ? {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: breadcrumbs.map((crumb, index) => ({
+    '@type': 'ListItem',
+    position: index + 1,
+    name: crumb.name,
+    item: absUrl(crumb.url),
+  })),
+} : null;
+
+const schemas: Array<Record<string, unknown>> = [organizationSchema, websiteSchema];
+if (breadcrumbSchema) schemas.push(breadcrumbSchema);
+for (const s of jsonLd) schemas.push({ '@context': 'https://schema.org', ...linkEntities(s) });
+---
+
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="generator" content={Astro.generator} />
+<title>{fullTitle}</title>
+<meta name="description" content={description} />
+{canonicalUrl && <link rel="canonical" href={canonicalUrl} />}
+<meta name="robots" content={noindex ? 'noindex, follow' : 'index, follow, max-image-preview:large'} />
+<meta name="theme-color" content="#05070C" />
+
+<meta property="og:type" content={ogType} />
+<meta property="og:site_name" content={siteName} />
+<meta property="og:title" content={fullTitle} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonicalUrl ?? pageUrl} />
+<meta property="og:image" content={ogImageUrl} />
+{ogImageUrl.startsWith('https:') && <meta property="og:image:secure_url" content={ogImageUrl} />}
+{ogImageType && <meta property="og:image:type" content={ogImageType} />}
+{ogWidth && <meta property="og:image:width" content={String(ogWidth)} />}
+{ogHeight && <meta property="og:image:height" content={String(ogHeight)} />}
+<meta property="og:image:alt" content={ogImageAlt ?? title} />
+<meta property="og:locale" content={locale === 'zh' ? 'zh_TW' : 'en_US'} />
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={fullTitle} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={ogImageUrl} />
+<meta name="twitter:image:alt" content={ogImageAlt ?? title} />
+
+{alternates.map((alt) => (
+  <link rel="alternate" hreflang={alt.locale} href={absUrl(alt.href)} />
+))}
+{alternates.length > 0 && <link rel="alternate" hreflang="x-default" href={absUrl(alternates[0].href)} />}
+
+{schemas.map((s) => (
+  <script type="application/ld+json" set:html={JSON.stringify(s)} />
+))}
+
+<link rel="icon" href="/favicon.ico" sizes="32x32" />
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />

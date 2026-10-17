@@ -1,0 +1,372 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import FAQ from '../../components/FAQ.astro';
+
+const title = 'PokeSurvivor 多人合作攻略：4 人線上連線玩法、建立房間、復活機制與敵人縮放規則全解析';
+const description = 'PokeSurvivor 多人合作攻略：最多 4 人線上連線、共享經驗值。說明建立與加入房間、3 秒復活、敵人依人數縮放與主機規則，並附 4 人配隊建議。';
+const image = 'https://poke-survivors.org/images/pokesurvivor-coop.webp';
+const jsonLd: Array<Record<string, unknown>> = [
+  {
+    '@type': 'Article',
+    headline: title,
+    description,
+    datePublished: '2026-10-16',
+    dateModified: '2026-10-16',
+    author: { '@type': 'Organization', name: 'PokeSurvivor 粉絲攻略' },
+    publisher: { '@type': 'Organization', name: 'PokeSurvivor 粉絲攻略' },
+    inLanguage: 'zh-Hant',
+    image,
+    mainEntityOfPage: 'https://poke-survivors.org/zh/co-op/',
+  },
+  {
+    '@type': 'HowTo',
+    name: '如何與朋友開始 PokeSurvivor 多人合作跑',
+    description: '來自官方指南的三步驟房間設置。',
+    inLanguage: 'zh-Hant',
+    image,
+    totalTime: 'PT5M',
+    tool: [{ '@type': 'HowToTool', name: '每個玩家的 pokesurvivor.com 帳號' }],
+    step: [
+      { '@type': 'HowToStep', position: 1, name: '登入', text: '每個玩家登入帳號。訪客無法加入已儲存的群組跑。', url: 'https://poke-survivors.org/zh/co-op/#setup' },
+      { '@type': 'HowToStep', position: 2, name: '用暱稱新增朋友', text: '與想一起玩的人交換暱稱,並將彼此加到好友列表。', url: 'https://poke-survivors.org/zh/co-op/#setup' },
+      { '@type': 'HowToStep', position: 3, name: '邀請他們到你的房間', text: '邀請的人是主機。一旦所有人都在房間裡,主機開始跑。', url: 'https://poke-survivors.org/zh/co-op/#setup' },
+    ],
+  },
+];
+---
+
+<BaseLayout
+  title={title}
+  alternates={[
+    { locale: 'en', href: '/co-op/' },
+    { locale: 'zh-Hant', href: '/zh/co-op/' }
+  ]}
+  description={description}
+  locale="zh"
+  ogType="article"
+  ogImage="/images/pokesurvivor-coop.jpg"
+  ogImageAlt="PokeSurvivor 多人合作：四個夥伴寶可夢圖像並排,每個玩家槽位一個"
+  breadcrumbs={[
+    { name: '首頁', url: '/zh/' },
+    { name: '多人合作指南', url: '/zh/co-op/' },
+  ]}
+  preloadImage="/images/pokesurvivor-coop.webp"
+  jsonLd={jsonLd}
+>
+  <article class="guide">
+    <header class="guide-header">
+      <h1>PokeSurvivor 多人合作：多人遊玩如何運作</h1>
+      <p class="meta">更新：2026-10-16 · 非官方粉絲指南</p>
+      <p class="lead">
+        與朋友一起玩 PokeSurvivor 意味著最多四個人在瀏覽器中線上一起對抗相同的無盡群眾。PokeSurvivor 多人合作在整個團隊間共享一張地圖、一個經驗值條和一個排行榜條目。我們是非官方粉絲網站：規則來自官方來源,技巧是我們的意見。前往<a href="https://pokesurvivor.com/en/" rel="noopener">pokesurvivor.com</a>免費遊玩。
+      </p>
+    </header>
+
+    <figure>
+      <img
+        src="/images/pokesurvivor-coop.webp"
+        width="1200"
+        height="520"
+        loading="eager"
+        fetchpriority="high"
+        decoding="async"
+        alt="四個夥伴寶可夢圖像並排,代表 PokeSurvivor 多人合作跑中的四個玩家槽位"
+      />
+      <figcaption>多人合作跑有 2 到 4 位玩家,每位都有自己的夥伴寶可夢和自己的卡片選擇。粉絲製作的插圖,不是遊戲內截圖。圖像：SpriteCollab (CC BY-NC 4.0)。</figcaption>
+    </figure>
+
+    <nav class="toc" aria-label="本頁內容">
+      <p class="toc-title">本頁內容</p>
+      <ul>
+        <li><a href="#basics">PokeSurvivor 多人合作基礎</a></li>
+        <li><a href="#setup">與朋友設置房間</a></li>
+        <li><a href="#xp">共享經驗值與升級</a></li>
+        <li><a href="#revive">倒下與復活</a></li>
+        <li><a href="#scaling">難度縮放</a></li>
+        <li><a href="#host">主機、暫停與隱私</a></li>
+        <li><a href="#rifts">群組中的裂縫</a></li>
+        <li><a href="#leaderboards">排行榜與離線遊玩</a></li>
+        <li><a href="#tips">團隊技巧(粉絲意見)</a></li>
+        <li><a href="#faq">多人合作常見問題</a></li>
+      </ul>
+    </nav>
+
+    <section class="guide-section" id="basics">
+      <h2>PokeSurvivor 多人合作基礎</h2>
+      <p>
+        根據<a href="https://pokesurvivor.com/en/guide/" rel="noopener">官方指南</a>,PokeSurvivor 多人合作是最多 4 位玩家的線上遊玩,建立在你的好友列表上。你玩的跑與單人遊戲相同：你只需移動,你的夥伴寶可夢自動攻擊,並且你在升級時選擇升級卡片。不同之處在於你的隊友與你共享地圖、群眾和經驗值條。
+      </p>
+      <ul>
+        <li><strong>玩家：</strong>每跑 2 到 4 位。</li>
+        <li><strong>位置：</strong>僅線上,在 pokesurvivor.com,在瀏覽器中。</li>
+        <li><strong>帳號：</strong>必須。進度存在你的帳號和雲端存檔中,所以訪客沒有任何東西可以保留。</li>
+        <li><strong>結束：</strong>當每個玩家都倒下時跑結束。</li>
+      </ul>
+      <p>
+        如果你從未玩過單人跑,我們建議先玩一兩次。我們的<a href="/zh/how-to-play/">操作、卡片和跑的新手指南</a>涵蓋操作、升級卡片和招式進化,所有這些都直接帶入 PokeSurvivor 多人合作跑。
+      </p>
+    </section>
+
+    <section class="guide-section" id="setup">
+      <h2>與朋友設置房間</h2>
+      <p>
+        PokeSurvivor 多人遊玩透過遊戲內好友列表運作。官方指南描述了三個步驟,這就是整個流程。我們不會編造來源沒有提到的選單名稱或大廳代碼。
+      </p>
+      <ol class="setup-list">
+        <li class="setup-step">
+          <span class="step-number">1</span>
+          <div class="step-content">
+            <h3>登入</h3>
+            <p>每個玩家登入帳號。訪客無法加入已儲存的群組跑。</p>
+          </div>
+        </li>
+        <li class="setup-step">
+          <span class="step-number">2</span>
+          <div class="step-content">
+            <h3>用暱稱新增朋友</h3>
+            <p>與想一起玩的人交換暱稱,並將彼此加到好友列表。</p>
+          </div>
+        </li>
+        <li class="setup-step">
+          <span class="step-number">3</span>
+          <div class="step-content">
+            <h3>邀請他們到你的房間</h3>
+            <p>邀請的人是主機。一旦所有人都在房間裡,主機開始跑。</p>
+          </div>
+        </li>
+      </ol>
+      <p>
+        在 PokeSurvivor 多人合作中,主機比看起來更重要。如下面的<a href="#host">主機規則</a>所示,主機的瀏覽器分頁和連線決定跑是否繼續。在我們的跑中,網路最穩定且干擾最少的玩家當主機。在手機上？我們的中文<a href="/zh/mobile/" lang="zh-Hant">手機版攻略</a>涵蓋手機瀏覽器上的多人合作,包括為什麼手機主機不應該在跑中切換應用程式。
+      </p>
+    </section>
+
+    <section class="guide-section" id="xp">
+      <h2>共享經驗值與升級</h2>
+      <p>
+        在 PokeSurvivor 多人合作中,整個團隊共享一個經驗值條。當條填滿時,每個人一起升級。每個玩家從自己的三個選項(新招式、招式升級或屬性提升)中選擇自己的卡片,遊戲會等待所有玩家都選擇後才恢復遊玩。
+      </p>
+      <p>
+        所以每次升級都會短暫暫停整個群組。沒有人可以在等級上落後,誰撿起經驗珠也不重要。粉絲意見：讓你最快的隊友,或拿了磁鐵(+30% 拾取範圍)的人掃過珠子,其他人守住安全地點。另外迅速選擇你的卡片。三個朋友在等你。
+      </p>
+    </section>
+
+    <section class="guide-section" id="revive">
+      <h2>倒下與復活</h2>
+      <p>
+        當玩家的 HP 降到零時,他們會倒下而不是結束跑。隊友站在他們旁邊 3 秒來復活他們,復活的玩家以半血回來。一旦所有玩家都倒下,PokeSurvivor 多人合作跑就結束了。
+      </p>
+      <p>
+        3 秒是很長的時間,群眾逼近。我們的習慣是先清理一點空間,然後進入復活,並讓第二位玩家掩護復活者。復活以半血讓玩家回來,所以復活的隊友應該後退並治療,不要直接衝回去。
+      </p>
+    </section>
+
+    <section class="guide-section" id="scaling">
+      <h2>2、3 和 4 位玩家的難度縮放</h2>
+      <p>
+        PokeSurvivor 多人合作按玩家數量 <em>n</em> 縮放群眾。官方設計文件給出兩個公式：
+      </p>
+      <ul>
+        <li>敵人數量 × (1 + 0.75 × (n − 1))</li>
+        <li>敵人 HP × (1 + 0.3 × (n − 1))</li>
+      </ul>
+      <p>
+        我們算出數字。「每位玩家」將敵人數量除以玩家數量,總 HP 池是數量 × HP 與單人比較。以下是每個玩家數量如何縮放的視覺化分解。
+      </p>
+      <div class="scaling-cards">
+        <div class="scaling-card">
+          <div class="scaling-head">
+            <span class="player-count">2 人</span>
+            <span class="scaling-badge">+75% 敵人</span>
+          </div>
+          <dl class="scaling-stats">
+            <div><dt>敵人數量</dt><dd>×1.75</dd></div>
+            <div><dt>敵人 HP</dt><dd>×1.30</dd></div>
+            <div><dt>每位玩家的敵人</dt><dd>×0.88</dd></div>
+            <div><dt>HP 池/玩家</dt><dd>×1.14</dd></div>
+          </dl>
+        </div>
+        <div class="scaling-card">
+          <div class="scaling-head">
+            <span class="player-count">3 人</span>
+            <span class="scaling-badge">+150% 敵人</span>
+          </div>
+          <dl class="scaling-stats">
+            <div><dt>敵人數量</dt><dd>×2.50</dd></div>
+            <div><dt>敵人 HP</dt><dd>×1.60</dd></div>
+            <div><dt>每位玩家的敵人</dt><dd>×0.83</dd></div>
+            <div><dt>HP 池/玩家</dt><dd>×1.33</dd></div>
+          </dl>
+        </div>
+        <div class="scaling-card">
+          <div class="scaling-head">
+            <span class="player-count">4 人</span>
+            <span class="scaling-badge">+225% 敵人</span>
+          </div>
+          <dl class="scaling-stats">
+            <div><dt>敵人數量</dt><dd>×3.25</dd></div>
+            <div><dt>敵人 HP</dt><dd>×1.90</dd></div>
+            <div><dt>每位玩家的敵人</dt><dd>×0.81</dd></div>
+            <div><dt>HP 池/玩家</dt><dd>×1.54</dd></div>
+          </dl>
+        </div>
+      </div>
+      <div class="data-table">
+        <table>
+          <caption>PokeSurvivor 多人合作難度乘數 vs 單人(我們從官方公式計算)</caption>
+          <thead>
+            <tr>
+              <th scope="col">玩家</th>
+              <th scope="col">敵人數量</th>
+              <th scope="col">敵人 HP</th>
+              <th scope="col">每位玩家的敵人</th>
+              <th scope="col">總 HP 池</th>
+              <th scope="col">每位玩家的 HP 池</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><th scope="row">1 (單人)</th><td>×1.00</td><td>×1.00</td><td>×1.00</td><td>×1.00</td><td>×1.00</td></tr>
+            <tr><th scope="row">2</th><td>×1.75</td><td>×1.30</td><td>×0.88</td><td>×2.28</td><td>×1.14</td></tr>
+            <tr><th scope="row">3</th><td>×2.50</td><td>×1.60</td><td>×0.83</td><td>×4.00</td><td>×1.33</td></tr>
+            <tr><th scope="row">4</th><td>×3.25</td><td>×1.90</td><td>×0.81</td><td>×6.18</td><td>×1.54</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>
+        所以每個玩家面對的敵人比單人稍少,但每個敵人都更耐打。在 4 人 PokeSurvivor 多人合作跑中,每人要咬穿約多 54% 的敵人 HP。我們的理解是,更大的群組每位玩家需要更多傷害,而不僅僅是更多玩家。力量卡片和招式進化在與朋友一起時更加重要。
+      </p>
+    </section>
+
+    <section class="guide-section" id="host">
+      <h2>主機、暫停與隱私</h2>
+      <p>
+        群組跑遵循與單人不同的規則。官方<a href="https://pokesurvivor.com/en/news/" rel="noopener">新聞頁面</a>設定了其中三個,它們都圍繞著主機：
+      </p>
+      <ul>
+        <li><strong>暫停不會停止跑。</strong>在 PokeSurvivor 多人合作中,如果你打開暫停選單,敵人會繼續前進,所以不要把它當作安全的休息。</li>
+        <li><strong>主機切換分頁會暫停所有人。</strong>如果主機的瀏覽器分頁失去焦點,跑會為整個團隊暫停。</li>
+        <li><strong>主機離開會結束跑。</strong>如果主機關閉遊戲或退出,跑會為每個玩家結束。</li>
+      </ul>
+      <p>
+        連線解釋了為什麼主機如此核心。根據官方首頁,PokeSurvivor 多人遊玩使用 WebRTC(與視訊通話相同的技術)連接瀏覽器到瀏覽器,當無法建立直接連結時使用 Firebase 中繼作為後備。直接連線也意味著你的隊友可能能夠看到你的 IP 位址,所以官方建議只與你認識的人一起玩。我們同意：新增你信任的朋友,不是來自留言區的陌生人。
+      </p>
+      <p>
+        從所有這些得出的粉絲建議：主機應該在整個跑中將遊戲分頁保持在前面,並避免搖搖欲墜的連線,例如移動中的行動數據。其他所有人應該只在群組同意時離開。
+      </p>
+    </section>
+
+    <section class="guide-section" id="rifts">
+      <h2>群組中的裂縫</h2>
+      <p>
+        神秘裂縫在 PokeSurvivor 多人合作跑中也會開啟。在群組中,每個人一起進入裂縫,並在其屬性競技場中作為團隊對抗傳說寶可夢。裂縫戰鬥持續 2 分鐘。當你們所有人都倒下或時間用完時,你就輸了,失敗會讓你以 30% HP 回到地圖,沒有獎勵。勝利可以給予 ×10 扭蛋券(在當前程式碼中,傳說寶可夢有一半的時間掉落一個)。
+      </p>
+      <p>
+        因為整個團隊一次進入,我們在任何人走進去之前先叫出「裂縫」,這樣沒有人在低血量閃避中被拉進去。我們的<a href="/zh/rifts/">所有 18 個競技場的傳說裂縫指南</a>涵蓋地形、天氣以及我們如何戰鬥每一個。
+      </p>
+    </section>
+
+    <section class="guide-section" id="leaderboards">
+      <h2>排行榜與離線版本</h2>
+      <p>
+        有兩個排行榜,單人和群組,兩者都按生存時間排名。PokeSurvivor 多人合作跑上群組板,所以它不與單人時間競爭。
+      </p>
+      <p>
+        <a href="https://jpter78.itch.io/pokesurvivor" rel="noopener">itch.io 頁面</a>還提供離線 HTML5 套件(「解壓縮並雙擊 index.html」)。用它自己的話說：「離線版本僅限單人,並在你的瀏覽器中儲存。」多人合作、雲端存檔和排行榜僅在 pokesurvivor.com 線上可用。如果你想與朋友一起玩 PokeSurvivor,請使用網站,而不是下載。
+      </p>
+    </section>
+
+    <section class="guide-section" id="tips">
+      <h2>團隊技巧(粉絲意見)</h2>
+      <p>
+        以下是我們喜歡建立 PokeSurvivor 多人合作團隊的方式。這些是意見,不是官方建議,但每個都建立在有記錄的機制上。
+      </p>
+      <ul>
+        <li>
+          <strong>混合招式範圍。</strong>初始招式差異很大。泡沫是減速的 8 個泡沫新星,藤鞭是具有擊退的大範圍近戰弧形,而水槍穿透並「在任何距離都可靠」。將近距離清場者與遠程傷害輸出者配對的團隊比四個相同招式覆蓋更多角度。
+        </li>
+        <li>
+          <strong>涵蓋不同屬性。</strong>軟化的屬性表雙向運作：剋制 ×1.6,不太有效 ×0.6,免疫 ×0.3。團隊中的不同屬性意味著幾乎總有人對傳說寶可夢或 BOSS 造成良好傷害。見<a href="https://pokesurvivor.com/en/types/" rel="noopener">官方屬性表</a>。
+        </li>
+        <li>
+          <strong>有一位具有輔助意識的玩家。</strong>屬性卡片如光合作用(+0.9 HP/秒)、護甲(+6% 減傷)和活力(+20 最大 HP)讓指定的復活者在 3 秒復活中保持活著。
+        </li>
+        <li>
+          <strong>專注正確的敵人。</strong>官方指南說優先擊殺治療者和護盾者。由於群組中的額外敵人 HP,護盾者給六個盟友加 35% HP 護盾傷害更大。
+        </li>
+        <li>
+          <strong>堆疊傷害。</strong>根據上面的 HP 池表,我們在 3 和 4 人跑中傾向力量卡片並早期進化招式。
+        </li>
+      </ul>
+      <p>
+        對於要帶哪些夥伴,見<a href="/zh/tier-list/">PokeSurvivor 強度排行上最強的夥伴</a>,並選擇相互補充的屬性,而不是四個頂級選擇的副本。還在選擇要開始誰？我們的<a href="/zh/best-pokemon/">最強初始寶可夢推薦</a>比較早期選項。
+      </p>
+    </section>
+
+    <FAQ
+      heading="多人合作常見問題"
+      locale="zh"
+      items={[
+        { q: '有多少玩家可以加入？', a: 'PokeSurvivor 多人合作跑最多容納 4 位玩家：你加上 3 位朋友。' },
+        { q: '我可以作為訪客玩多人合作嗎？', a: '不行。PokeSurvivor 多人合作跑中的每位玩家都需要帳號,因為訪客什麼都不儲存。' },
+        { q: 'itch.io 下載有多人遊玩嗎？', a: '沒有。離線版本僅限單人。' },
+        { q: '如果主機斷線會發生什麼？', a: '跑為所有人結束。上面的主機部分也解釋了分頁切換和暫停會做什麼。' },
+        { q: 'PokeSurvivor 多人遊玩免費嗎？', a: '是的。根據官方網站,遊戲是免費、非營利的粉絲遊戲,沒有廣告或購買。' },
+      ]}
+    />
+
+    <aside class="sources" aria-labelledby="how-we-wrote">
+      <h2 id="how-we-wrote">這些多人合作規則從何而來</h2>
+      <p>
+        本頁的遊戲規則來自<a href="https://pokesurvivor.com/en/guide/" rel="noopener">官方指南</a>、<a href="https://pokesurvivor.com/en/news/" rel="noopener">官方新聞</a>、<a href="https://jpter78.itch.io/pokesurvivor" rel="noopener">itch.io 頁面</a>和<a href="https://github.com/JPTER78/pokesurvivor" rel="noopener">官方 GitHub 儲存庫</a>中的設計文件,於 2026-10-15 檢查。縮放表是我們自己的算術。技巧是粉絲意見。PokéSurvivor 不隸屬於任天堂、GAME FREAK 或 The Pokémon Company。
+      </p>
+    </aside>
+  </article>
+</BaseLayout>
+
+<style>
+  .guide { max-width: 860px; margin: 0 auto; }
+  .guide h1 { font-size: clamp(1.9rem, 4.5vw, 2.6rem); line-height: 1.15; margin-bottom: 0.5rem; }
+  .guide h2 { font-size: clamp(1.35rem, 3vw, 1.75rem); color: var(--accent); margin: 2.5rem 0 0.9rem; line-height: 1.25; }
+  .guide h3 { font-size: 1.1rem; margin: 1.4rem 0 0.4rem; }
+  .guide p, .guide li { color: var(--text-secondary); }
+  .guide p { margin-bottom: 1rem; }
+  .guide ul, .guide ol { padding-left: 1.4rem; margin-bottom: 1rem; }
+  .guide li { margin-bottom: 0.45rem; }
+  .guide strong { color: var(--text-primary); }
+  .meta { font-size: 0.9rem; }
+  .lead { font-size: 1.08rem; }
+  figure { margin: 1.5rem 0; }
+  figure img { display: block; width: 100%; border-radius: var(--radius-md); }
+  figcaption { font-size: 0.88rem; color: var(--text-secondary); margin-top: 0.4rem; }
+  .guide-header h1 { font-size: var(--font-size-4xl); line-height: var(--leading-tight); }
+
+  .toc { background: var(--surface-elevated); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: var(--space-md) var(--space-lg); margin: var(--space-lg) 0; }
+  .toc-title { font-weight: var(--font-bold); color: var(--text-primary); margin-bottom: var(--space-sm); }
+  .toc ul { margin: 0; padding-left: var(--space-md); }
+  .toc li { margin-bottom: var(--space-2); }
+
+  .data-table { overflow-x: auto; margin: var(--space-lg) 0; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); }
+  .data-table table { width: 100%; border-collapse: collapse; font-size: var(--font-size-sm); }
+  .data-table caption { text-align: left; padding: var(--space-sm) var(--space-md); font-weight: var(--font-semibold); background: var(--surface-elevated); }
+  .data-table th, .data-table td { padding: var(--space-2) var(--space-md); text-align: left; border-bottom: 1px solid var(--border-subtle); }
+  .data-table thead th { background: var(--surface-elevated); color: var(--text-primary); }
+  .data-table tbody th { color: var(--text-primary); font-weight: var(--font-semibold); }
+
+  .setup-list { list-style: none; padding: 0 !important; display: grid; gap: var(--space-md); margin: var(--space-lg) 0; }
+  .setup-step { display: grid; grid-template-columns: auto 1fr; gap: var(--space-md); padding: var(--space-md); margin: 0 !important; background: var(--surface-elevated); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); }
+  .step-number { display: flex; align-items: center; justify-content: center; width: 2.5rem; height: 2.5rem; background: var(--accent-primary); color: var(--surface-deep); border-radius: var(--radius-pill); font-weight: var(--font-bold); font-size: var(--font-size-lg); }
+  .step-content h3 { margin: 0 0 var(--space-2); font-size: var(--font-size-base); }
+  .step-content p { margin: 0; font-size: var(--font-size-sm); }
+
+  .scaling-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); gap: var(--space-md); margin: var(--space-lg) 0; }
+  .scaling-card { background: var(--surface-elevated); border: 1px solid var(--border-subtle); border-top: 3px solid var(--action-primary); border-radius: var(--radius-md); padding: var(--space-md); }
+  .scaling-head { display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-2); margin-bottom: var(--space-sm); }
+  .player-count { font-family: var(--font-display); font-size: var(--font-size-3xl); font-weight: var(--font-bold); color: var(--text-primary); }
+  .scaling-badge { font-size: var(--font-size-xs); color: var(--text-tertiary); text-transform: uppercase; letter-spacing: var(--tracking-wide); }
+  .scaling-stats { margin: 0; display: grid; gap: var(--space-2); }
+  .scaling-stats div { display: flex; justify-content: space-between; gap: var(--space-2); border-bottom: 1px solid var(--border-subtle); padding-bottom: var(--space-1); }
+  .scaling-stats dt { font-size: var(--font-size-xs); color: var(--text-tertiary); }
+  .scaling-stats dd { margin: 0; font-weight: var(--font-semibold); color: var(--text-primary); font-variant-numeric: tabular-nums; }
+
+  .sources { margin-top: var(--space-xl); padding: var(--space-md) var(--space-lg); background: var(--surface-elevated); border-left: 3px solid var(--accent-primary); border-radius: var(--radius-md); }
+  .sources h2 { margin-top: 0; font-size: var(--font-size-xl); }
+</style>

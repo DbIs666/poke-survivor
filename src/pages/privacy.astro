@@ -1,0 +1,196 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+const title = 'Privacy Policy | PokeSurvivor Fan Guide';
+const description = 'Privacy policy for the unofficial PokéSurvivor fan guide website. Learn how we handle your data and protect your privacy.';
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  locale="en"
+  canonical="/privacy/"
+  breadcrumbs={[
+    { name: 'Home', url: '/' },
+    { name: 'Privacy Policy', url: '/privacy/' },
+  ]}
+>
+  <article class="content-article">
+    <h1>Privacy Policy</h1>
+    <p class="updated-date">Last Updated: October 17, 2026</p>
+
+    <section>
+      <h2>Overview</h2>
+      <p>
+        This privacy policy applies to <strong>poke-survivors.org</strong>, an
+        unofficial fan-created guide website for the PokéSurvivor browser game.
+        We are committed to protecting your privacy and being transparent about
+        what data we collect.
+      </p>
+    </section>
+
+    <section>
+      <h2>Data We Collect</h2>
+      <h3>Analytics Data</h3>
+      <p>
+        We use privacy-focused analytics tools to understand how visitors use
+        our site. This may include:
+      </p>
+      <ul>
+        <li>Pages visited and time spent on each page</li>
+        <li>Referral source (where you came from)</li>
+        <li>Browser type and device category (desktop, mobile, tablet)</li>
+        <li>Country or region (based on IP address, not stored)</li>
+      </ul>
+      <p>
+        We do <strong>not</strong> use cookies for tracking or analytics. Our
+        analytics are provided by Cloudflare Web Analytics, which does not
+        use cookies and does not track you across websites.
+      </p>
+
+      <h3>Server Logs</h3>
+      <p>
+        Our hosting provider (Cloudflare Pages) automatically collects standard
+        server logs, which may include your IP address, user agent, and
+        requested URLs. These logs are used solely for security, performance
+        monitoring, and debugging purposes.
+      </p>
+    </section>
+
+    <section>
+      <h2>Data We Do NOT Collect</h2>
+      <ul>
+        <li>We do not require account registration or login</li>
+        <li>We do not collect personal information like names or email addresses</li>
+        <li>We do not use advertising cookies or trackers</li>
+        <li>We do not sell or share your data with third parties</li>
+        <li>We do not track you across other websites</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Third-Party Services</h2>
+      <h3>Cloudflare</h3>
+      <p>
+        Our site is hosted on Cloudflare Pages. Cloudflare may process your
+        data as described in their
+        <a href="https://www.cloudflare.com/privacypolicy/" rel="noopener"
+          >Privacy Policy</a
+        >.
+      </p>
+
+      <h3>External Links</h3>
+      <p>
+        This site contains links to external websites, including the official
+        PokéSurvivor game at
+        <a href="https://pokesurvivor.com/" rel="noopener"
+          >pokesurvivor.com</a
+        >. We are not responsible for the privacy practices of external sites.
+      </p>
+    </section>
+
+    <section>
+      <h2>Children's Privacy</h2>
+      <p>
+        Our website is a general-audience fan guide and does not knowingly
+        collect personal information from children. We do not require
+        registration or ask for any personal data.
+      </p>
+    </section>
+
+    <section>
+      <h2>Your Rights</h2>
+      <p>
+        Since we do not collect personal information beyond anonymous analytics,
+        there is no personal data to access, modify, or delete. If you have
+        questions about our data practices, please see the contact section below.
+      </p>
+    </section>
+
+    <section>
+      <h2>Changes to This Policy</h2>
+      <p>
+        We may update this privacy policy from time to time. The "Last Updated"
+        date at the top of this page will reflect the most recent changes.
+        Continued use of the site after changes constitutes acceptance of the
+        updated policy.
+      </p>
+    </section>
+
+    <section>
+      <h2>Contact</h2>
+      <p>
+        If you have questions about this privacy policy, you can contact us
+        through the
+        <a href="https://github.com/pokesurvivor-fan/poke-survivors.org" rel="noopener"
+          >GitHub repository</a
+        > for this project (if applicable) or through other contact methods
+        provided on this site.
+      </p>
+    </section>
+  </article>
+</BaseLayout>
+
+<style>
+  .content-article {
+    max-width: 70ch;
+    margin: 0 auto;
+    padding: var(--space-lg) var(--space-md);
+  }
+
+  .updated-date {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    margin-top: -0.5rem;
+    margin-bottom: var(--space-lg);
+  }
+
+  h1 {
+    font-size: clamp(2rem, 5vw, 2.5rem);
+    margin-bottom: var(--space-sm);
+  }
+
+  h2 {
+    margin-top: var(--space-xl);
+    margin-bottom: var(--space-md);
+    font-size: clamp(1.5rem, 4vw, 1.75rem);
+  }
+
+  h3 {
+    margin-top: var(--space-lg);
+    margin-bottom: var(--space-sm);
+    font-size: 1.25rem;
+  }
+
+  section {
+    margin-bottom: var(--space-lg);
+  }
+
+  p {
+    line-height: 1.7;
+    margin-bottom: var(--space-md);
+  }
+
+  ul {
+    margin: var(--space-md) 0;
+    padding-left: var(--space-lg);
+    line-height: 1.7;
+  }
+
+  li {
+    margin-bottom: var(--space-sm);
+  }
+
+  a {
+    color: var(--accent-primary);
+    text-decoration: underline;
+    text-underline-offset: 0.15em;
+  }
+
+  a:hover {
+    color: var(--accent-bright);
+  }
+
+  strong {
+    font-weight: 600;
+  }
+</style>

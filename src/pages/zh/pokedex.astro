@@ -1,0 +1,844 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import TypeBadge from '../../components/TypeBadge.astro';
+import FAQ from '../../components/FAQ.astro';
+import pokemon from '../../data/pokemon.json';
+
+const title = 'PokeSurvivor 寶可夢圖鑑：全 966 隻寶可夢依屬性、地區、初始夥伴與傳說分類查詢';
+const description = `PokeSurvivor 寶可夢圖鑑：收錄關都到帕底亞九個地區共 ${pokemon.length} 隻寶可夢，可用英文名稱或編號搜尋，依屬性、地區、初始夥伴與傳說篩選，並附各地區介紹與熱門夥伴推薦。`;
+
+// Group by region
+const regions = ['Kanto', 'Johto', 'Hoenn', 'Sinnoh', 'Unova', 'Kalos', 'Alola', 'Galar', 'Paldea'];
+const byRegion = regions.map(region => ({
+  name: region,
+  generation: pokemon.find(p => p.region === region)?.generation || 1,
+  pokemon: pokemon.filter(p => p.region === region)
+}));
+
+const stats = {
+  total: pokemon.length,
+  regions: regions.length,
+  starters: pokemon.filter(p => p.starter).length,
+  legendaries: pokemon.filter(p => p.legendary).length,
+  types: 18
+};
+
+// National Dex numbers the game's roster skips (computed from the data).
+const maxDex = Math.max(...pokemon.map(p => p.id));
+const dexSet = new Set(pokemon.map(p => p.id));
+const missingDex = Array.from({ length: maxDex }, (_, i) => i + 1).filter(n => !dexSet.has(n));
+
+// 地區中文名（台灣官方譯名）與手寫介紹。提到的寶可夢都在 src/data/pokemon.json 裡；
+// 數值與評價取自強度排行與最強寶可夢推薦頁。
+const regionZh: Record<string, string> = {
+  Kanto: '關都', Johto: '城都', Hoenn: '豐緣', Sinnoh: '神奧', Unova: '合眾',
+  Kalos: '卡洛斯', Alola: '阿羅拉', Galar: '伽勒爾', Paldea: '帕底亞',
+};
+const regionNotes: Record<string, string> = {
+  Kanto: '最初的 151 隻，也是圖鑑裡數量最多的地區。29 隻初始夥伴中有 5 隻來自關都：妙蛙種子、小火龍、傑尼龜，以及起手就有追蹤念力的可達鴨和呆呆獸。強度排行上的耿鬼、胡地、雷伊布和卡比獸也在這裡；皮卡丘和伊布同樣收錄，但不在初始夥伴名單中。',
+  Johto: '城都共 100 隻。初始夥伴是菊草葉、火球鼠和小鋸鱷，其中小鋸鱷是穩健的水槍使用者。幸福蛋的 HP 是我們列出的夥伴中最高（185，社群估計）。傳說方面有洛奇亞、鳳王和三聖獸。',
+  Hoenn: '初始夥伴是木守宮、火稚雞和水躍魚。火稚雞的火花攻擊在初始夥伴中排第二，前期評為 S 級；水躍魚最終進化為巨沼怪，是耐打的後期選擇。巨金怪也來自豐緣，另有蓋歐卡、固拉多、烈空坐等 10 隻傳說寶可夢。',
+  Sinnoh: '初始夥伴是草苗龜、小火焰猴和波加曼。重點是烈咬陸鯊：它是我們在阿爾宙斯階段的首選。阿爾宙斯本身也是神奧的傳說寶可夢，神奧共有 14 隻傳說，包括帝牙盧卡、帕路奇亞和騎拉帝納。',
+  Unova: '數量僅次於關都的地區。初始夥伴是藤藤蛇、暖暖豬和水水獺。雙斧戰龍擁有我們列出的最大攻擊倍率（×1.51，社群估計），是中期打 BOSS 的首選。萊希拉姆、捷克羅姆和酋雷姆領銜 13 隻傳說寶可夢。',
+  Kalos: '遊戲中寶可夢最少的地區。初始夥伴是哈力栗、火狐狸和呱呱泡蛙，呱呱泡蛙是 29 隻中最快的（108 速度，社群估計），最終進化甲賀忍蛙也進入了中期排行。傳說有哲爾尼亞斯、伊裴爾塔爾和基格爾德。',
+  Alola: '初始夥伴是木木梟、火斑喵和球球海獅；火斑喵是前期 S 級，球球海獅起手是泡沫。阿羅拉的傳說寶可夢最多（16 隻），包括四隻卡璞、科斯莫古一族、索爾迦雷歐、露奈雅拉和奈克洛茲瑪。',
+  Galar: '初始夥伴是敲音猴、炎兔兒和淚眼蜥，其中兩隻在前期排行居首：炎兔兒的攻擊是初始夥伴最高（×1.09，社群估計），淚眼蜥則是水槍加 107 速度。炎兔兒會進化為閃焰王牌；多龍巴魯托是我們列出的最快夥伴（138，社群估計）。傳說有蒼響、藏瑪然特和無極汰那。',
+  Paldea: '初始夥伴是新葉喵、呆火鱷和潤水鴨。呆火鱷的 HP 在初始夥伴中排第二，潤水鴨則是數值平衡的水槍使用者。6 隻傳說寶可夢中包括故勒頓和太樂巴戈斯。',
+};
+
+const regionInfo = byRegion.map(r => ({
+  ...r,
+  zh: regionZh[r.name],
+  starters: r.pokemon.filter(p => p.starter).length,
+  legends: r.pokemon.filter(p => p.legendary).length,
+  note: regionNotes[r.name],
+}));
+
+// 熱門夥伴：取自強度排行與最強寶可夢推薦（評級為粉絲觀點，數值來自玩家社群估計）。
+const pick = (id: number, zh: string, why: string) => {
+  const p = pokemon.find(x => x.id === id)!;
+  return { id, zh, en: p.name.en, region: regionZh[p.region], why };
+};
+const popular = [
+  {
+    heading: '前期：最值得先查的初始夥伴',
+    intro: '第一隻夥伴由個性測驗分配，你也可以拒絕結果改選。以下是我們評價最高的初始夥伴。',
+    mons: [
+      pick(813, '炎兔兒', '初始夥伴最高攻擊（×1.09，社群估計）搭配火花，加上 107 速度。'),
+      pick(816, '淚眼蜥', '水槍貫穿、107 速度與 ×1.08 攻擊（社群估計）。'),
+      pick(79, '呆呆獸', '初始夥伴最高 HP（110，社群估計）且有追蹤念力，容錯率最高。'),
+      pick(255, '火稚雞', '火花攻擊第二高，只是稍慢。'),
+    ],
+  },
+  {
+    heading: '中期：打 BOSS 的扭蛋夥伴',
+    intro: '用票券扭蛋取得新夥伴後，攻擊倍率會明顯高於任何初始夥伴。',
+    mons: [
+      pick(612, '雙斧戰龍', '我們列出的最大攻擊倍率（×1.51，社群估計）。'),
+      pick(94, '耿鬼', '暗影球貫穿 2，能打到敵群後方的治療型敵人。'),
+      pick(65, '胡地', '追蹤念力，配 ×1.44 攻擊與 128 速度（社群估計）。'),
+    ],
+  },
+  {
+    heading: '後期：阿爾宙斯階段的選擇',
+    intro: '第 30 分鐘之後，需要 HP、速度與攻擊三者兼具。',
+    mons: [
+      pick(445, '烈咬陸鯊', 'HP、速度與攻擊的最佳組合。'),
+      pick(887, '多龍巴魯托', '我們列出的最快夥伴（138），方便閃避預告攻擊。'),
+      pick(376, '巨金怪', '攻擊高，超能力屬性還會把追蹤招式加入招式池。'),
+    ],
+  },
+];
+
+const faqItems = [
+  {
+    q: 'PokeSurvivor 有多少隻寶可夢？',
+    a: `根據<a href="https://pokesurvivor.com/en/guide/" rel="noopener">官方指南</a>，共有九個地區 ${stats.total} 隻寶可夢，本圖鑑全部收錄。編號並不連續：從 #1 到 #${maxDex} 之間有 ${missingDex.length} 個全國圖鑑編號沒有收錄。`,
+  },
+  {
+    q: '圖鑑包含哪些地區？',
+    a: `九個主系列地區：${byRegion.map(r => `${regionZh[r.name]}（${r.pokemon.length}）`).join('、')}。可以用地區選單或網格上方的跳轉連結一次只看一個地區。`,
+  },
+  {
+    q: '可以只看初始夥伴嗎？',
+    a: `可以。勾選「僅初始夥伴」就會只顯示個性測驗可能分配的 ${stats.starters} 隻初始夥伴，也能再搭配屬性篩選。想看排名，請讀<a href="/zh/best-pokemon/">最強寶可夢推薦</a>。`,
+  },
+  {
+    q: '傳說寶可夢在哪裡遇到？',
+    a: `圖鑑中有 ${stats.legendaries} 隻帶「傳說」標記。它們只會在遊玩中的<a href="/zh/rifts/">傳說裂縫</a>裡出現，打贏可獲得羈絆和金幣；還沒打倒過的傳說寶可夢出現機率較高。`,
+  },
+  {
+    q: '初始夥伴以外的寶可夢怎麼取得？',
+    a: '透過票券扭蛋，共有 9 個地區卡池。一般寶可夢偶爾會掉落票券，BOSS 和裂縫傳說有機會掉落 ×10 票券。票券無法用錢購買。',
+  },
+  {
+    q: '搜尋可以輸入中文名稱嗎？',
+    a: '目前不行。卡片上顯示的是英文名稱，搜尋框比對英文名稱或圖鑑編號，例如輸入「pika」或「25」找皮卡丘。不知道英文名時，用編號最快。',
+  },
+  {
+    q: '圖鑑有數值或進化資料嗎？',
+    a: '沒有。每張卡片只顯示編號、精靈圖、屬性、地區和初始／傳說標記；進化家族依圖鑑編號相鄰排列。HP、速度與攻擊數值請看<a href="/zh/tier-list/">強度排行</a>。',
+  },
+];
+
+const jsonLd = [
+  {
+    '@type': 'CollectionPage',
+    name: 'PokeSurvivor 寶可夢圖鑑',
+    description,
+    inLanguage: 'zh-Hant',
+    mainEntity: {
+      '@type': 'ItemList',
+      name: '完整寶可夢列表',
+      numberOfItems: pokemon.length,
+      itemListElement: pokemon.slice(0, 100).map((p, i) => ({
+        '@type': 'ListItem',
+        position: i + 1,
+        name: p.name.en,
+        url: `/zh/pokedex/#pokemon-${p.id}`,
+        description: `#${String(p.id).padStart(4, '0')} · ${p.types.join('/')} 屬性 · ${p.region}`,
+      })),
+    },
+  },
+];
+
+const breadcrumbs = [
+  { name: '首頁', url: '/zh/' },
+  { name: '寶可夢圖鑑', url: '/zh/pokedex/' },
+];
+---
+
+<BaseLayout
+  title={title}
+  locale="zh"
+  alternates={[
+    { locale: 'en', href: '/pokedex/' },
+    { locale: 'zh-Hant', href: '/zh/pokedex/' }
+  ]}
+  description={description}
+  breadcrumbs={breadcrumbs}
+  jsonLd={jsonLd}
+>
+  <article class="pokedex-page">
+    <header class="page-header">
+      <h1>PokeSurvivor 寶可夢圖鑑</h1>
+      <p class="lead">
+        PokeSurvivor 中全部 {stats.total} 隻寶可夢的完整列表，包含精靈圖、屬性、地區以及初始夥伴／傳說寶可夢標籤。
+      </p>
+    </header>
+
+    <section class="pokedex-intro" aria-labelledby="intro-title">
+      <h2 id="intro-title">這份寶可夢圖鑑能做什麼</h2>
+      <div class="disclaimer-box">
+        ⚠️ <strong>免責聲明：</strong>本頁的數值倍率、速度、HP 等數據來自玩家社群測試與估計，<strong>並非遊戲官方公開資料</strong>。若與您的遊戲體驗不符，請以實際遊戲表現為準。
+      </div>
+      <p>
+        本頁是粉絲整理的 PokeSurvivor 寶可夢圖鑑，依全國圖鑑編號排列，從關都（第 1 世代）到帕底亞（第 9 世代）。
+        每張卡片都標出編號、屬性、所屬地區與世代，可選的夥伴另有「初始夥伴」標記。
+      </p>
+      <p>
+        想知道哪隻夥伴最強，可以看<a href="/zh/tier-list/">強度排行</a>；新手不知道選誰，先讀
+        <a href="/zh/best-pokemon/">最強寶可夢推薦</a>；想挑戰傳說寶可夢，請看<a href="/zh/rifts/">裂縫指南</a>。
+      </p>
+    </section>
+
+    <!-- Stats strip -->
+    <div class="stats-strip">
+      <div class="stat-tile">
+        <div class="stat-tile-value">{stats.total}</div>
+        <div class="stat-tile-label">寶可夢</div>
+      </div>
+      <div class="stat-tile">
+        <div class="stat-tile-value">{stats.regions}</div>
+        <div class="stat-tile-label">地區</div>
+      </div>
+      <div class="stat-tile">
+        <div class="stat-tile-value">{stats.starters}</div>
+        <div class="stat-tile-label">初始夥伴</div>
+      </div>
+      <div class="stat-tile">
+        <div class="stat-tile-value">{stats.legendaries}</div>
+        <div class="stat-tile-label">傳說寶可夢</div>
+      </div>
+      <div class="stat-tile">
+        <div class="stat-tile-value">{stats.types}</div>
+        <div class="stat-tile-label">屬性</div>
+      </div>
+    </div>
+
+    <!-- Region jump links -->
+    <nav class="region-nav" aria-label="跳轉到地區">
+      {byRegion.map(r => (
+        <a href={`#${r.name.toLowerCase()}`} class="region-link">
+          {r.name} <span class="region-count">{r.pokemon.length}</span>
+        </a>
+      ))}
+    </nav>
+
+    <!-- Filters -->
+    <div class="filters" data-filters>
+      <label class="filter-search">
+        <span class="sr-only">搜尋寶可夢</span>
+        <input
+          type="search"
+          placeholder="按名稱或編號搜尋..."
+          data-search
+          aria-label="按名稱或編號搜尋寶可夢"
+        />
+      </label>
+
+      <label class="filter-select">
+        <span class="sr-only">按地區篩選</span>
+        <select data-region aria-label="按地區篩選">
+          <option value="">全部地區</option>
+          {byRegion.map(r => (
+            <option value={r.name}>{r.name} ({r.pokemon.length})</option>
+          ))}
+        </select>
+      </label>
+
+      <label class="filter-select">
+        <span class="sr-only">按屬性篩選</span>
+        <select data-type aria-label="按屬性篩選">
+          <option value="">全部屬性</option>
+          <option value="Normal">一般</option>
+          <option value="Fire">火</option>
+          <option value="Water">水</option>
+          <option value="Electric">電</option>
+          <option value="Grass">草</option>
+          <option value="Ice">冰</option>
+          <option value="Fighting">格鬥</option>
+          <option value="Poison">毒</option>
+          <option value="Ground">地面</option>
+          <option value="Flying">飛行</option>
+          <option value="Psychic">超能力</option>
+          <option value="Bug">蟲</option>
+          <option value="Rock">岩石</option>
+          <option value="Ghost">幽靈</option>
+          <option value="Dragon">龍</option>
+          <option value="Dark">惡</option>
+          <option value="Steel">鋼</option>
+          <option value="Fairy">妖精</option>
+        </select>
+      </label>
+
+      <label class="filter-checkbox">
+        <input type="checkbox" data-starter />
+        <span>僅初始夥伴</span>
+      </label>
+
+      <label class="filter-checkbox">
+        <input type="checkbox" data-legendary />
+        <span>僅傳說寶可夢</span>
+      </label>
+
+      <div class="filter-count" data-count aria-live="polite" aria-atomic="true">
+        顯示 {stats.total} / {stats.total}
+      </div>
+    </div>
+
+    <!-- Shared sprite fallback: defined inline before the grid so every card's onerror can call it.
+         onerror is cleared first, so a missing fallback cannot loop. -->
+    <script is:inline>function psFb(i){i.onerror=null;i.src='/sprites/fallback.svg';i.alt='精靈圖不可用'}</script>
+    <!-- Pokémon by region -->
+    {byRegion.map(region => (
+      <section class="region-section" id={region.name.toLowerCase()} data-region-section={region.name}>
+        <h2 class="region-heading">
+          {region.name} <span class="region-meta">第 {region.generation} 世代 · {region.pokemon.length} 隻寶可夢</span>
+        </h2>
+        <ul class="pokemon-grid">
+          {region.pokemon.map(p => (
+            <li
+              class="pokemon-card"
+              id={`pokemon-${p.id}`}
+              data-pokemon
+              data-name={p.name.en.toLowerCase()}
+              data-dex={p.id}
+              data-types={p.types.join(',')}
+              data-region={p.region}
+              data-starter={p.starter ? 'true' : 'false'}
+              data-legendary={p.legendary ? 'true' : 'false'}
+            >
+              <img
+                src={`/sprites/pokemon/${p.id}.png`}
+                alt={p.name.en}
+                width="40"
+                height="40"
+                loading="lazy"
+                class="pokemon-sprite"
+                onerror="psFb(this)"
+              />
+              <div class="pokemon-dex">#{String(p.id).padStart(4, '0')}</div>
+              <div class="pokemon-name">{p.name.en}</div>
+              <div class="pokemon-types">
+                {p.types.map(type => (
+                  <TypeBadge type={type} variant="tinted" />
+                ))}
+              </div>
+              {p.starter && <span class="pokemon-badge badge-starter">初始</span>}
+              {p.legendary && <span class="pokemon-badge badge-legendary">傳說</span>}
+            </li>
+          ))}
+        </ul>
+      </section>
+    ))}
+
+    <!-- 各地區介紹 -->
+    <section class="region-overviews" aria-labelledby="regions-title">
+      <h2 id="regions-title">九大地區介紹與代表寶可夢</h2>
+      <p>
+        PokeSurvivor 收錄九個主系列地區。以下整理每個地區的初始夥伴、傳說寶可夢數量，以及哪些寶可夢出現在本站的強度排行與推薦中。
+        網格裡的地區名稱沿用英文（例如 Kanto 就是關都），進化家族依編號相鄰排列，在同一地區裡由左往右看就能找到整條進化線。
+      </p>
+      {regionInfo.map(r => (
+        <div class="region-overview">
+          <h3>{r.zh}（{r.name}）：{r.pokemon.length} 隻</h3>
+          <p>{r.note}</p>
+          <p>
+            <strong>統計：</strong>第 {r.generation} 世代，初始夥伴 {r.starters} 隻，傳說寶可夢 {r.legends} 隻。
+            <a href={`#${r.name.toLowerCase()}`}>跳到{r.zh}的寶可夢</a>
+          </p>
+        </div>
+      ))}
+    </section>
+
+    <!-- 熱門寶可夢推薦 -->
+    <section class="popular-picks" aria-labelledby="popular-title">
+      <h2 id="popular-title">熱門寶可夢推薦：先查這幾隻</h2>
+      <p>
+        圖鑑有 {stats.total} 隻寶可夢，不知道從哪裡看起時，可以先查以下夥伴。名單取自本站的
+        <a href="/zh/tier-list/">PokeSurvivor 強度排行</a>與<a href="/zh/best-pokemon/">最強寶可夢推薦</a>，
+        點擊名稱會跳到上方網格中的卡片（卡片顯示英文名稱）。
+      </p>
+      {popular.map(group => (
+        <div class="popular-group">
+          <h3>{group.heading}</h3>
+          <p>{group.intro}</p>
+          <ul>
+            {group.mons.map(m => (
+              <li>
+                <a href={`#pokemon-${m.id}`}>{m.zh}（{m.en}）</a>，#{String(m.id).padStart(4, '0')}，{m.region}：{m.why}
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+
+      <h3>招式配搭建議：速度型與坦克型的選擇</h3>
+      <p>
+        高速夥伴（烈咬陸鯊 108 速度、多龍巴魯托 138 速度）適合搭配 Thunder 或 Ice Beam 等群攻招式，能在敵人靠近前快速清場。
+        坦克型夥伴如巨金怪和卡比獸則適合 Earthquake（範圍地面攻擊）或 Psychic（貫穿超能力），利用高 HP 撐住前排，讓範圍招式持續輸出。
+        雙屬性夥伴會自動把第二屬性的招式加入招式池（例如巨金怪的超能力屬性帶來追蹤念力），這點可以參考
+        <a href="/zh/tier-list/">強度排行</a>中的夥伴屬性與評級。
+      </p>
+
+      <h3>屬性克制應用：針對裂縫傳說挑對手</h3>
+      <p>
+        挑戰<a href="/zh/rifts/">裂縫</a>時，屬性克制帶來明顯優勢：有效屬性傷害 ×1.6，抵抗屬性減至 ×0.6，免疫屬性（如地面對電）降至 ×0.3。
+        例如火屬性傳說寶可夢的裂縫，推薦 Water、Ground 或 Rock 屬性夥伴（用屬性篩選器快速找到）；草屬性裂縫則需要 Fire、Ice 或 Flying 屬性。
+        雙屬性夥伴同時承受兩種屬性的弱點，所以 Garchomp（Dragon/Ground）在冰屬性裂縫中會受到加倍傷害，需要更謹慎操作。
+        進階玩家可在圖鑑中按屬性篩選，搭配「僅初始夥伴」或扭蛋夥伴，提前規劃裂縫陣容。
+      </p>
+
+      <h3>扭蛋時機建議：何時值得抽、何時不值得</h3>
+      <p>
+        值得抽的時機：初始夥伴升到 20 級遇到瓶頸，或即將挑戰火屬性／草屬性裂縫卻缺少剋制屬性夥伴時，用票券扭蛋取得中期戰力（如雙斧戰龍、耿鬼）可以明顯提升效率。
+        不值得抽的時機：初始夥伴還沒升滿、金幣不足以為新夥伴升級，或手上票券少於 10 張（單抽出貨率低）。
+        記得 BOSS 和傳說裂縫有機會掉落 ×10 票券，累積到一定數量後再一次扭蛋，比分散單抽更容易取得高評級夥伴。
+        扭蛋夥伴的攻擊倍率（×1.4 至 ×1.5，參考<a href="/zh/best-pokemon/">最強寶可夢推薦</a>）遠高於初始夥伴（×1.08 至 ×1.09），所以中期之後扭蛋是主要的戰力來源。
+      </p>
+    </section>
+
+    <div class="pokedex-faq">
+      <FAQ heading="寶可夢圖鑑常見問題" items={faqItems} locale="zh" />
+    </div>
+
+    <section class="pokedex-guide" aria-labelledby="guide-title">
+      <h2 id="guide-title">寶可夢圖鑑使用說明</h2>
+      <ul>
+        <li>
+          <strong>按英文名稱或編號搜尋。</strong>在搜尋框中輸入「pika」或「25」直接找到皮卡丘。輸入部分名稱也可以，所以「char」會列出整條小火龍進化線。搜尋只比對英文名稱，不支援中文名稱。
+        </li>
+        <li>
+          <strong>按屬性篩選。</strong>選擇 18 種屬性之一，就會列出第一或第二屬性符合的每隻寶可夢。想針對裂縫傳說的弱點挑夥伴，這是最快的方法。
+        </li>
+        <li>
+          <strong>按地區縮小範圍。</strong>用地區選單或網格上方的跳轉連結一次只看一個世代，在手機上瀏覽更輕鬆。
+        </li>
+        <li>
+          <strong>組合篩選。</strong>勾選「僅初始夥伴」再選一個屬性，就能比較同屬性的夥伴；勾選「僅傳說寶可夢」可以預覽裂縫裡會遇到的對手。
+        </li>
+      </ul>
+
+      <h3>屬性、初始夥伴與進化線</h3>
+      <p>
+        屬性決定傷害相剋，所以水系夥伴打火系敵人傷害更高，受到火系攻擊也較少。雙屬性寶可夢同時帶有兩種屬性的優勢與弱點。「初始」標記代表個性測驗可能分配、也能在開局時改選的夥伴；進化家族依圖鑑編號相鄰排列，在同一地區裡由左往右看就是完整的進化線。
+      </p>
+      <p>
+        本頁資料由粉絲整理，可能落後於遊戲更新。官方美術與背景故事請參閱<a href="https://www.pokemon.com/us/pokedex" rel="noopener">官方寶可夢圖鑑</a>，並查看<a href="https://pokesurvivor.com/en/" rel="noopener">官方 PokeSurvivor 網站</a>以了解當前遊戲內容。剛接觸遊戲？從<a href="/zh/how-to-play/">新手指南</a>開始。
+      </p>
+    </section>
+  </article>
+</BaseLayout>
+
+<style is:global>
+  /* Global (prefixed with .pokedex-page) so Astro does not stamp a scoped cid attribute on all ~5,000 card elements. */
+  .pokedex-page {
+    max-width: var(--container-max);
+    margin: 0 auto;
+    padding: var(--space-xl) var(--container-padding);
+  }
+
+  .pokedex-page .page-header {
+    text-align: center;
+    margin-bottom: var(--space-xl);
+  }
+
+  .pokedex-page .page-header h1 {
+    font-size: var(--font-size-3xl);
+    margin-bottom: var(--space-sm);
+  }
+
+  .pokedex-page .lead {
+    font-size: var(--font-size-lg);
+    color: var(--text-secondary);
+    max-width: 60ch;
+    margin: 0 auto;
+  }
+
+
+  /* Explanatory content */
+  .pokedex-page .pokedex-intro,
+  .pokedex-page .pokedex-guide,
+  .pokedex-page .region-overviews,
+  .pokedex-page .popular-picks,
+  .pokedex-page .pokedex-faq {
+    max-width: 72ch;
+    margin: 0 auto var(--space-xl);
+    color: var(--text-secondary);
+    line-height: 1.7;
+  }
+
+  .pokedex-page .disclaimer-box {
+    background: rgba(251, 191, 36, 0.1);
+    border-left: 4px solid #fbbf24;
+    padding: var(--space-md);
+    margin-bottom: var(--space-md);
+    border-radius: var(--radius-md);
+    color: var(--text-primary);
+    line-height: 1.6;
+  }
+
+  .pokedex-page .disclaimer-box strong {
+    color: #fbbf24;
+  }
+
+  .pokedex-page .pokedex-guide {
+    margin-top: var(--space-2xl);
+  }
+
+  .pokedex-page .region-overviews,
+  .pokedex-page .popular-picks,
+  .pokedex-page .pokedex-faq {
+    margin-top: var(--space-2xl);
+  }
+
+  .pokedex-page .region-overviews h2,
+  .pokedex-page .region-overviews h3,
+  .pokedex-page .popular-picks h2,
+  .pokedex-page .popular-picks h3,
+  .pokedex-page .pokedex-faq h2,
+  .pokedex-page .pokedex-faq h3,
+  .pokedex-page .pokedex-intro h2,
+  .pokedex-page .pokedex-guide h2,
+  .pokedex-page .pokedex-guide h3 {
+    color: var(--text-primary);
+    margin-bottom: var(--space-sm);
+  }
+
+  .pokedex-page .region-overview {
+    margin-bottom: var(--space-lg);
+  }
+
+  .pokedex-page .region-overviews p,
+  .pokedex-page .popular-picks p,
+  .pokedex-page .popular-picks li,
+  .pokedex-page .pokedex-faq p,
+  .pokedex-page .pokedex-intro p,
+  .pokedex-page .pokedex-guide p,
+  .pokedex-page .pokedex-guide li {
+    margin-bottom: var(--space-sm);
+  }
+
+  .pokedex-page .region-overviews a,
+  .pokedex-page .popular-picks a,
+  .pokedex-page .pokedex-faq a,
+  .pokedex-page .pokedex-intro a,
+  .pokedex-page .pokedex-guide a {
+    color: var(--accent-primary);
+    text-decoration: underline;
+  }
+
+  
+  /* Stats strip */
+  .pokedex-page .stats-strip {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: var(--space-md);
+    margin-bottom: var(--space-xl);
+  }
+
+  .pokedex-page .stat-tile {
+    background: var(--surface-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: var(--space-md);
+    text-align: center;
+  }
+
+  .pokedex-page .stat-tile-value {
+    font-size: var(--font-size-3xl);
+    font-weight: var(--font-bold);
+    color: var(--accent-primary);
+    font-family: var(--font-display);
+  }
+
+  .pokedex-page .stat-tile-label {
+    font-size: var(--font-size-sm);
+    color: var(--text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-wide);
+    margin-top: var(--space-1);
+  }
+
+  
+  /* Region navigation */
+  .pokedex-page .region-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-xs);
+    margin-bottom: var(--space-lg);
+    padding: var(--space-md);
+    background: var(--surface-elevated);
+    border-radius: var(--radius-md);
+  }
+
+  .pokedex-page .region-link {
+    padding: var(--space-xs) var(--space-sm);
+    background: var(--surface-card);
+    border-radius: var(--radius-pill);
+    color: var(--text-primary);
+    text-decoration: none;
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    transition: all 0.2s;
+  }
+
+  .pokedex-page .region-link:hover {
+    background: var(--accent-primary);
+    color: white;
+  }
+
+  .pokedex-page .region-count {
+    color: var(--text-tertiary);
+    margin-left: var(--space-1);
+  }
+
+  
+  /* Filters */
+  .pokedex-page .filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+    align-items: center;
+    padding: var(--space-md);
+    background: var(--surface-elevated);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--space-lg);
+  }
+
+  .pokedex-page .filter-search {
+    flex: 1;
+    min-width: 200px;
+  }
+
+  .pokedex-page .filter-search input {
+    width: 100%;
+    padding: var(--space-xs) var(--space-sm);
+    background: var(--surface-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    color: var(--text-primary);
+    font-size: var(--font-size-sm);
+  }
+
+  .pokedex-page .filter-search input:focus {
+    outline: none;
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.1);
+  }
+
+  .pokedex-page .filter-select select {
+    padding: var(--space-xs) var(--space-sm);
+    background: var(--surface-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    color: var(--text-primary);
+    font-size: var(--font-size-sm);
+    cursor: pointer;
+  }
+
+  .pokedex-page .filter-checkbox {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+    font-size: var(--font-size-sm);
+    cursor: pointer;
+  }
+
+  .pokedex-page .filter-checkbox input {
+    cursor: pointer;
+  }
+
+  .pokedex-page .filter-count {
+    margin-left: auto;
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    color: var(--accent-primary);
+  }
+
+  
+  /* Region sections */
+  .pokedex-page .region-section {
+    margin-bottom: var(--space-2xl);
+  }
+
+  .pokedex-page .region-heading {
+    font-size: var(--font-size-xl);
+    margin-bottom: var(--space-md);
+    padding-bottom: var(--space-sm);
+    border-bottom: 2px solid var(--border-subtle);
+  }
+
+  .pokedex-page .region-meta {
+    font-size: var(--font-size-base);
+    font-weight: normal;
+    color: var(--text-tertiary);
+  }
+
+  
+  /* Pokémon grid */
+  .pokedex-page .pokemon-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: var(--space-sm);
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .pokedex-page .pokemon-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-xs);
+    padding: var(--space-sm);
+    background: var(--surface-card);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-subtle);
+    transition: all 0.2s;
+    cursor: pointer;
+  }
+
+  .pokedex-page .pokemon-card:hover {
+    background: var(--surface-elevated);
+    border-color: var(--accent-primary);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  }
+
+  .pokedex-page .pokemon-sprite {
+    image-rendering: pixelated;
+    width: 40px;
+    height: 40px;
+  }
+
+  .pokedex-page .pokemon-dex {
+    font-size: var(--font-size-xs);
+    color: var(--text-tertiary);
+    font-family: var(--font-mono);
+  }
+
+  .pokedex-page .pokemon-name {
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    text-align: center;
+    color: var(--text-primary);
+  }
+
+  .pokedex-page .pokemon-types {
+    display: flex;
+    gap: var(--space-1);
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .pokedex-page .pokemon-badge {
+    font-size: var(--font-size-xs);
+    padding: 2px var(--space-xs);
+    border-radius: var(--radius-pill);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .pokedex-page .badge-starter {
+    background: rgba(110, 231, 183, 0.2);
+    color: #6ee7b7;
+  }
+
+  .pokedex-page .badge-legendary {
+    background: rgba(251, 191, 36, 0.2);
+    color: #fbbf24;
+  }
+
+  
+  /* Hidden class for filtering */
+  .pokedex-page .pokemon-card[hidden] {
+    display: none;
+  }
+
+  .pokedex-page .region-section[hidden] {
+    display: none;
+  }
+
+  @media (max-width: 640px) {
+    .pokedex-page .pokemon-grid {
+      grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+      gap: var(--space-xs);
+    }
+
+    .pokedex-page .filters {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .pokedex-page .filter-search {
+      min-width: 0;
+    }
+
+    .pokedex-page .filter-count {
+      margin-left: 0;
+      text-align: center;
+    }
+  }
+</style>
+
+<script>
+  // Progressive enhancement: filters work only with JS
+  const filters = document.querySelector('[data-filters]');
+  const searchInput = document.querySelector('[data-search]') as HTMLInputElement;
+  const regionSelect = document.querySelector('[data-region]') as HTMLSelectElement;
+  const typeSelect = document.querySelector('[data-type]') as HTMLSelectElement;
+  const starterCheck = document.querySelector('[data-starter]') as HTMLInputElement;
+  const legendaryCheck = document.querySelector('[data-legendary]') as HTMLInputElement;
+  const countEl = document.querySelector('[data-count]');
+  const allCards = Array.from(document.querySelectorAll('[data-pokemon]')) as HTMLElement[];
+  const allSections = Array.from(document.querySelectorAll('[data-region-section]')) as HTMLElement[];
+
+  function applyFilters() {
+    const searchTerm = searchInput.value.toLowerCase().trim();
+    const selectedRegion = regionSelect.value;
+    const selectedType = typeSelect.value;
+    const starterOnly = starterCheck.checked;
+    const legendaryOnly = legendaryCheck.checked;
+
+    let visibleCount = 0;
+    const visibleRegions = new Set<string>();
+
+    allCards.forEach(card => {
+      const name = card.dataset.name || '';
+      const dex = card.dataset.dex || '';
+      const types = (card.dataset.types || '').split(',');
+      const region = card.dataset.region || '';
+      const isStarter = card.dataset.starter === 'true';
+      const isLegendary = card.dataset.legendary === 'true';
+
+      const matchesSearch = !searchTerm || name.includes(searchTerm) || dex.includes(searchTerm);
+      const matchesRegion = !selectedRegion || region === selectedRegion;
+      const matchesType = !selectedType || types.includes(selectedType);
+      const matchesStarter = !starterOnly || isStarter;
+      const matchesLegendary = !legendaryOnly || isLegendary;
+
+      const visible = matchesSearch && matchesRegion && matchesType && matchesStarter && matchesLegendary;
+
+      if (visible) {
+        card.removeAttribute('hidden');
+        visibleCount++;
+        visibleRegions.add(region);
+      } else {
+        card.setAttribute('hidden', '');
+      }
+    });
+
+    // Hide empty region sections
+    allSections.forEach(section => {
+      const regionName = section.dataset.regionSection || '';
+      if (visibleRegions.has(regionName)) {
+        section.removeAttribute('hidden');
+      } else {
+        section.setAttribute('hidden', '');
+      }
+    });
+
+    if (countEl) {
+      countEl.textContent = `顯示 ${visibleCount} / ${allCards.length}`;
+    }
+  }
+
+  if (searchInput) searchInput.addEventListener('input', applyFilters);
+  if (regionSelect) regionSelect.addEventListener('change', applyFilters);
+  if (typeSelect) typeSelect.addEventListener('change', applyFilters);
+  if (starterCheck) starterCheck.addEventListener('change', applyFilters);
+  if (legendaryCheck) legendaryCheck.addEventListener('change', applyFilters);
+</script>

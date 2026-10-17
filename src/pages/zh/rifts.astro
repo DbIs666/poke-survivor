@@ -1,0 +1,488 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import FAQ from '../../components/FAQ.astro';
+import TypeBadge from '../../components/TypeBadge.astro';
+import { itemListSchema } from '../../lib/schema';
+
+const title = 'PokeSurvivor 神秘裂縫攻略：18 個傳說寶可夢競技場打法、刷新時間、羈絆與獎勵完整整理';
+const description = 'PokeSurvivor 神秘裂縫攻略：裂縫開啟後只有 2 分鐘擊敗傳說寶可夢。完整整理刷新時間、獎勵、羈絆與全部 18 個傳說競技場打法及推薦夥伴。';
+const image = 'https://poke-survivors.org/images/pokesurvivor-rift-arenas.webp';
+const jsonLd: Array<Record<string, unknown>> = [
+  {
+    '@type': 'Article',
+    headline: title,
+    description,
+    datePublished: '2026-10-16',
+    dateModified: '2026-10-16',
+    author: { '@type': 'Organization', name: 'PokeSurvivor 粉絲攻略' },
+    publisher: { '@type': 'Organization', name: 'PokeSurvivor 粉絲攻略' },
+    inLanguage: 'zh-Hant',
+    image,
+    mainEntityOfPage: 'https://poke-survivors.org/zh/rifts/',
+  },
+];
+
+type Arena = { type: string; arena: string; terrain: string; weather: string; legends: string; tip: string };
+const arenas: Arena[] = [
+  { type: '一般', arena: '永恆草原', terrain: '柱子', weather: '無', legends: '雷吉奇卡斯、阿爾宙斯、美洛耶塔、屬性：空、銀伴戰獸、太樂巴戈斯',
+    tip: '沒有地形危害或天氣：純粹的閃避測試。躲在柱子後面打斷視線。一般系只對格鬥弱(×1.6)。幽靈夥伴受到一般攻擊只有 ×0.3，但幽靈招式對一般系也只有 ×0.3。' },
+  { type: '火', arena: '火成岩火山', terrain: '熔岩河流(灼傷)', weather: '大晴天', legends: '火焰鳥、炎帝、鳳王、席多藍恩、比克提尼、萊希拉姆、波爾凱尼恩、古玉魚',
+    tip: '大晴天讓火系提升到 ×1.5 並削弱水系到 ×0.5(水系造成 1.6 × 0.5 = 0.8，比中性還差)。岩石和地面保持完整的 ×1.6。火系夥伴對熔岩免疫。' },
+  { type: '水', arena: '海洋洞穴', terrain: '水坑(減速)', weather: '下雨', legends: '水君、蓋歐卡、帕路奇亞、霏歐納、瑪納霏、凱路迪歐、波爾凱尼恩、卡璞・鰭鰭',
+    tip: '下雨強化水系 ×1.5 和電系 ×1.2，並削弱火系一半。剋制的電系達到 1.6 × 1.2 = 1.92(程式碼會乘上屬性和天氣)。草系也是 ×1.6。在乾地上規劃逃脫路線。' },
+  { type: '草', arena: '翡翠叢林', terrain: '沼澤(大量減速)、樹木', weather: '無', legends: '時拉比、謝米、畢力吉翁、卡璞・哞哞、蕾冠王、厄鬼椪',
+    tip: '沼澤會大量減速。只有水系夥伴會忽略它(自 2026-10-10 起)，所以在樹木旁的硬地上放風箏。草系有五個弱點(火、冰、毒、飛行、蟲)，沒有天氣的情況下火系以完整的 ×1.6 運作。' },
+  { type: '電', arena: '電力工廠', terrain: '帶電水坑', weather: '下雨', legends: '閃電鳥、雷公、雷電雲、捷克羅姆、卡璞・鳴鳴、捷拉奧拉、雷吉艾勒奇',
+    tip: '電系和地面夥伴對帶電水坑免疫。地面是電系唯一的弱點，且受電系攻擊只有 ×0.3，所以地面夥伴是我們的選擇。下雨也強化傳說寶可夢的電系，並削弱火系一半。' },
+  { type: '冰', arena: '永恆冰川', terrain: '冰板(滑)', weather: '下雪', legends: '急凍鳥、雷吉艾斯、酋雷姆、雪暴馬',
+    tip: '在我們的跑中最難移動的競技場。下雪強化冰系，削弱並減速其他屬性，而且冰板很滑(冰系夥伴免疫)。火、格鬥、岩石和鋼都對冰系造成 ×1.6。提早閃避，因為你會滑動。' },
+  { type: '格鬥', arena: '古代道館', terrain: '許多柱子', weather: '無', legends: '勾帕路翁、代拉基翁、畢力吉翁、凱路迪歐、瑪夏多、藏瑪然特、熊徒弟、武道熊師、故勒頓',
+    tip: '柱子會阻擋投射物，所以追蹤的念力和迴旋鏢般的飛葉快刀勝過直線射擊，在我們看來。飛行、超能力和妖精是剋制，幽靈夥伴受格鬥攻擊只有 ×0.3。' },
+  { type: '毒', arena: '毒性沼澤', terrain: '毒水坑', weather: '無', legends: '無極汰那、猛惡菇、雉雞娜',
+    tip: '毒和鋼夥伴對毒水坑免疫，而鋼受毒攻擊只有 ×0.3，最安全的選擇。地面和超能力是剋制。無極汰那是龍系，猛惡菇是超能力系，所以抽籤決定競技場。' },
+  { type: '地面', arena: '紅色沙漠', terrain: '流沙', weather: '沙暴', legends: '固拉多、土地雲、基格爾德',
+    tip: '沙暴強化岩石、地面和鋼，並削弱其他所有屬性；帶光合作用或吃剩的東西。水、草和冰對地面造成 ×1.6，沒有雨或晴天的情況下，水系保持完整價值。避開流沙。' },
+  { type: '飛行', arena: '天空山峰', terrain: '雲樹', weather: '無', legends: '急凍鳥、閃電鳥、火焰鳥、洛奇亞、鳳王、烈空坐、龍捲雲、雷電雲、土地雲、伊裴爾塔爾、眷戀雲',
+    tip: '11 隻符合條件的傳說寶可夢。電、冰和岩石是剋制。地面夥伴受到閃電鳥或雷電雲的電系攻擊只有 ×0.3，但地面招式對飛行系只造成 ×0.3：僅防禦性。' },
+  { type: '超能力', arena: '心靈神殿', terrain: '粉紅水晶、柱子', weather: '無', legends: '超夢、夢幻、洛奇亞、時拉比、拉帝亞斯、拉帝歐斯、基拉祈、代歐奇希斯、由克希、艾姆利多、亞克諾姆、克雷色利亞、比克提尼、美洛耶塔、胡帕、卡璞・蝶蝶、科斯莫古、科斯莫姆、索爾迦雷歐、露奈雅拉、奈克洛茲瑪、蕾冠王、猛惡菇',
+    tip: '最大的池，有 23 隻符合條件的傳說寶可夢。蟲、幽靈和惡對超能力造成 ×1.6，惡夥伴受超能力攻擊只有 ×0.3。繞著水晶跑，而不是跑進角落。' },
+  { type: '蟲', arena: '蜂巢森林', terrain: '沼澤、高草', weather: '無', legends: '蓋諾賽克特',
+    tip: '蓋諾賽克特是唯一符合條件的傳說寶可夢。它是蟲/鋼，所以它也可能降落在鋼鐵堡壘，火系對兩種屬性都有效。在遠離沼澤的空地上戰鬥。' },
+  { type: '岩石', arena: '古代採石場', terrain: '柱子和岩石', weather: '沙暴', legends: '雷吉洛克、代拉基翁、蒂安希',
+    tip: '沙暴強化岩石，包括傳說寶可夢的攻擊，並削弱非岩石/地面/鋼玩家。岩石有五個弱點：水、草、格鬥、地面和鋼。地面或鋼夥伴避免削弱並造成 ×1.6。' },
+  { type: '幽靈', arena: '陰森墓地', terrain: '枯樹', weather: '霧', legends: '騎拉帝納、胡帕、露奈雅拉、瑪夏多、靈幽馬',
+    tip: '霧強化幽靈、妖精和超能力，包括傳說寶可夢的攻擊。幽靈和惡是剋制。避免一般和格鬥夥伴(×0.3)。使用枯樹作為掩護。' },
+  { type: '龍', arena: '龍之聖所', terrain: '龍炎(灼傷)', weather: '無', legends: '拉帝亞斯、拉帝歐斯、烈空坐、帝牙盧卡、帕路奇亞、騎拉帝納、萊希拉姆、捷克羅姆、酋雷姆、基格爾德、無極汰那、雷吉鐸拉戈、故勒頓',
+    tip: '火焰會灼傷。設計文件沒有列出免疫，但程式碼使用熔岩危害，所以火系夥伴在其中似乎安全(我們對程式碼的理解)。冰、龍和妖精是剋制，妖精夥伴受龍攻擊只有 ×0.3，我們最喜歡的選擇。' },
+  { type: '惡', arena: '黑暗小巷', terrain: '柱子', weather: '無', legends: '達克萊伊、伊裴爾塔爾、武道熊師、古玉魚',
+    tip: '格鬥、蟲和妖精對惡造成 ×1.6。超能力是陷阱選擇：它的招式對惡系只造成 ×0.3。沒有危害，所以專注在四個預告攻擊上。' },
+  { type: '鋼', arena: '鋼鐵堡壘', terrain: '許多柱子', weather: '無', legends: '雷吉斯奇魯、基拉祈、帝牙盧卡、席多藍恩、勾帕路翁、蓋諾賽克特、索爾迦雷歐、瑪機雅娜、美錄坦、美錄梅塔',
+    tip: '鋼抗許多屬性，所以帶火、格鬥或地面造成 ×1.6。許多柱子阻擋直線射擊。火、水、電和鋼夥伴抗鋼攻擊。' },
+  { type: '妖精', arena: '魔法森林', terrain: '粉紅樹木、噴泉', weather: '無', legends: '哲爾尼亞斯、蒂安希、卡璞・鳴鳴、卡璞・蝶蝶、卡璞・哞哞、卡璞・鰭鰭、瑪機雅娜、蒼響、眷戀雲、雉雞娜',
+    tip: '毒和鋼對妖精造成 ×1.6，而龍招式只造成 ×0.3，所以把龍夥伴留給另一個裂縫。沒有危害或天氣，這是較溫和的競技場之一。' },
+];
+
+/** 在建議命名夥伴屬性的競技場下顯示的內部連結。 */
+const partnerLinks: Record<string, string> = {
+  水: '電系和草系夥伴在這裡造成最多傷害；<a href="/zh/tier-list/">強度排行顯示伊布這類電系夥伴的排名</a>。',
+  地面: '水系初始夥伴在這裡很適合；我們的<a href="/zh/best-pokemon/">最強初始寶可夢推薦</a>解釋了水系選項的玩法。',
+  蟲: '火系可以應對兩個蓋諾賽克特競技場；<a href="/zh/best-pokemon/">初始夥伴推薦涵蓋了你可以開局使用的火系初始夥伴</a>。',
+};
+
+jsonLd.push(itemListSchema(
+  'PokeSurvivor 裂縫：18 個傳說競技場',
+  arenas.map((a) => ({ name: `${a.type}：${a.arena}`, url: `/zh/rifts/#arena-${a.type}`, description: `地形：${a.terrain}。天氣：${a.weather}。` })),
+  { ordered: false },
+));
+---
+
+<BaseLayout
+  title={title}
+  alternates={[
+    { locale: 'en', href: '/rifts/' },
+    { locale: 'zh-Hant', href: '/zh/rifts/' }
+  ]}
+  description={description}
+  locale="zh"
+  ogType="article"
+  ogImage="/images/pokesurvivor-rift-arenas.jpg"
+  ogImageAlt="18 個裂縫競技場的網格，每個都有一個符合條件的傳說寶可夢"
+  breadcrumbs={[
+    { name: '首頁', url: '/zh/' },
+    { name: '裂縫指南', url: '/zh/rifts/' },
+  ]}
+  preloadImage="/images/pokesurvivor-rift-arenas.webp"
+  jsonLd={jsonLd}
+>
+  <article class="guide">
+    <header class="guide-header">
+      <h1>PokeSurvivor 裂縫：傳說競技場與如何贏得它們</h1>
+      <p class="lead">
+        PokeSurvivor 裂縫是遊戲的傳說戰鬥。當神秘裂縫在地圖上開啟時，你走進去並有兩分鐘在其屬性的競技場中擊敗傳說寶可夢。勝利會給予羈絆、金幣和可能的扭蛋券，而且你隨時可以跳過。本指南涵蓋 PokeSurvivor 裂縫何時刷新、它們給什麼以及我們如何戰鬥所有 18 個競技場。規則來自官方來源，戰術是我們的意見。前往<a href="https://pokesurvivor.com/en/" rel="noopener">pokesurvivor.com</a>免費遊玩。
+      </p>
+      <p class="meta">更新：2026-10-16 · 非官方粉絲指南</p>
+      <figure>
+        <img
+          src="/images/pokesurvivor-rift-arenas.webp"
+          width="1300"
+          height="790"
+          loading="eager"
+          fetchpriority="high"
+          decoding="async"
+          alt="18 個裂縫競技場的網格，每個方塊顯示該屬性的一個符合條件的傳說寶可夢"
+        />
+        <figcaption>粉絲製作的概覽，每個競技場一個樣本傳說寶可夢。不是遊戲內截圖。圖像：SpriteCollab (CC BY-NC 4.0)。</figcaption>
+      </figure>
+    </header>
+
+    <nav class="toc" aria-label="本頁內容">
+      <p class="toc-title">本頁內容</p>
+      <ul>
+        <li><a href="#appear">當神秘裂縫出現</a></li>
+        <li><a href="#fight">進入與 2 分鐘戰鬥</a></li>
+        <li><a href="#rewards">獎勵、失敗與羈絆</a></li>
+        <li><a href="#arenas">所有 18 個裂縫競技場</a></li>
+        <li><a href="#how-to-fight">我們如何戰鬥每個競技場</a></li>
+        <li><a href="#general">裂縫技巧</a></li>
+        <li><a href="#faq">常見問題</a></li>
+      </ul>
+    </nav>
+
+    <section class="guide-section" id="appear">
+      <h2>當神秘裂縫出現</h2>
+      <p>
+        神秘裂縫是在正常跑中在地圖上開啟的傳送門，沒有選單、波數或等級要求。以下是遊戲程式碼如何排程 PokeSurvivor 裂縫，根據<a href="https://github.com/JPTER78/pokesurvivor" rel="noopener">官方原始碼</a>和<a href="https://pokesurvivor.com/en/news/" rel="noopener">官方新聞</a>：
+      </p>
+      <ul>
+        <li><strong>第一次檢查在 1:15。</strong>從跑的 1:15 開始，遊戲每 30 秒檢查一次裂縫。</li>
+        <li><strong>遞增機率。</strong>每次失敗檢查會提高下次機率：20%、40%、60%、80%，然後 100%，所以裂縫「至少每 2.5 分鐘出現」(官方新聞)。</li>
+        <li><strong>45 秒進入。</strong>裂縫保持開啟 45 秒，然後關閉。</li>
+        <li><strong>缺少的傳說寶可夢被加權。</strong>你還沒得到的會更頻繁出現。</li>
+        <li><strong>從 28:00 沒有裂縫。</strong>新的 PokeSurvivor 裂縫在 28:00 停止，在第 30 分鐘的阿爾宙斯之前。</li>
+      </ul>
+      <p>
+        所以正常跑在 28:00 之前顯示幾個 PokeSurvivor 裂縫，沒有一個是強制的。我們通常在 45 秒窗口期間先清除附近的波。
+      </p>
+    </section>
+
+    <section class="guide-section" id="fight">
+      <h2>進入傳說裂縫與 2 分鐘戰鬥</h2>
+      <p>
+        走進傳送門進入。戰鬥在 18 個屬性競技場之一中進行，每個都有自己的地形和天氣，持續 2 分鐘。像 BOSS 一樣，PokeSurvivor 裂縫中的傳說寶可夢有四個預告攻擊，並在半血時狂暴。地面標記(填充的圓圈和線條)顯示攻擊將降落的位置。
+      </p>
+      <p>
+        雙屬性傳說寶可夢會隨機選擇它的兩個屬性競技場之一。在合作中每個人一起進入，所以先叫出來。我們的<a href="/zh/co-op/">合作中裂縫和復活指南</a>解釋了 PokeSurvivor 裂縫在群組中如何運作。
+      </p>
+    </section>
+
+    <section class="guide-section" id="rewards">
+      <h2>裂縫獎勵、失敗與羈絆</h2>
+      <ul>
+        <li><strong>勝利：</strong>你獲得羈絆和金幣。官方傳說寶可夢頁面承諾 ×10 扭蛋券，但當前程式碼只有一半的時間掉落它，設計文件的 +3 券兩者都不匹配。</li>
+        <li><strong>失敗：</strong>如果每個玩家都倒下或 2 分鐘用完，你以 30% HP 回到地圖，沒有獎勵。跑繼續。</li>
+        <li><strong>羈絆：</strong>你在 PokeSurvivor 裂縫中擊敗的每個傳說寶可夢都會授予羈絆，將你的兩個招式連結，使兩者從一個槽位發射。你最多可以有 4 個羈絆。</li>
+      </ul>
+      <p>
+        羈絆是我們認真對待 PokeSurvivor 裂縫的原因：只有使用中的招式會發射，所以羈絆有效地使一個槽位加倍。失敗不花費跑，但在繁忙的地圖上 30% HP 是有風險的，所以我們在下一分鐘防禦性地玩。PokeSurvivor 裂縫首先值得羈絆，其次是 50% 的券。
+      </p>
+    </section>
+
+    <section class="guide-section" id="arenas">
+      <h2>所有 18 個裂縫競技場</h2>
+      <p>
+        PokeSurvivor 裂縫中的地形和天氣來自官方設計文件。傳說寶可夢欄列出<a href="https://pokesurvivor.com/en/legendaries/" rel="noopener">官方傳說寶可夢頁面</a>上該屬性的每個傳說寶可夢，所以雙屬性出現在它們的兩個競技場中。使用該頁面查看肖像和數據。它的標題說「87 隻傳說寶可夢」，但只列出 85 個條目，所以我們的表格使用這 85 隻。
+      </p>
+      <div class="data-table">
+        <table>
+          <caption>PokeSurvivor 裂縫：18 個競技場、地形、天氣和符合條件的傳說寶可夢(按屬性)</caption>
+          <thead>
+            <tr>
+              <th scope="col">屬性</th>
+              <th scope="col">競技場</th>
+              <th scope="col">地形</th>
+              <th scope="col">天氣</th>
+              <th scope="col">符合條件的傳說寶可夢(按屬性)</th>
+            </tr>
+          </thead>
+          <tbody>
+            {arenas.map((a) => (
+              <tr>
+                <th scope="row">{a.type}</th>
+                <td>{a.arena}</td>
+                <td>{a.terrain}</td>
+                <td>{a.weather}</td>
+                <td>{a.legends}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <h3>塑造每個競技場的規則</h3>
+      <p>四個規則適用於所有 PokeSurvivor 裂縫，無論屬性如何：</p>
+      <ul>
+        <li><strong>地形：</strong>「熔岩灼傷，冰很滑，水減速你」(官方傳說寶可夢頁面)。</li>
+        <li><strong>地形免疫：</strong>火對熔岩免疫，毒和鋼對毒免疫，電和地面對電擊水坑免疫，冰對冰免疫。傳說寶可夢永遠不會被自己的競技場傷害，自 2026-10-10 起，水系夥伴不會被水坑或沼澤減速。</li>
+        <li><strong>天氣：</strong>晴天給火系 ×1.5 和水系 ×0.5。雨給水系 ×1.5，電系 ×1.2 和火系 ×0.5。沙暴強化岩石、地面和鋼並削弱其他。雪強化冰並削弱和減速其他。霧強化幽靈、妖精和超能力。</li>
+        <li><strong>軟化的屬性表：</strong>剋制 ×1.6，不太有效 ×0.6，免疫 ×0.3，雙屬性上限 ×2.4，雙向應用。見<a href="https://pokesurvivor.com/en/types/" rel="noopener">官方屬性表</a>。</li>
+      </ul>
+    </section>
+
+    <section class="guide-section" id="how-to-fight">
+      <h2>我們如何戰鬥每個競技場</h2>
+      <p>
+        這是我們對 PokeSurvivor 裂縫的粉絲建議，建立在上述規則上。天氣影響所有人，你和敵人(設計文件 4.1 節)，戰鬥程式碼會乘上屬性和天氣值，所以 1.6 × 1.2 真的是 1.92。你夥伴的招式設定你造成的傷害，它的屬性設定你受到的傷害。
+      </p>
+      <div class="arena-filter" role="group" aria-label="按屬性篩選競技場" data-arena-filter hidden>
+        <label for="type-filter" class="sr-only">按屬性篩選</label>
+        <select id="type-filter" class="type-select">
+          <option value="all">全部 18 種屬性</option>
+          {arenas.map((a) => (
+            <option value={a.type}>{a.type}</option>
+          ))}
+        </select>
+      </div>
+      <p class="sr-only" aria-live="polite" data-arena-status></p>
+      <div class="arena-grid">
+        {arenas.map((a) => (
+          <section class="arena-card" id={`arena-${a.type}`} data-type={a.type} data-arena>
+            <div class="arena-card-header">
+              <h3>{a.arena}</h3>
+            </div>
+            <dl class="arena-facts">
+              <div><dt>地形：</dt><dd>{a.terrain}</dd></div>
+              <div><dt>天氣：</dt><dd>{a.weather}</dd></div>
+            </dl>
+            <p>{a.tip}</p>
+            {partnerLinks[a.type] && <p class="arena-link" set:html={partnerLinks[a.type]} />}
+          </section>
+        ))}
+      </div>
+    </section>
+
+    <section class="guide-section" id="general">
+      <h2>裂縫技巧</h2>
+      <ul class="tip-list">
+        <li><strong>健康地進入。</strong>失敗的裂縫戰鬥讓你留在 30% HP，所以我們不在 40% 時走進去。</li>
+        <li><strong>在你承諾之前閱讀屬性。</strong>在 PokeSurvivor 裂縫中，地形和天氣揭示傳說寶可夢的屬性。如果你的使用中招式被抗(×0.6)或接近免疫(×0.3)，如果可以的話切換槽位。</li>
+        <li><strong>尊重狂暴。</strong>傳說寶可夢在半血時狂暴，所以為該階段保留你的全部注意力。</li>
+        <li><strong>狩獵缺少的傳說寶可夢。</strong>它們被加權更頻繁出現，所以早期的 PokeSurvivor 裂縫快速填滿你的收藏。</li>
+      </ul>
+      <h3>將裂縫納入跑中</h3>
+      <p>
+        PokeSurvivor 裂縫從 1:15 開始，在 28:00 停止，與 BOSS 和第 30 分鐘的阿爾宙斯戰鬥共享時鐘。早期的 PokeSurvivor 裂縫在你的 HP 滿且地圖安靜時最安全。當你的 HP 低、BOSS 接近或你的招式還很弱時跳過：跑中後期的失敗會讓你在更繁忙的群眾中降到 30% HP，而且通常在 28:00 之前會開啟更多 PokeSurvivor 裂縫。
+      </p>
+      <p>
+        對於適合 PokeSurvivor 裂縫的夥伴，見我們的<a href="/zh/tier-list/">PokeSurvivor 強度排行上的夥伴排名</a>。對於操作和卡片，見<a href="/zh/how-to-play/">PokeSurvivor 如何遊玩的新手指南</a>。用中文閱讀？我們的<a href="/zh/" lang="zh-Hant">繁體中文攻略</a>有標記裂縫何時開啟的跑時間軸，加上英中對照詞彙表。
+      </p>
+    </section>
+
+    <FAQ
+      heading="PokeSurvivor 裂縫常見問題"
+      locale="zh"
+      items={[
+        { q: '如何解鎖裂縫？', a: '你不需要解鎖任何東西：神秘裂縫可以從任何跑的 1:15 開啟。在它開啟時走進去。' },
+        { q: '傳說裂縫持續多久？', a: '傳送門保持開啟 45 秒，裡面的戰鬥持續 2 分鐘。' },
+        { q: '如果我失敗會發生什麼？', a: '如果你失敗裂縫戰鬥，你以 30% HP 回到地圖，沒有獎勵。跑繼續。' },
+        { q: '為什麼我一直得到相同的傳說寶可夢？', a: '你還沒擊敗的傳說寶可夢被加權更頻繁出現，但選擇仍然是隨機的，所以重複會發生。' },
+        { q: '裂縫獎勵什麼？', a: '每次勝利給予羈絆和金幣，加上當前程式碼中 50% 的 ×10 扭蛋券機率。失敗不給任何東西。' },
+        { q: '我可以跳過裂縫嗎？', a: '可以，裂縫總是可選的。忽略傳送門，它會在 45 秒後關閉，只花費那個獎勵。' },
+      ]}
+    />
+
+    <aside class="sources" aria-labelledby="how-we-wrote">
+      <h2 id="how-we-wrote">這個裂縫指南的來源</h2>
+      <p>
+        我們是粉絲，不是開發者(jpter78)。PokeSurvivor 裂縫的時間點，加上獎勵、地形和天氣來自<a href="https://pokesurvivor.com/en/legendaries/" rel="noopener">官方傳說寶可夢頁面</a>、<a href="https://pokesurvivor.com/en/news/" rel="noopener">官方新聞</a>、<a href="https://pokesurvivor.com/en/types/" rel="noopener">官方屬性表</a>和官方<a href="https://github.com/JPTER78/pokesurvivor" rel="noopener">GitHub 儲存庫</a>(裂縫程式碼和設計文件)，於 2026-10-15 檢查。競技場建議是粉絲意見。PokéSurvivor 不隸屬於任天堂、GAME FREAK 或 The Pokémon Company。
+      </p>
+    </aside>
+  </article>
+</BaseLayout>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const select = document.getElementById('type-filter') as HTMLSelectElement | null;
+    const cards = document.querySelectorAll('[data-arena]');
+    const status = document.querySelector('[data-arena-status]') as HTMLElement | null;
+
+    if (!select || cards.length === 0) return;
+
+    document.querySelector('[data-arena-filter]')?.removeAttribute('hidden');
+
+    select.addEventListener('change', () => {
+      const selectedType = select.value;
+      let visibleCount = 0;
+      let total = 0;
+
+      cards.forEach((card) => {
+        const cardType = card.getAttribute('data-type');
+        const ok = selectedType === 'all' || cardType === selectedType;
+        card.classList.toggle('hidden', !ok);
+        total++;
+        if (ok) visibleCount++;
+      });
+
+      if (status) {
+        if (selectedType === 'all') {
+          status.textContent = '顯示全部 18 個競技場';
+        } else {
+          status.textContent = `顯示 ${visibleCount} 個競技場：${selectedType}`;
+        }
+      }
+    });
+  });
+</script>
+
+<style>
+  .guide { max-width: var(--container-narrow); margin: 0 auto; }
+
+  .guide h1 { font-size: clamp(1.9rem, 4.5vw, 2.6rem); line-height: 1.15; margin-bottom: 0.5rem; }
+  .guide h2 { font-size: clamp(1.35rem, 3vw, 1.75rem); color: var(--accent-primary); margin: 2.5rem 0 0.9rem; line-height: 1.25; }
+  .guide h3 { font-size: 1.1rem; margin: 1.4rem 0 0.4rem; }
+  .guide p, .guide li { color: var(--text-secondary); }
+  .guide p { margin-bottom: 1rem; }
+  .guide ul, .guide ol { padding-left: 1.4rem; margin-bottom: 1rem; }
+  .guide li { margin-bottom: 0.45rem; }
+  .guide strong { color: var(--text-primary); }
+
+  .guide-header h1 { font-size: var(--font-size-4xl); line-height: var(--leading-tight); }
+  .lead { font-size: var(--font-size-lg); color: var(--text-secondary); line-height: var(--leading-relaxed); }
+  .meta { color: var(--text-tertiary); font-size: var(--font-size-sm); margin-top: var(--space-2); }
+
+  figure { margin: var(--space-lg) 0; }
+  figure img { display: block; width: 100%; border-radius: var(--radius-md); }
+  figcaption { font-size: 0.88rem; color: var(--text-tertiary); margin-top: var(--space-2); text-align: center; }
+
+  .toc {
+    background: var(--surface-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: var(--space-md) var(--space-lg);
+    margin: var(--space-lg) 0;
+  }
+  .toc-title {
+    font-weight: var(--font-bold);
+    color: var(--text-primary);
+    margin-bottom: var(--space-sm);
+  }
+  .toc ul { margin: 0; padding-left: var(--space-md); }
+  .toc li { margin-bottom: var(--space-2); }
+
+  .data-table {
+    overflow-x: auto;
+    margin: var(--space-lg) 0;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+  }
+  .data-table table { width: 100%; border-collapse: collapse; font-size: var(--font-size-sm); }
+  .data-table caption { text-align: left; padding: var(--space-sm) var(--space-md); font-weight: var(--font-semibold); background: var(--surface-elevated); }
+  .data-table th, .data-table td { padding: var(--space-2) var(--space-md); text-align: left; border-bottom: 1px solid var(--border-subtle); }
+  .data-table thead th { background: var(--surface-elevated); color: var(--text-primary); font-weight: var(--font-semibold); }
+  .data-table tbody th { font-weight: var(--font-semibold); color: var(--text-primary); }
+  .data-table tbody td { color: var(--text-secondary); }
+  .data-table tbody tr:last-child th,
+  .data-table tbody tr:last-child td { border-bottom: none; }
+
+  .arena-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 350px), 1fr));
+    gap: var(--space-md);
+    margin: var(--space-lg) 0;
+  }
+
+  .arena-card {
+    background: var(--surface-elevated);
+    border: 1px solid var(--border-subtle);
+    border-left-width: 4px;
+    border-radius: var(--radius-md);
+    padding: var(--space-md);
+    transition: border-color var(--transition-fast);
+  }
+
+  .arena-card.hidden {
+    display: none;
+  }
+
+  .arena-card-header h3 {
+    font-size: var(--font-size-base);
+    margin: 0 0 var(--space-sm);
+    color: var(--text-primary);
+  }
+
+  .arena-filter {
+    margin: var(--space-lg) 0 var(--space-md);
+  }
+
+  .type-select {
+    width: 100%;
+    max-width: 300px;
+    padding: var(--space-2) var(--space-md);
+    font-size: var(--font-size-sm);
+    font-family: var(--font-sans);
+    color: var(--text-primary);
+    background: var(--surface-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+  }
+
+  .type-select:focus {
+    outline: 2px solid var(--focus-ring);
+    outline-offset: 2px;
+  }
+
+  .arena-facts {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-2) var(--space-md);
+    padding: var(--space-3);
+    background: var(--surface-base);
+    border-radius: var(--radius-sm);
+    margin-bottom: var(--space-sm);
+  }
+
+  .arena-facts div {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-2);
+  }
+
+  .arena-facts dt {
+    font-size: var(--font-size-xs);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-wide);
+    color: var(--text-tertiary);
+    font-weight: var(--font-medium);
+  }
+
+  .arena-facts dd {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    margin: 0;
+  }
+
+  .arena-card > p {
+    font-size: var(--font-size-sm);
+    line-height: var(--leading-normal);
+    margin-bottom: var(--space-sm);
+  }
+
+  .arena-card > p:last-child {
+    margin-bottom: 0;
+  }
+
+  .arena-link {
+    font-size: var(--font-size-sm);
+    padding-top: var(--space-sm);
+    border-top: 1px solid var(--border-subtle);
+  }
+
+  .tip-list {
+    list-style: none;
+    padding: 0;
+  }
+
+  .tip-list li {
+    padding-left: var(--space-sm);
+    position: relative;
+  }
+
+  .tip-list li::before {
+    content: "→";
+    position: absolute;
+    left: 0;
+    color: var(--accent-primary);
+  }
+
+  .sources {
+    margin-top: 2.5rem;
+    padding: var(--space-md) var(--space-lg);
+    background: var(--surface-elevated);
+    border-left: 3px solid var(--accent-primary);
+    border-radius: var(--radius-sm);
+  }
+
+  .sources h2 {
+    margin-top: 0;
+    font-size: var(--font-size-xl);
+  }
+</style>

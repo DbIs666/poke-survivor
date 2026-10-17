@@ -1,0 +1,173 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+const title = '免責聲明 | PokeSurvivor 繁體中文攻略';
+const description = 'PokéSurvivor 非官方粉絲攻略的法律免責聲明。這是一個非商業粉絲專案，與官方無關。';
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  locale="zh"
+  canonical="/zh/disclaimer/"
+  breadcrumbs={[
+    { name: '首頁', url: '/zh/' },
+    { name: '免責聲明', url: '/zh/disclaimer/' },
+  ]}
+>
+  <article class="content-article">
+    <h1>免責聲明</h1>
+    <p class="updated-date">最後更新：2026年10月17日</p>
+
+    <section>
+      <h2>非官方粉絲專案</h2>
+      <p>
+        <strong>poke-survivors.org</strong> 是一個<strong>非官方</strong>、非商業性質的粉絲創作攻略網站。本網站<strong>與以下各方均無關聯、未獲背書或贊助</strong>：
+      </p>
+      <ul>
+        <li>PokéSurvivor 網頁遊戲的開發者或發行商</li>
+        <li>任天堂株式會社（Nintendo Co., Ltd.）</li>
+        <li>GAME FREAK inc.</li>
+        <li>The Pokémon Company International, Inc.</li>
+        <li>Creatures Inc.</li>
+      </ul>
+      <p>
+        本網站上出現的所有商標、服務標誌、商品名稱、產品名稱和標誌均為其各自所有者的財產。
+      </p>
+    </section>
+
+    <section>
+      <h2>寶可夢版權</h2>
+      <p>
+        Pokémon（寶可夢）和寶可夢角色名稱是任天堂、GAME FREAK 和 The Pokémon Company
+        的商標。本粉絲攻略旨在幫助玩家享受一款受寶可夢啟發的免費網頁遊戲。我們尊重商標持有者的權利，不對任何寶可夢智慧財產權主張所有權。
+      </p>
+    </section>
+
+    <section>
+      <h2>PokéSurvivor 遊戲</h2>
+      <p>
+        官方 PokéSurvivor 遊戲位於
+        <a href="https://pokesurvivor.com/" rel="noopener"
+          >pokesurvivor.com</a
+        >。本網站提供有關該遊戲的攻略和資訊，但並非官方來源。如需官方公告、更新和支援，請訪問官方遊戲網站。
+      </p>
+    </section>
+
+    <section>
+      <h2>內容準確性</h2>
+      <p>
+        我們致力於提供準確和最新的資訊，但本網站由粉絲維護，可能包含錯誤或過時資訊。PokéSurvivor
+        遊戲正在積極開發和更新中，因此隨著遊戲演進，某些攻略內容可能會過時。
+      </p>
+      <p>
+        <strong>使用本攻略需自行承擔風險。</strong>我們不對遵循本網站提供的建議或策略而產生的任何後果負責。
+      </p>
+    </section>
+
+    <section>
+      <h2>圖像歸屬</h2>
+      <p>
+        本網站上的寶可夢圖像來自
+        <a href="https://github.com/PMDCollab/SpriteCollab" rel="noopener"
+          >PMD SpriteCollab</a
+        >，並根據
+        <a
+          href="https://creativecommons.org/licenses/by-nc/4.0/"
+          rel="noopener license"
+          >創用 CC 姓名標示-非商業性 4.0 國際授權條款</a
+        >
+        (CC BY-NC 4.0) 使用。這些圖像是粉絲製作的美術作品，並非官方寶可夢素材。
+      </p>
+    </section>
+
+    <section>
+      <h2>外部連結</h2>
+      <p>
+        本網站包含指向外部網站的連結以供參考和便利。我們不對外部網站的內容、隱私做法或可用性負責。訪問外部連結需自行承擔風險。
+      </p>
+    </section>
+
+    <section>
+      <h2>無擔保</h2>
+      <p>
+        本網站及其內容按「現狀」提供，不提供任何明示或暗示的擔保。我們不對網站或其內容的準確性、完整性、可靠性或可用性作出任何陳述或擔保。
+      </p>
+    </section>
+
+    <section>
+      <h2>合理使用</h2>
+      <p>
+        本粉絲攻略是為了資訊和教育目的而創建的。我們相信我們對遊戲資訊、截圖和相關內容的使用構成適用版權法下的合理使用。如果您是權利持有者並認為本網站上的內容侵犯了您的權利，請與我們聯絡，以便我們處理您的疑慮。
+      </p>
+    </section>
+
+    <section>
+      <h2>聯絡方式</h2>
+      <p>
+        如對本免責聲明有疑問、疑慮或撤除請求，請透過本專案的
+        <a href="https://github.com/pokesurvivor-fan/poke-survivors.org" rel="noopener"
+          >GitHub 儲存庫</a
+        >（如適用）或本網站提供的其他聯絡方式與我們聯絡。
+      </p>
+    </section>
+  </article>
+</BaseLayout>
+
+<style>
+  .content-article {
+    max-width: 70ch;
+    margin: 0 auto;
+    padding: var(--space-lg) var(--space-md);
+  }
+
+  .updated-date {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    margin-top: -0.5rem;
+    margin-bottom: var(--space-lg);
+  }
+
+  h1 {
+    font-size: clamp(2rem, 5vw, 2.5rem);
+    margin-bottom: var(--space-sm);
+  }
+
+  h2 {
+    margin-top: var(--space-xl);
+    margin-bottom: var(--space-md);
+    font-size: clamp(1.5rem, 4vw, 1.75rem);
+  }
+
+  section {
+    margin-bottom: var(--space-lg);
+  }
+
+  p {
+    line-height: 1.7;
+    margin-bottom: var(--space-md);
+  }
+
+  ul {
+    margin: var(--space-md) 0;
+    padding-left: var(--space-lg);
+    line-height: 1.7;
+  }
+
+  li {
+    margin-bottom: var(--space-sm);
+  }
+
+  a {
+    color: var(--accent-primary);
+    text-decoration: underline;
+    text-underline-offset: 0.15em;
+  }
+
+  a:hover {
+    color: var(--accent-bright);
+  }
+
+  strong {
+    font-weight: 600;
+  }
+</style>

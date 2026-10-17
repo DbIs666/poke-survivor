@@ -1,0 +1,1400 @@
+/*
+=== PokeSurvivor Design System Quick Reference ===
+
+COLORS & TOKENS
+--surface-deep      #05070C   body background
+--surface-base      #0A0D12   header/footer
+--surface-elevated  #0F131C   cards, panels (base layer)
+--surface-card      #161D2B   interactive cards
+--surface-hover     #1E2636   hover state
+--text-primary      #F8FAFC   headings, emphasis
+--text-secondary    #CBD5E1   body copy (default)
+--text-tertiary     #94A3B8   supporting text
+--text-muted        #7C8BA1   least emphasis (AA on deep)
+--accent-primary    #38BDF8   links, primary CTAs
+--action-primary    #F97316   action buttons
+
+TYPE COLORS (all 18 types in :root as --type-*)
+fire water electric grass ice fighting poison ground flying
+psychic bug rock ghost dragon dark steel fairy normal
+
+TIER COLORS
+--tier-s  red     --tier-s-glow
+--tier-a  orange  --tier-a-glow
+--tier-b  yellow  --tier-b-glow
+--tier-c  green   --tier-c-glow
+
+SPACING (fluid clamp)
+--space-xs   8-12px   --space-sm  12-16px  --space-md  16-24px
+--space-lg  24-32px   --space-xl  32-48px  --space-2xl 48-64px
+(fixed --space-1..16 for micro spacing)
+
+TYPOGRAPHY
+--font-sans     body copy (system stack)
+--font-display  headings / stat numbers (Trebuchet MS stack, bold)
+--font-mono     code
+--font-size-xs/sm/base/lg/xl/2xl/3xl/4xl  (fluid clamp)
+
+RADIUS
+--radius-sm .5rem  --radius-md .75rem  --radius-lg 1rem
+--radius-pill 999px  --radius-circle 50%
+
+LAYOUT CLASSES
+.container      max 1280px centered
+.grid           CSS grid gap:--space-md
+.grid-2/3/4     auto-fit minmax grids
+.flex / .flex-col / .items-center / .justify-between / .gap-4
+
+COMPONENTS
+
+CARD
+.card                   base card (--surface-card, rounded, border)
+.card.card-interactive  hover lift + cursor
+.card.card-stat         centered stat display
+.card.card-pokemon      grid: sprite + content
+
+BUTTON
+.btn                pill button (baseline)
+.btn-primary        orange solid (dark text ~7.2:1)
+.btn-secondary      dark surface + border
+.btn-ghost          accent border + transparent
+.btn-accent         blue solid
+.btn-sm             compact
+.btn-lg             larger
+.btn:disabled       50% opacity + no hover
+add icon with gap:--space-2
+
+BADGE
+.badge                  pill badge (default accent)
+.badge-tier-s/a/b/c     tier colors
+.badge-type type-fire   Pokemon type (tinted, AA contrast)
+[data-type="fire"]      alt syntax
+.badge-type-solid       dark text on solid color (for headers)
+.badge-success/warning/error   status colors
+
+TYPE BADGE component: <TypeBadge type="fire" solid />
+
+STAT DISPLAYS
+.stat-tiles                    grid of stat tiles
+.stat-tile                     centered big-number card
+  .stat-tile-value             large display number
+  .stat-tile-label             uppercase label
+.stat-chip                     inline HUD pill
+  .stat-chip-key               uppercase key
+.stat-list                     dl-based key/value list
+.stat-bar --value:72           progress bar (0-100)
+
+FORMS
+.input / .select / .textarea   form controls (outlined)
+.search-input                  magnifying glass icon
+.form-label                    label for above
+
+TABLE
+.table-wrap                    overflow wrapper
+table / thead / tbody          styled with borders
+th                             uppercase small caps
+
+SPRITES
+<Sprite dex={25} name="Pikachu" size={64} />
+.sprite                        pixelated rendering
+
+LAYOUT (rendered by BaseLayout.astro)
+.site-header                   sticky nav
+.site-logo                     logo + text
+.nav-links                     horizontal nav
+.breadcrumbs                   › separator
+.site-main                     main content
+.site-footer                   grid footer
+
+ACCESSIBILITY
+.sr-only                       screen-reader only
+.skip-link                     skip to main
+--focus-ring                   #FDE047 yellow
+
+LEGACY ALIASES (migrate then delete)
+--surface-0..4, --accent, --spacing-xs/sm/md/lg/xl, --radius-full,
+--color-*, all map to new names
+
+MIGRATION NOTES
+- DO NOT define new tokens in page <style> blocks
+- Use class="badge badge-tier-s" not custom tier CSS
+- Sprites are 40x40 PNG in public/sprites/{dex}.png
+- Type badges: tinted default, .badge-type-solid for headers
+- Button contrast: --action-primary (orange) passes AA with dark text
+- .stat-value/.stat-pill old names collide; use .stat-tile-value etc
+*/
+
+/* ============================================== */
+/* DESIGN SYSTEM - PokeSurvivor Fan Guide */
+/* Dark theme inspired by pokesurvivor.org */
+/* ============================================== */
+
+:root {
+  /* ============================================== */
+  /* COLOR PALETTE - Dark Navy/Graphite Foundation */
+  /* Deep stepped surfaces with cool tint */
+  /* ============================================== */
+
+  /* Surface Layers - 5 steps from near-black to elevated */
+  --surface-deep: #05070C;      /* Deepest background - 3% lightness */
+  --surface-base: #0A0D12;      /* Base page background - 5% */
+  --surface-elevated: #0F131C;  /* Cards, panels - 8% */
+  --surface-card: #161D2B;      /* Interactive cards - 11% */
+  --surface-hover: #1E2636;     /* Hover states - 14% */
+
+  /* Text Hierarchy */
+  --text-primary: #F8FAFC;      /* Headings, high emphasis - ~98% */
+  --text-secondary: #CBD5E1;    /* Body copy - ~85% */
+  --text-tertiary: #94A3B8;     /* Supporting text - ~65% */
+  --text-muted: #7C8BA1;        /* Least emphasis; ~5.6:1 on --surface-deep (AA) */
+
+  /* Borders */
+  --border-subtle: #1E293B;     /* Dividers, card edges */
+  --border-base: #334155;       /* Input borders */
+  --border-focus: #475569;      /* Focus states */
+
+  /* Primary Accent - Cool Electric Sky Blue */
+  --accent-primary: #38BDF8;
+  --accent-hover: #0EA5E9;
+  --accent-active: #0284C7;
+  --accent-subtle: rgba(56, 189, 248, 0.1);
+  --accent-glow: rgba(56, 189, 248, 0.2);
+
+  /* Secondary Action - Warm Orange */
+  --action-primary: #F97316;
+  --action-hover: #EA580C;
+  --action-active: #C2410C;
+
+  /* Status Colors */
+  --status-success: #4FD1C5;
+  --status-warning: #F59E0B;
+  --status-error: #EF4444;
+  --status-info: #3B82F6;
+
+  /* Focus Indicator - High contrast yellow */
+  --focus-ring: #FDE047;
+
+  /* ============================================== */
+  /* TIER COLORS - Game ranking system */
+  /* ============================================== */
+  --tier-s: #FF4757;            /* S-tier red */
+  --tier-s-glow: rgba(255, 71, 87, 0.15);
+  --tier-s-text: #FF7A85;       /* S red for small text on dark: 5.7:1 */
+  --tier-a: #FFA502;            /* A-tier orange */
+  --tier-a-glow: rgba(255, 165, 2, 0.15);
+  --tier-b: #FFD93D;            /* B-tier yellow */
+  --tier-b-glow: rgba(255, 217, 61, 0.15);
+  --tier-c: #6BCF7F;            /* C-tier green */
+  --tier-c-glow: rgba(107, 207, 127, 0.15);
+
+  /* ============================================== */
+  /* POKEMON TYPE COLORS - All 18 types */
+  /* Based on official Pokemon color scheme */
+  /* ============================================== */
+  --type-normal: #A8A878;
+  --type-fire: #F08030;
+  --type-water: #6890F0;
+  --type-electric: #F8D030;
+  --type-grass: #78C850;
+  --type-ice: #98D8D8;
+  --type-fighting: #C03028;
+  --type-poison: #A040A0;
+  --type-ground: #E0C068;
+  --type-flying: #A890F0;
+  --type-psychic: #F85888;
+  --type-bug: #A8B820;
+  --type-rock: #B8A038;
+  --type-ghost: #705898;
+  --type-dragon: #7038F8;
+  --type-dark: #705848;
+  --type-steel: #B8B8D0;
+  --type-fairy: #EE99AC;
+
+  /* ============================================== */
+  /* SPACING SCALE - Fluid responsive */
+  /* Uses clamp() for smooth scaling across viewports */
+  /* ============================================== */
+  --space-xs: clamp(0.5rem, 1vw, 0.75rem);      /* 8-12px */
+  --space-sm: clamp(0.75rem, 1.5vw, 1rem);      /* 12-16px */
+  --space-md: clamp(1rem, 2vw, 1.5rem);         /* 16-24px */
+  --space-lg: clamp(1.5rem, 3vw, 2rem);         /* 24-32px */
+  --space-xl: clamp(2rem, 4vw, 3rem);           /* 32-48px */
+  --space-2xl: clamp(3rem, 6vw, 4rem);          /* 48-64px */
+
+  /* Fixed spacing for components (no fluid scaling) */
+  --space-1: 0.25rem;   /* 4px */
+  --space-2: 0.5rem;    /* 8px */
+  --space-3: 0.75rem;   /* 12px */
+  --space-4: 1rem;      /* 16px */
+  --space-6: 1.5rem;    /* 24px */
+  --space-8: 2rem;      /* 32px */
+  --space-12: 3rem;     /* 48px */
+  --space-16: 4rem;     /* 64px */
+
+  /* ============================================== */
+  /* TYPOGRAPHY - Fluid scale with custom properties */
+  /* Font families referenced via var() only */
+  /* ============================================== */
+
+  /* Font Families */
+  --font-sans: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+               'Ubuntu', 'Cantarell', 'Microsoft JhengHei', 'PingFang TC', sans-serif;
+  /* Display face for headings/stat numbers: system stack, no web-font download.
+     Heavy weight + tight tracking gives the "game UI" look. */
+  --font-display: 'Trebuchet MS', 'Segoe UI', system-ui, -apple-system, 'Microsoft JhengHei', 'PingFang TC', sans-serif;
+  --font-mono: 'IBM Plex Mono', 'SF Mono', Monaco, 'Cascadia Code', 'Consolas', monospace;
+
+  /* Font Sizes - Fluid responsive with clamp() */
+  --font-size-xs: clamp(0.75rem, 0.7rem + 0.25vw, 0.875rem);       /* 12-14px */
+  --font-size-sm: clamp(0.875rem, 0.825rem + 0.25vw, 1rem);        /* 14-16px */
+  --font-size-base: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);       /* 16-18px */
+  --font-size-lg: clamp(1.125rem, 1.05rem + 0.375vw, 1.25rem);     /* 18-20px */
+  --font-size-xl: clamp(1.25rem, 1.15rem + 0.5vw, 1.5rem);         /* 20-24px */
+  --font-size-2xl: clamp(1.5rem, 1.35rem + 0.75vw, 2rem);          /* 24-32px */
+  --font-size-3xl: clamp(1.875rem, 1.65rem + 1.125vw, 2.5rem);     /* 30-40px */
+  --font-size-4xl: clamp(2.25rem, 1.95rem + 1.5vw, 3rem);          /* 36-48px */
+
+  /* Line Heights */
+  --leading-tight: 1.2;       /* Display sizes */
+  --leading-snug: 1.375;      /* Headings */
+  --leading-normal: 1.5;      /* Body copy default */
+  --leading-relaxed: 1.625;   /* Long-form content */
+
+  /* Font Weights */
+  --font-normal: 400;
+  --font-medium: 500;
+  --font-semibold: 600;
+  --font-bold: 700;
+
+  /* Letter Spacing */
+  --tracking-tight: -0.02em;  /* Large headings */
+  --tracking-normal: 0;
+  --tracking-wide: 0.02em;    /* Small caps, badges */
+
+  /* ============================================== */
+  /* BORDER RADIUS - Rounded geometric system */
+  /* Fully rounded pills and circles for modern look */
+  /* ============================================== */
+  --radius-sm: 0.5rem;    /* 8px - Small elements */
+  --radius-md: 0.75rem;   /* 12px - Cards, inputs */
+  --radius-lg: 1rem;      /* 16px - Large cards */
+  --radius-xl: 1.5rem;    /* 24px - Hero cards */
+  --radius-pill: 999px;   /* Full pill - buttons, badges */
+  --radius-circle: 50%;   /* Perfect circle - avatars, icons */
+
+  /* ============================================== */
+  /* SHADOWS - Depth hierarchy */
+  /* Deep shadows for dark theme */
+  /* ============================================== */
+  --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.4);
+  --shadow-base: 0 1px 3px 0 rgba(0, 0, 0, 0.4), 0 1px 2px -1px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.6);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5);
+  --shadow-glow: 0 0 20px var(--accent-glow);
+
+  /* ============================================== */
+  /* TRANSITIONS - Smooth interactions */
+  /* ============================================== */
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-base: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-bounce: 400ms cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* ============================================== */
+  /* LAYOUT TOKENS */
+  /* ============================================== */
+  --container-max: 1280px;
+  --container-wide: 1400px;
+  --container-narrow: 900px;
+  --container-padding: var(--space-md);
+  --grid-gap: var(--space-md);
+  --header-height: 3.75rem;
+  --z-header: 100;
+  --z-overlay: 200;
+  --z-skip: 1000;
+
+  /* ============================================== */
+  /* LEGACY ALIASES - DO NOT USE IN NEW CODE */
+  /* Existing page <style> blocks reference these names. */
+  /* They map onto the tokens above so old and new pages */
+  /* stay visually consistent. Migrate, then delete. */
+  /* ============================================== */
+  --surface-0: var(--surface-deep);
+  --surface-1: var(--surface-base);
+  --surface-2: var(--surface-elevated);
+  --surface-3: var(--surface-card);
+  --surface-4: var(--surface-hover);
+  --accent: var(--accent-primary);
+  --accent-muted: #1E40AF;
+  --focus: var(--focus-ring);
+  --spacing-xs: 0.5rem;
+  --spacing-sm: 1rem;
+  --spacing-md: 1.5rem;
+  --spacing-lg: 2rem;
+  --spacing-xl: 3rem;
+  --radius-full: var(--radius-pill);
+  --color-bg-deep: var(--surface-deep);
+  --color-bg-elevated: var(--surface-elevated);
+  --color-bg-surface: var(--surface-card);
+  --color-bg-hover: var(--surface-hover);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-border-subtle: var(--border-subtle);
+  --color-border-base: var(--border-base);
+  --color-border-focus: var(--border-focus);
+  --color-accent-primary: var(--accent-primary);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-subtle: var(--accent-subtle);
+  --color-action-primary: var(--action-primary);
+  --color-action-hover: var(--action-hover);
+}
+
+/* ============================================== */
+/* RESET & BASE STYLES */
+/* ============================================== */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  scroll-behavior: smooth;
+  font-family: var(--font-sans);
+  background: var(--surface-deep);
+  color: var(--text-primary);
+}
+
+/* Enhanced line-height for Chinese/Traditional Chinese */
+html:lang(zh), html:lang(zh-Hant) {
+  line-height: 1.8;
+}
+
+body {
+  font-size: var(--font-size-base);
+  line-height: var(--leading-normal);
+  color: var(--text-secondary);
+  background-color: var(--surface-deep);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ============================================== */
+/* TYPOGRAPHY ELEMENTS */
+/* ============================================== */
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+  font-weight: var(--font-bold);
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-tight);
+  color: var(--text-primary);
+}
+
+h1 {
+  font-size: var(--font-size-4xl);
+  margin-bottom: var(--space-lg);
+}
+
+h2 {
+  font-size: var(--font-size-3xl);
+  margin-bottom: var(--space-md);
+}
+
+h3 {
+  font-size: var(--font-size-2xl);
+  margin-bottom: var(--space-md);
+}
+
+h4 {
+  font-size: var(--font-size-xl);
+  margin-bottom: var(--space-sm);
+}
+
+h5 {
+  font-size: var(--font-size-lg);
+  margin-bottom: var(--space-sm);
+}
+
+h6 {
+  font-size: var(--font-size-base);
+  margin-bottom: var(--space-xs);
+  font-weight: var(--font-semibold);
+}
+
+p {
+  margin-bottom: var(--space-md);
+  color: var(--text-secondary);
+  line-height: var(--leading-relaxed);
+}
+
+/* Lead paragraph - larger, higher emphasis */
+.lead {
+  font-size: var(--font-size-lg);
+  color: var(--text-primary);
+  line-height: var(--leading-relaxed);
+}
+
+a {
+  color: var(--accent-primary);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+a:hover {
+  color: var(--accent-hover);
+}
+
+a:focus-visible {
+  border-radius: var(--radius-sm);
+}
+
+strong, b {
+  font-weight: var(--font-bold);
+  color: var(--text-primary);
+}
+
+em, i {
+  font-style: italic;
+}
+
+code, kbd, samp {
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+  font-variant-numeric: tabular-nums;
+}
+
+code {
+  background-color: var(--surface-elevated);
+  padding: 0.125rem 0.375rem;
+  border-radius: var(--radius-sm);
+  color: var(--accent-primary);
+  border: 1px solid var(--border-subtle);
+}
+
+pre {
+  background-color: var(--surface-elevated);
+  padding: var(--space-md);
+  border-radius: var(--radius-md);
+  overflow-x: auto;
+  margin-bottom: var(--space-md);
+  border: 1px solid var(--border-subtle);
+}
+
+pre code {
+  background: none;
+  padding: 0;
+  border: none;
+  color: var(--text-secondary);
+}
+
+/* Lists */
+ul, ol {
+  padding-left: 1.5rem;
+  margin-bottom: var(--space-md);
+}
+
+li {
+  margin-bottom: 0.5rem;
+  color: var(--text-secondary);
+}
+
+/* ============================================== */
+/* LAYOUT UTILITIES */
+/* ============================================== */
+
+.container {
+  max-width: var(--container-max);
+  margin-inline: auto;
+  padding-inline: var(--container-padding);
+}
+
+.container-wide {
+  max-width: var(--container-wide);
+  margin-inline: auto;
+  padding-inline: var(--container-padding);
+}
+
+.container-narrow {
+  max-width: var(--container-narrow);
+  margin-inline: auto;
+  padding-inline: var(--container-padding);
+}
+
+/* ============================================== */
+/* GRID SYSTEM - CSS Grid for layout */
+/* ============================================== */
+
+.grid {
+  display: grid;
+  gap: var(--grid-gap);
+}
+
+/* Responsive auto-fit grids */
+.grid-2 {
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+.grid-3 {
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.grid-4 {
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+}
+
+.grid-5 {
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+}
+
+/* Fixed column grids */
+.grid-cols-2 { grid-template-columns: repeat(2, 1fr); }
+.grid-cols-3 { grid-template-columns: repeat(3, 1fr); }
+.grid-cols-4 { grid-template-columns: repeat(4, 1fr); }
+
+/* ============================================== */
+/* FLEXBOX UTILITIES */
+/* ============================================== */
+
+.flex { display: flex; }
+.flex-col { flex-direction: column; }
+.flex-wrap { flex-wrap: wrap; }
+.items-start { align-items: flex-start; }
+.items-center { align-items: center; }
+.items-end { align-items: flex-end; }
+.justify-start { justify-content: flex-start; }
+.justify-center { justify-content: center; }
+.justify-end { justify-content: flex-end; }
+.justify-between { justify-content: space-between; }
+.gap-1 { gap: var(--space-1); }
+.gap-2 { gap: var(--space-2); }
+.gap-3 { gap: var(--space-3); }
+.gap-4 { gap: var(--space-4); }
+.gap-6 { gap: var(--space-6); }
+.gap-8 { gap: var(--space-8); }
+
+/* ============================================== */
+/* COMPONENT LIBRARY */
+/* ============================================== */
+
+/*
+  CARD COMPONENT
+  Default card with hover lift effect
+  Variants: .card-interactive, .card-stat, .card-pokemon
+*/
+.card {
+  background-color: var(--surface-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: var(--space-md);
+  transition: all var(--transition-base);
+}
+
+.card-interactive {
+  cursor: pointer;
+}
+
+.card-interactive:hover {
+  background-color: var(--surface-hover);
+  border-color: var(--border-base);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+/* Stat card: use .card.card-stat with .stat-tile-value / .stat-tile-label inside */
+.card-stat {
+  text-align: center;
+  padding: var(--space-lg);
+}
+
+/* Pokemon card with sprite and type badges */
+.card-pokemon {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--space-md);
+  align-items: start;
+}
+
+.card-pokemon img {
+  width: 64px;
+  height: 64px;
+  image-rendering: pixelated;
+}
+
+/*
+  BUTTON COMPONENT
+  Fully rounded pills with icon support
+  Variants: .btn-primary, .btn-secondary, .btn-ghost, .btn-sm
+*/
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-6);
+  font-family: var(--font-sans);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-medium);
+  line-height: 1;
+  border-radius: var(--radius-pill);
+  border: none;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.btn-primary {
+  background-color: var(--action-primary);
+  color: var(--surface-deep); /* dark on orange = ~7.6:1; white would fail AA */
+  font-weight: var(--font-bold);
+}
+
+.btn-primary:hover,
+.btn-primary:focus-visible {
+  color: var(--surface-deep);
+}
+
+.btn-primary:hover {
+  background-color: var(--action-hover);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-base);
+}
+
+.btn-primary:active {
+  background-color: var(--action-active);
+  transform: translateY(0);
+}
+
+.btn-secondary {
+  background-color: var(--surface-elevated);
+  color: var(--text-primary);
+  border: 1px solid var(--border-base);
+}
+
+.btn-secondary:hover {
+  background-color: var(--surface-hover);
+  border-color: var(--border-focus);
+}
+
+.btn-ghost {
+  background-color: transparent;
+  color: var(--accent-primary);
+  border: 1px solid var(--accent-primary);
+}
+
+.btn-ghost:hover {
+  background-color: var(--accent-subtle);
+  color: var(--accent-primary);
+}
+
+/* Accent (blue) solid button for in-page CTAs */
+.btn-accent {
+  background-color: var(--accent-primary);
+  color: var(--surface-deep);
+  font-weight: var(--font-bold);
+}
+
+.btn-accent:hover {
+  background-color: var(--accent-hover);
+  color: var(--surface-deep);
+}
+
+.btn-lg {
+  padding: var(--space-4) var(--space-8);
+  font-size: var(--font-size-lg);
+}
+
+.btn:disabled,
+.btn[aria-disabled="true"] {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Minimum 44px touch target on coarse pointers */
+@media (pointer: coarse) {
+  .btn { min-height: 44px; }
+}
+
+.btn-sm {
+  padding: var(--space-2) var(--space-4);
+  font-size: var(--font-size-sm);
+}
+
+/*
+  BADGE COMPONENT
+  Compact labels for status, types, tiers
+  Variants: .badge-tier-*, .badge-type-*, .badge-status
+*/
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-1) var(--space-3);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-semibold);
+  letter-spacing: var(--tracking-wide);
+  border-radius: var(--radius-pill);
+  background-color: var(--accent-subtle);
+  color: var(--accent-primary);
+  border: 1px solid var(--accent-primary);
+  white-space: nowrap;
+}
+
+/* Tier badges with tier colors */
+.badge-tier-s {
+  background-color: var(--tier-s-glow);
+  color: var(--tier-s-text); /* lighter red so text passes AA on the glow fill */
+  border-color: var(--tier-s);
+}
+
+.badge-tier-a {
+  background-color: var(--tier-a-glow);
+  color: var(--tier-a);
+  border-color: var(--tier-a);
+}
+
+.badge-tier-b {
+  background-color: var(--tier-b-glow);
+  color: var(--tier-b);
+  border-color: var(--tier-b);
+}
+
+.badge-tier-c {
+  background-color: var(--tier-c-glow);
+  color: var(--tier-c);
+  border-color: var(--tier-c);
+}
+
+/*
+  Pokemon type badges
+  Tinted style: type-colored border + 18% fill + lightened text.
+  Dark types (fighting, poison, ghost, dark) use 70% white mix for WCAG AA
+  contrast (>=4.5:1) on --surface-card (#161D2B) background.
+  Other types use 55% white mix.
+  Usage (either form):
+    <span class="badge badge-type" data-type="fire">Fire</span>
+    <span class="badge badge-type type-fire">Fire</span>
+*/
+.badge-type {
+  --type-color: var(--type-normal);
+  padding: var(--space-1) var(--space-3);
+  font-weight: var(--font-bold);
+  color: color-mix(in srgb, var(--type-color) 45%, white 55%);
+  background-color: color-mix(in srgb, var(--type-color) 18%, transparent);
+  border: 1px solid color-mix(in srgb, var(--type-color) 70%, transparent);
+}
+
+/* Dark types get 70% white for WCAG AA contrast */
+.badge-type:is(.type-fighting, .type-poison, .type-ghost, .type-dark,
+  [data-type="fighting"], [data-type="poison"], [data-type="ghost"], [data-type="dark"]) {
+  color: color-mix(in srgb, var(--type-color) 30%, white 70%);
+}
+
+/* Solid variant for large display (sprite headers).
+   Dark text on light types, white text on the five deep types (all >= 5.6:1). */
+.badge-type-solid {
+  color: var(--surface-deep);
+  background-color: var(--type-color);
+  border-color: var(--type-color);
+}
+.badge-type-solid:is(.type-fighting, .type-poison, .type-ghost, .type-dragon, .type-dark,
+  [data-type="fighting"], [data-type="poison"], [data-type="ghost"], [data-type="dragon"], [data-type="dark"]) {
+  color: #FFFFFF;
+}
+
+.type-normal,   [data-type="normal"]   { --type-color: var(--type-normal); }
+.type-fire,     [data-type="fire"]     { --type-color: var(--type-fire); }
+.type-water,    [data-type="water"]    { --type-color: var(--type-water); }
+.type-electric, [data-type="electric"] { --type-color: var(--type-electric); }
+.type-grass,    [data-type="grass"]    { --type-color: var(--type-grass); }
+.type-ice,      [data-type="ice"]      { --type-color: var(--type-ice); }
+.type-fighting, [data-type="fighting"] { --type-color: var(--type-fighting); }
+.type-poison,   [data-type="poison"]   { --type-color: var(--type-poison); }
+.type-ground,   [data-type="ground"]   { --type-color: var(--type-ground); }
+.type-flying,   [data-type="flying"]   { --type-color: var(--type-flying); }
+.type-psychic,  [data-type="psychic"]  { --type-color: var(--type-psychic); }
+.type-bug,      [data-type="bug"]      { --type-color: var(--type-bug); }
+.type-rock,     [data-type="rock"]     { --type-color: var(--type-rock); }
+.type-ghost,    [data-type="ghost"]    { --type-color: var(--type-ghost); }
+.type-dragon,   [data-type="dragon"]   { --type-color: var(--type-dragon); }
+.type-dark,     [data-type="dark"]     { --type-color: var(--type-dark); }
+.type-steel,    [data-type="steel"]    { --type-color: var(--type-steel); }
+.type-fairy,    [data-type="fairy"]    { --type-color: var(--type-fairy); }
+
+/*
+  Tier letter block (square, large) for tier-list rows.
+  <span class="tier-letter tier-letter-s">S</span>
+*/
+.tier-letter {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-bold);
+  color: var(--surface-deep);
+  flex-shrink: 0;
+}
+.tier-letter-s { background: var(--tier-s); }
+.tier-letter-a { background: var(--tier-a); }
+.tier-letter-b { background: var(--tier-b); }
+.tier-letter-c { background: var(--tier-c); }
+
+/* Status badges */
+.badge-success {
+  background-color: rgba(79, 209, 197, 0.15);
+  color: var(--status-success);
+  border-color: var(--status-success);
+}
+
+.badge-warning {
+  background-color: rgba(245, 158, 11, 0.15);
+  color: var(--status-warning);
+  border-color: var(--status-warning);
+}
+
+.badge-error {
+  background-color: rgba(239, 68, 68, 0.15);
+  color: var(--status-error);
+  border-color: var(--status-error);
+}
+
+/*
+  FORM CONTROLS
+  Input, select, textarea with consistent styling
+*/
+.input,
+.select,
+.textarea {
+  width: 100%;
+  padding: var(--space-3) var(--space-4);
+  font-family: var(--font-sans);
+  font-size: var(--font-size-base);
+  color: var(--text-primary);
+  background-color: var(--surface-elevated);
+  border: 1px solid var(--border-base);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-fast);
+}
+
+.input:hover,
+.select:hover,
+.textarea:hover {
+  border-color: var(--border-focus);
+}
+
+.input:focus,
+.select:focus,
+.textarea:focus {
+  outline: none;
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 3px var(--accent-subtle);
+}
+
+.input::placeholder,
+.textarea::placeholder {
+  color: var(--text-muted);
+}
+
+.textarea {
+  resize: vertical;
+  min-height: 120px;
+  line-height: var(--leading-relaxed);
+}
+
+/* Search input with icon */
+.search-input {
+  padding-left: var(--space-12);
+  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%2394A3B8" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>');
+  background-repeat: no-repeat;
+  background-position: var(--space-3) center;
+  background-size: 20px 20px;
+}
+
+/* Label for form fields */
+.form-label {
+  display: block;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-medium);
+  color: var(--text-secondary);
+  margin-bottom: var(--space-2);
+}
+
+/*
+  TABLE COMPONENT
+  Responsive tables with alternating rows
+*/
+.table-wrap {
+  overflow-x: auto;
+  margin-bottom: var(--space-md);
+  border-radius: var(--radius-md);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--surface-elevated);
+}
+
+caption {
+  text-align: left;
+  color: var(--text-tertiary);
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-medium);
+}
+
+th, td {
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--border-subtle);
+  text-align: left;
+  vertical-align: top;
+}
+
+thead th {
+  background: var(--surface-card);
+  font-weight: var(--font-semibold);
+  color: var(--text-primary);
+  text-transform: uppercase;
+  font-size: var(--font-size-xs);
+  letter-spacing: var(--tracking-wide);
+}
+
+tbody tr:hover {
+  background: var(--surface-card);
+}
+
+tbody th {
+  font-weight: var(--font-semibold);
+  color: var(--text-primary);
+}
+
+/*
+  STAT DISPLAY COMPONENTS
+  (Prefixed .stat-tile / .stat-chip / .stat-list so they don't collide with
+  legacy page-scoped .stat-value / .stat-pill classes.)
+
+  Big-number tile:
+    <div class="stat-tile">
+      <span class="stat-tile-value">29</span>
+      <span class="stat-tile-label">Starters</span>
+    </div>
+  Compact chip (HUD style):
+    <span class="stat-chip"><span class="stat-chip-key">ATK</span> 120</span>
+  Key/value list (spec sheet):
+    <dl class="stat-list"><div><dt>HP</dt><dd>45</dd></div></dl>
+  Stat bar:
+    <div class="stat-bar" style="--value: 72"><span class="sr-only">72 of 100</span></div>
+*/
+.stat-tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: var(--space-sm);
+}
+
+.stat-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+  padding: var(--space-md);
+  background: var(--surface-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  text-align: center;
+}
+
+.stat-tile-value {
+  font-family: var(--font-display);
+  font-size: var(--font-size-4xl);
+  font-weight: var(--font-bold);
+  line-height: 1;
+  color: var(--accent-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.stat-tile-label {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-semibold);
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.stat-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-1) var(--space-3);
+  background: var(--surface-elevated);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-pill);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-semibold);
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.stat-chip-key {
+  font-size: var(--font-size-xs);
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.stat-list {
+  margin: 0;
+  display: grid;
+  gap: 0;
+}
+
+.stat-list > div {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-md);
+  padding: var(--space-2) 0;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.stat-list dt { color: var(--text-tertiary); font-size: var(--font-size-sm); }
+.stat-list dd { margin: 0; color: var(--text-primary); font-weight: var(--font-semibold); }
+
+.stat-bar {
+  --value: 50;
+  --bar-color: var(--accent-primary);
+  height: 8px;
+  background: var(--surface-elevated);
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+  position: relative;
+}
+
+.stat-bar::before {
+  content: '';
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: calc(var(--value) * 1%);
+  background: var(--bar-color);
+  border-radius: inherit;
+  transition: width var(--transition-slow);
+}
+
+/*
+  PROGRESS BAR
+  For showing completion, stats, etc.
+*/
+.progress-bar {
+  height: 8px;
+  background: var(--surface-elevated);
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--accent-primary);
+  border-radius: var(--radius-pill);
+  transition: width var(--transition-base);
+}
+
+/* ============================================== */
+/* IMAGE HANDLING */
+/* ============================================== */
+
+img, svg, video {
+  max-width: 100%;
+  height: auto;
+}
+
+figure {
+  margin: 0 0 var(--space-lg);
+}
+
+figcaption {
+  color: var(--text-tertiary);
+  font-size: var(--font-size-sm);
+  margin-top: var(--space-2);
+  text-align: center;
+}
+
+/* Pokemon sprites - pixelated rendering */
+.sprite {
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
+}
+
+/* ============================================== */
+/* ACCESSIBILITY */
+/* ============================================== */
+
+/* Screen reader only content */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Skip link */
+.skip-link {
+  position: absolute;
+  left: var(--space-2);
+  top: -100px;
+  z-index: 1000;
+  padding: var(--space-2) var(--space-4);
+  background: var(--accent-primary);
+  color: var(--surface-deep);
+  font-weight: var(--font-bold);
+  border-radius: var(--radius-md);
+  text-decoration: none;
+}
+
+.skip-link:focus {
+  top: var(--space-2);
+}
+
+/* Focus visible styles */
+:focus-visible {
+  outline: 3px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+/* Remove focus outline on main content when tabindex="-1" */
+main:focus {
+  outline: none;
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ============================================== */
+/* SITE CHROME - Header, Breadcrumbs, Main, Footer */
+/* (rendered by BaseLayout.astro) */
+/* ============================================== */
+
+.site-header {
+  background: color-mix(in srgb, var(--surface-base) 92%, transparent);
+  border-bottom: 1px solid var(--border-subtle);
+  position: sticky;
+  top: 0;
+  z-index: var(--z-header);
+  backdrop-filter: blur(8px);
+}
+
+/* Pokeball-stripe accent line under the header (game flavour) */
+.site-header::after {
+  content: '';
+  display: block;
+  height: 3px;
+  background: linear-gradient(90deg, var(--tier-s) 0 33%, var(--text-primary) 33% 36%, var(--accent-primary) 36% 100%);
+  opacity: 0.85;
+}
+
+.header-container {
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: var(--space-3) var(--container-padding);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-2) var(--space-md);
+}
+
+.site-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-family: var(--font-display);
+  font-size: clamp(1.05rem, 2vw, 1.25rem);
+  font-weight: var(--font-bold);
+  color: var(--text-primary);
+  letter-spacing: var(--tracking-tight);
+}
+
+.site-logo:hover { color: var(--accent-primary); }
+.site-logo img { width: 32px; height: 32px; flex-shrink: 0; }
+
+.nav-links {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+}
+
+.nav-links li { margin: 0; }
+
+.nav-links a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-pill);
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-medium);
+  transition: background-color var(--transition-fast), color var(--transition-fast);
+}
+
+.nav-links a:hover {
+  color: var(--text-primary);
+  background: var(--surface-card);
+}
+
+.nav-links a[aria-current="page"] {
+  color: var(--surface-deep);
+  background: var(--accent-primary);
+  font-weight: var(--font-semibold);
+}
+
+/* BREADCRUMBS (visible only when the page passes 2+ crumbs) */
+.breadcrumbs ol {
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: var(--space-3) var(--container-padding) 0;
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  font-size: var(--font-size-sm);
+}
+
+.breadcrumbs li {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin: 0;
+  color: var(--text-tertiary);
+}
+
+.breadcrumbs li:not(:last-child)::after {
+  content: '\203A';
+  color: var(--text-muted);
+}
+
+.breadcrumbs a { color: var(--text-tertiary); }
+.breadcrumbs a:hover { color: var(--accent-primary); text-decoration: underline; }
+.breadcrumbs [aria-current="page"] { color: var(--text-primary); font-weight: var(--font-medium); }
+
+/* MAIN */
+.site-main,
+.main {
+  flex: 1;
+  width: 100%;
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: var(--space-lg) var(--container-padding);
+}
+
+/* FOOTER */
+.site-footer {
+  background: var(--surface-base);
+  border-top: 1px solid var(--border-subtle);
+  margin-top: var(--space-2xl);
+}
+
+.footer-container {
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: var(--space-xl) var(--container-padding) var(--space-lg);
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--space-lg);
+}
+
+.footer-title {
+  color: var(--text-primary);
+  font-family: var(--font-display);
+  font-weight: var(--font-bold);
+  margin-bottom: var(--space-3);
+}
+
+.footer-section p,
+.footer-section a {
+  color: var(--text-tertiary);
+  font-size: var(--font-size-sm);
+}
+
+.footer-section ul { list-style: none; padding: 0; margin: 0; }
+.footer-section li { margin-bottom: var(--space-2); }
+.footer-section a:hover { color: var(--accent-primary); text-decoration: underline; }
+.footer-section p a { color: var(--accent-primary); }
+
+.footer-bottom {
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: var(--space-md) var(--container-padding);
+  border-top: 1px solid var(--border-subtle);
+  text-align: center;
+}
+
+.footer-bottom p {
+  color: var(--text-tertiary);
+  font-size: var(--font-size-xs);
+  margin-bottom: var(--space-1);
+}
+
+@media (max-width: 640px) {
+  .header-container { padding-block: var(--space-2); }
+  .header-container > nav { width: 100%; min-width: 0; }
+  .nav-links { width: 100%; overflow-x: auto; flex-wrap: nowrap; scrollbar-width: none; }
+  .nav-links a { white-space: nowrap; }
+  .btn { white-space: normal; max-width: 100%; text-align: center; line-height: 1.25; }
+  .footer-container { grid-template-columns: 1fr; }
+}
+
+/* ============================================== */
+/* RESPONSIVE BREAKPOINTS */
+/* ============================================== */
+
+/* Mobile: < 640px (default) */
+
+/* Tablet: 640px - 1024px */
+@media (min-width: 640px) {
+  .grid-2 { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+  .grid-3 { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+  .grid-4 { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+}
+
+/* Desktop: > 1024px */
+@media (min-width: 1024px) {
+  .grid-2 { grid-template-columns: repeat(2, 1fr); }
+  .grid-3 { grid-template-columns: repeat(3, 1fr); }
+  .grid-4 { grid-template-columns: repeat(4, 1fr); }
+  .grid-5 { grid-template-columns: repeat(5, 1fr); }
+}
+
+/* Ultra-wide: > 1440px */
+@media (min-width: 1440px) {
+  :root {
+    --container-max: 1440px;
+  }
+}

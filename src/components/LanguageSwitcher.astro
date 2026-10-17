@@ -1,0 +1,331 @@
+---
+/**
+ * Language switcher dropdown in the header navigation.
+ * Shows current language and available alternatives.
+ */
+interface Props {
+  locale: 'en' | 'zh';
+  currentPath: string;
+}
+
+const { locale, currentPath } = Astro.props;
+const isZh = locale === 'zh';
+
+// Build language options with proper URLs
+interface LangOption {
+  code: 'en' | 'zh';
+  label: string;
+  url: string;
+  isCurrent: boolean;
+}
+
+// Determine alternate language URL - handle pages that don't exist in both languages
+let alternateUrl: string;
+
+if (isZh) {
+  // Chinese → English
+  // Remove /zh/ prefix
+  alternateUrl = currentPath.replace(/^\/zh/, '');
+  if (alternateUrl === '' || alternateUrl === '/') {
+    alternateUrl = '/';
+  }
+} else {
+  // English → Chinese
+  // Check if the English page has a Chinese equivalent
+  const hasChineseVersion = ['/', '/tier-list/', '/pokedex/', '/best-pokemon/', '/co-op/', '/rifts/', '/how-to-play/', '/mobile/'].includes(currentPath);
+
+  if (currentPath === '/' || currentPath === '') {
+    alternateUrl = '/zh/';
+  } else if (hasChineseVersion) {
+    // Page exists in Chinese - add /zh prefix
+    alternateUrl = '/zh' + currentPath;
+  } else {
+    // Page doesn't exist in Chinese → redirect to Chinese home
+    alternateUrl = '/zh/';
+  }
+}
+
+const languages: LangOption[] = [
+  {
+    code: 'en',
+    label: 'English',
+    url: isZh ? alternateUrl : currentPath,
+    isCurrent: !isZh,
+  },
+  {
+    code: 'zh',
+    label: '繁體中文',
+    url: isZh ? currentPath : alternateUrl,
+    isCurrent: isZh,
+  },
+];
+
+const currentLabel = languages.find(l => l.isCurrent)?.label || 'Language';
+---
+
+<div class="language-switcher">
+  <button
+    type="button"
+    class="lang-toggle"
+    aria-expanded="false"
+    aria-haspopup="true"
+    aria-label={isZh ? '切換語言' : 'Switch language'}
+  >
+    <svg class="globe-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <circle cx="12" cy="12" r="10"></circle>
+      <line x1="2" y1="12" x2="22" y2="12"></line>
+      <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+    </svg>
+    <span class="lang-current">{currentLabel}</span>
+    <svg class="chevron-icon" width="12" height="8" viewBox="0 0 12 8" aria-hidden="true">
+      <path d="M1 1l5 5 5-5" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </button>
+
+  <ul class="lang-menu" role="menu" hidden>
+    {languages.map((lang) => (
+      <li role="none">
+        {lang.isCurrent ? (
+          <span class="lang-option lang-current-option" role="menuitem" aria-current="true">
+            {lang.label}
+            <svg class="check-icon" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
+              <path d="M13 4L6 11 3 8" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+        ) : (
+          <a href={lang.url} class="lang-option" role="menuitem" lang={lang.code === 'zh' ? 'zh-Hant' : 'en'}>
+            {lang.label}
+          </a>
+        )}
+      </li>
+    ))}
+  </ul>
+</div>
+
+<script>
+  // Toggle dropdown on click
+  document.addEventListener('click', (e) => {
+    const toggle = (e.target as HTMLElement).closest('.lang-toggle');
+    const switcher = toggle?.closest('.language-switcher') as HTMLElement | null;
+
+    if (toggle && switcher) {
+      e.preventDefault();
+      const menu = switcher.querySelector('.lang-menu') as HTMLElement;
+      const isExpanded = toggle.getAttribute('aria-expanded') === 'true';
+
+      // Close all other dropdowns first
+      document.querySelectorAll('.language-switcher').forEach(s => {
+        if (s !== switcher) {
+          const otherToggle = s.querySelector('.lang-toggle');
+          const otherMenu = s.querySelector('.lang-menu') as HTMLElement;
+          otherToggle?.setAttribute('aria-expanded', 'false');
+          if (otherMenu) otherMenu.hidden = true;
+        }
+      });
+
+      // Toggle current dropdown
+      toggle.setAttribute('aria-expanded', String(!isExpanded));
+      menu.hidden = isExpanded;
+
+      // Focus first menu item when opening
+      if (!isExpanded) {
+        setTimeout(() => {
+          const firstItem = menu.querySelector('[role="menuitem"]') as HTMLElement;
+          firstItem?.focus();
+        }, 0);
+      }
+    } else {
+      // Click outside: close all dropdowns
+      document.querySelectorAll('.language-switcher').forEach(s => {
+        const toggle = s.querySelector('.lang-toggle');
+        const menu = s.querySelector('.lang-menu') as HTMLElement;
+        toggle?.setAttribute('aria-expanded', 'false');
+        if (menu) menu.hidden = true;
+      });
+    }
+  });
+
+  // Keyboard navigation
+  document.addEventListener('keydown', (e) => {
+    const target = e.target as HTMLElement;
+    const toggle = target.closest('.lang-toggle') as HTMLElement | null;
+    const menuItem = target.closest('[role="menuitem"]') as HTMLElement | null;
+    const switcher = (toggle || menuItem)?.closest('.language-switcher') as HTMLElement | null;
+
+    if (!switcher) return;
+
+    const menu = switcher.querySelector('.lang-menu') as HTMLElement;
+    const toggleBtn = switcher.querySelector('.lang-toggle') as HTMLElement;
+    const isExpanded = toggleBtn?.getAttribute('aria-expanded') === 'true';
+
+    // Escape: close menu and return focus to toggle
+    if (e.key === 'Escape') {
+      if (isExpanded) {
+        e.preventDefault();
+        toggleBtn.setAttribute('aria-expanded', 'false');
+        menu.hidden = true;
+        toggleBtn.focus();
+      }
+      return;
+    }
+
+    // Toggle button: Space/Enter opens menu
+    if (toggle && (e.key === ' ' || e.key === 'Enter')) {
+      e.preventDefault();
+      const newExpanded = !isExpanded;
+      toggleBtn.setAttribute('aria-expanded', String(newExpanded));
+      menu.hidden = !newExpanded;
+
+      if (newExpanded) {
+        setTimeout(() => {
+          const firstItem = menu.querySelector('[role="menuitem"]') as HTMLElement;
+          firstItem?.focus();
+        }, 0);
+      }
+      return;
+    }
+
+    // Menu item navigation: ArrowDown/ArrowUp
+    if (menuItem && isExpanded && (e.key === 'ArrowDown' || e.key === 'ArrowUp')) {
+      e.preventDefault();
+      const items = Array.from(menu.querySelectorAll('[role="menuitem"]')) as HTMLElement[];
+      const currentIndex = items.indexOf(menuItem);
+
+      let nextIndex: number;
+      if (e.key === 'ArrowDown') {
+        nextIndex = currentIndex + 1 >= items.length ? 0 : currentIndex + 1;
+      } else {
+        nextIndex = currentIndex - 1 < 0 ? items.length - 1 : currentIndex - 1;
+      }
+
+      items[nextIndex]?.focus();
+      return;
+    }
+
+    // Menu item: Enter/Space activates link
+    if (menuItem && isExpanded && (e.key === ' ' || e.key === 'Enter')) {
+      e.preventDefault();
+      const link = menuItem.tagName === 'A' ? menuItem : menuItem.querySelector('a');
+      if (link) {
+        (link as HTMLAnchorElement).click();
+      }
+      return;
+    }
+  });
+</script>
+
+<style>
+  .language-switcher {
+    position: relative;
+  }
+
+  .lang-toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: transparent;
+    border: 2px solid var(--accent-primary);
+    border-radius: 50px;
+    color: var(--accent-primary);
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .lang-toggle:hover {
+    background: var(--accent-primary);
+    color: var(--surface-deep);
+    box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2);
+  }
+
+  .lang-toggle[aria-expanded="true"] {
+    background: var(--accent-primary);
+    color: var(--surface-deep);
+  }
+
+  .lang-toggle[aria-expanded="true"] .chevron-icon {
+    transform: rotate(180deg);
+  }
+
+  .globe-icon {
+    flex-shrink: 0;
+    opacity: 0.9;
+  }
+
+  .lang-current {
+    white-space: nowrap;
+    letter-spacing: 0.01em;
+  }
+
+  .chevron-icon {
+    flex-shrink: 0;
+    transition: transform 0.2s ease;
+    opacity: 0.8;
+  }
+
+  .lang-menu {
+    position: absolute;
+    top: calc(100% + 0.5rem);
+    right: 0;
+    min-width: 160px;
+    background: var(--surface-2);
+    border: 1px solid var(--surface-4);
+    border-radius: 8px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+    padding: 0.5rem 0;
+    list-style: none;
+    margin: 0;
+    z-index: 100;
+  }
+
+  .lang-menu[hidden] {
+    display: none;
+  }
+
+  .lang-menu li {
+    margin: 0;
+  }
+
+  .lang-option {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 0.625rem 1rem;
+    color: var(--text-primary);
+    text-decoration: none;
+    font-size: 0.875rem;
+    transition: background 0.15s;
+    cursor: pointer;
+  }
+
+  .lang-option:hover,
+  .lang-option:focus {
+    background: var(--surface-3);
+    outline: none;
+  }
+
+  .lang-current-option {
+    color: var(--accent);
+    font-weight: 500;
+    cursor: default;
+  }
+
+  .check-icon {
+    color: var(--accent);
+    flex-shrink: 0;
+  }
+
+  @media (max-width: 768px) {
+    .lang-toggle {
+      padding: 0.375rem 0.625rem;
+      font-size: 0.813rem;
+    }
+
+    .lang-menu {
+      right: -0.5rem;
+    }
+  }
+</style>

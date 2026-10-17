@@ -1,0 +1,30 @@
+---
+/**
+ * Pokemon type badge with official type colors.
+ * Renders as a tinted pill by default, or solid block with .badge-type-solid.
+ *
+ * Usage:
+ *   <TypeBadge type="fire" />
+ *   <TypeBadge type="water" solid />
+ *   <TypeBadge type="electric" class="custom-class" />
+ */
+interface Props {
+  /** Pokemon type (lowercase): normal, fire, water, electric, grass, ice, fighting, poison, ground, flying, psychic, bug, rock, ghost, dragon, dark, steel, fairy */
+  type: string;
+  /** Use solid color variant (dark text on type color). Default: false (tinted). */
+  solid?: boolean;
+  /** Additional CSS classes */
+  class?: string;
+}
+
+const { type, solid = false, class: className } = Astro.props;
+const typeNormalized = type.toLowerCase();
+const solidClass = solid ? 'badge-type-solid' : '';
+---
+
+<span
+  class:list={['badge', 'badge-type', `type-${typeNormalized}`, solidClass, className]}
+  data-type={typeNormalized}
+>
+  {type.charAt(0).toUpperCase() + type.slice(1)}
+</span>

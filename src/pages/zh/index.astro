@@ -1,0 +1,481 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GameEmbed from '../../components/GameEmbed.astro';
+import FAQ from '../../components/FAQ.astro';
+import Sprite from '../../components/Sprite.astro';
+import TypeBadge from '../../components/TypeBadge.astro';
+
+const title = 'PokeSurvivor 攻略｜寶可夢倖存者繁體中文新手指南：卡片對照、配隊推薦、強度排行與裂縫全解析';
+const description = 'PokeSurvivor 攻略｜寶可夢倖存者繁體中文新手指南：免費瀏覽器即玩、29 隻初始夥伴、966 隻寶可夢、升級卡片中英對照、配隊推薦、強度排行與裂縫全解析，手機橫向支援。';
+const timelineAlt = '一局流程時間軸示意圖：標出第 3 到 15 分鐘的 BOSS、1:15 起的神祕裂縫與第 30 分鐘登場的阿爾宙斯';
+
+// Hero row: starters only (FACTS: 29 starters; Pikachu/Eevee are not starters).
+const starterSprites = [
+  { dex: 1, name: 'Bulbasaur' }, { dex: 4, name: 'Charmander' }, { dex: 7, name: 'Squirtle' },
+  { dex: 54, name: 'Psyduck' }, { dex: 79, name: 'Slowpoke' }, { dex: 813, name: 'Scorbunny' },
+  { dex: 816, name: 'Sobble' }, { dex: 906, name: 'Sprigatito' },
+];
+
+const moveGroups = [
+  {
+    move: 'Ember',
+    mons: [
+      { name: 'Charmander', dex: 4 }, { name: 'Cyndaquil', dex: 155 }, { name: 'Torchic', dex: 255 },
+      { name: 'Chimchar', dex: 390 }, { name: 'Tepig', dex: 498 }, { name: 'Fennekin', dex: 653 },
+      { name: 'Litten', dex: 725 }, { name: 'Scorbunny', dex: 813 }, { name: 'Fuecoco', dex: 909 }
+    ]
+  },
+  {
+    move: 'Water Gun',
+    mons: [
+      { name: 'Squirtle', dex: 7 }, { name: 'Totodile', dex: 158 }, { name: 'Mudkip', dex: 258 },
+      { name: 'Oshawott', dex: 501 }, { name: 'Froakie', dex: 656 }, { name: 'Sobble', dex: 816 },
+      { name: 'Quaxly', dex: 912 }
+    ]
+  },
+  {
+    move: 'Vine Whip',
+    mons: [
+      { name: 'Bulbasaur', dex: 1 }, { name: 'Chikorita', dex: 152 }, { name: 'Turtwig', dex: 387 },
+      { name: 'Chespin', dex: 650 }, { name: 'Grookey', dex: 810 }
+    ]
+  },
+  {
+    move: 'Razor Leaf',
+    mons: [
+      { name: 'Treecko', dex: 252 }, { name: 'Snivy', dex: 495 }, { name: 'Rowlet', dex: 722 },
+      { name: 'Sprigatito', dex: 906 }
+    ]
+  },
+  {
+    move: 'Bubble',
+    mons: [
+      { name: 'Piplup', dex: 393 }, { name: 'Popplio', dex: 728 }
+    ]
+  },
+  {
+    move: 'Confusion',
+    mons: [
+      { name: 'Psyduck', dex: 54 }, { name: 'Slowpoke', dex: 79 }
+    ]
+  }
+];
+
+const faqItems = [
+  {
+    q: 'PokeSurvivor 有中文版嗎？',
+    a: '沒有，介面只有英文與西班牙文。本站的 PokeSurvivor 攻略整理了<a href="#glossary">升級卡片中英對照表</a>，中文譯名是本站譯法，不是官方翻譯。',
+  },
+  {
+    q: '怎麼把遊戲切換成英文介面？',
+    a: '若畫面出現西班牙文，打開 Settings（設定）改成 English 即可。',
+  },
+  {
+    q: '手機能玩嗎？需要下載 App 嗎？',
+    a: '可以，免下載，用手機瀏覽器打開 pokesurvivor.com 即可，只支援橫向。詳見<a href="/zh/mobile/">手機版中文指南</a>。',
+  },
+  {
+    q: '本站的數據準確嗎？',
+    a: '本站 PokeSurvivor 攻略的遊戲數據都對照官方指南與官方 GitHub 原始碼；推薦與排名是我們的意見，衝突時以官方為準。',
+  },
+  {
+    q: '遊戲要花錢嗎？',
+    a: '不用。官方強調沒有廣告也沒有付費，扭蛋用的票券也無法用錢購買。',
+  },
+  {
+    q: '新手第一隻夥伴該選誰？',
+    a: '想打得快選炎兔兒（Scorbunny，攻擊倍率 1.09 是 29 隻裡最高）；想玩得穩選呆呆獸（Slowpoke，110 HP 加自動追蹤的念力）。這是粉絲意見，完整理由見<a href="/zh/best-pokemon/">最強初始寶可夢推薦</a>。',
+  },
+  {
+    q: '一局要玩多久？',
+    a: '自 2026-10-12 起沒有時間上限。第 30 分鐘阿爾宙斯登場後，每 5 秒加入一隻強化過的傳說寶可夢，撐越久越難。',
+  },
+  {
+    q: '如何快速升級？',
+    a: '優先拿「學習」屬性卡來提高經驗值獲取 +12%；站在經驗球密集的地方等它們自動被吸過來；升級後優先把「磁力」卡點滿，能讓拾取範圍擴大 30% 以上，加速經驗累積。另外擊敗 BOSS 與傳說寶可夢會掉落大量經驗。',
+  },
+  {
+    q: '哪些寶可夢適合單刷？',
+    a: '呆呆獸和呱呱泡蛙適合新手單刷，前者血量高且念力會自動追蹤，後者水槍射速快能持續輸出。進階玩家可以試炎兔兒配講究頭帶，傷害爆發極高但需要精準走位。更多分析見<a href="/zh/tier-list/">強度排行</a>。',
+  },
+  {
+    q: '傳說裂縫什麼時候開啟？',
+    a: '從第 1 分 15 秒（1:15）開始，每 30 秒判定一次，開啟機率依次是 20%、40%、60%、80%、100%。裂縫開啟後維持 45 秒，限時 2 分鐘內擊敗傳說寶可夢。詳細打法見<a href="/zh/rifts/">神秘裂縫攻略</a>。',
+  },
+];
+const pageUrl = 'https://poke-survivors.org/zh/';
+const imageUrl = 'https://poke-survivors.org/images/pokesurvivor-zh-guide.webp';
+
+const jsonLd = [
+  {
+    '@type': 'Article',
+    headline: 'PokeSurvivor 攻略：寶可夢倖存者繁體中文新手指南',
+    description,
+    publisher: { '@type': 'Organization', name: 'PokeSurvivor Fan Guide' },
+    datePublished: '2026-10-16',
+    dateModified: '2026-10-16',
+    author: { '@type': 'Organization', name: 'PokeSurvivor Fan Guide' },
+    inLanguage: 'zh-Hant',
+    image: imageUrl,
+    mainEntityOfPage: pageUrl,
+  },
+];
+
+const statCards = [
+  { en: 'Vigor', zh: '活力', fx: '最大 HP +20' },
+  { en: 'Power', zh: '力量', fx: '傷害 +10%' },
+  { en: 'Sprint', zh: '衝刺', fx: '移動速度 +7%' },
+  { en: 'Reflexes', zh: '反射', fx: '招式冷卻 −8%' },
+  { en: 'Armor', zh: '護甲', fx: '減傷 +6%（上限 70%）' },
+  { en: 'Synthesis', zh: '光合作用', fx: '每秒回復 0.9 HP' },
+  { en: 'Magnet', zh: '磁力', fx: '拾取範圍 +30%' },
+  { en: 'Learning', zh: '學習', fx: '經驗值 +12%' },
+  { en: 'Sitrus Berry', zh: '文柚果', fx: '立刻回復 45% HP' },
+];
+const otherTerms = [
+  { en: 'Rift', zh: '裂縫', fx: '地圖上出現的神祕裂縫，走進去挑戰傳說寶可夢' },
+  { en: 'Bond', zh: '羈絆', fx: '打倒傳說寶可夢獲得，讓同一格同時發動兩招，最多 4 個' },
+  { en: 'Held item', zh: '持有物', fx: '一次只能帶一個，整場有效，來自寶箱與 BOSS' },
+  { en: 'Leftovers / Choice Band / Life Orb', zh: '吃剩的東西／講究頭帶／生命寶珠', fx: '每秒回 1.5% HP／傷害 +40% 但不能換招／傷害 +30% 但攻擊扣 HP' },
+  { en: 'Reroll', zh: '重抽', fx: '升級三選一時重新抽卡' },
+  { en: 'Settings', zh: '設定', fx: '可在這裡切換遊戲語言' },
+];
+---
+
+<BaseLayout
+  title={title}
+  alternates={[
+    { locale: 'en', href: '/' },
+    { locale: 'zh-Hant', href: '/zh/' }
+  ]}
+  description={description}
+  locale="zh"
+  ogType="article"
+  ogImage="/images/pokesurvivor-zh-guide.jpg"
+  ogImageAlt={timelineAlt}
+  breadcrumbs={[
+    { name: 'PokeSurvivor Fan Guide', url: '/' },
+    { name: '繁體中文攻略', url: '/zh/' },
+  ]}
+  jsonLd={jsonLd}
+>
+  <article class="guide">
+    <header class="guide-header">
+      <p class="hero-eyebrow">繁體中文攻略</p>
+      <h1>PokeSurvivor 攻略：寶可夢倖存者繁體中文新手指南</h1>
+      <p class="lead">
+        寶可夢倖存者只有英文與西班牙文介面。這份 PokeSurvivor 攻略用繁體中文帶你看懂選單、升級卡片、新手配隊與一局的流程。遊戲免費、免下載，下方可直接試玩。
+      </p>
+      <p class="meta meta-badges">
+        <span class="badge">更新日期：<time datetime="2026-10-16">2026-10-16</time></span>
+        <span class="badge badge-warning">非官方粉絲網站，與開發者無關</span>
+      </p>
+      <div class="hero-sprites">
+        {starterSprites.map((s) => <Sprite dex={s.dex} name={s.name} size={56} />)}
+      </div>
+    </header>
+
+    <div class="game-embed-hero">
+      <GameEmbed eager title="PokéSurvivor 官方遊戲 (pokesurvivor.com)" />
+    </div>
+
+    <figure class="hero-figure">
+      <img
+        src="/images/pokesurvivor-zh-guide.webp"
+        width="1200"
+        height="560"
+        loading="lazy"
+        decoding="async"
+        alt={timelineAlt}
+      />
+      <figcaption>本站自製的一局流程時間軸示意圖（資料來源：官方指南與官方原始碼）。</figcaption>
+    </figure>
+
+    <nav class="toc-chips" aria-label="目錄">
+      <a href="#what" class="toc-chip">寶可夢倖存者是什麼遊戲</a>
+      <a href="#glossary" class="toc-chip">沒有中文介面：中英對照表</a>
+      <a href="#language" class="toc-chip">切換成英文的方法</a>
+      <a href="#controls" class="toc-chip">操作方式</a>
+      <a href="#starters" class="toc-chip">29 隻初始夥伴與開局建議</a>
+      <a href="#timeline" class="toc-chip">一局的時間軸</a>
+      <a href="#enemies" class="toc-chip">四種「個性」敵人</a>
+      <a href="#weather" class="toc-chip">天氣</a>
+      <a href="#official" class="toc-chip">官方內容與粉絲內容的差別</a>
+      <a href="#faq" class="toc-chip">常見問題</a>
+    </nav>
+    <section id="what">
+      <h2>寶可夢倖存者是什麼遊戲</h2>
+      <p>
+        PokéSurvivor（中文玩家常叫它「寶可夢倖存者」）是免費、非營利的粉絲自製瀏覽器遊戲，官方強調「沒有廣告也沒有付費」，和任天堂、GAME FREAK、The Pokémon Company 都沒有關係。玩法類似吸血鬼倖存者：你只負責移動，夥伴會自動攻擊，所以這份 PokeSurvivor 攻略的重點是走位、選卡與時間管理。
+      </p>
+      <p>
+        根據<a href="https://pokesurvivor.com/en/guide/" rel="noopener">官方指南</a>，遊戲收錄九個地區共 966 隻寶可夢，每一隻都能當夥伴，野外色違機率是 1/4096。其他寶可夢要用票券扭蛋取得，共有 9 個地區卡池，票券無法用錢購買。另有 127 個成就。想查每一隻的屬性與數值，可以看<a href="/zh/pokedex/">PokeSurvivor 寶可夢圖鑑</a>。以上數字都來自官方，本篇 PokeSurvivor 攻略不自行編造遊戲數據。
+      </p>
+      <h3>遊戲特色亮點</h3>
+      <p>
+        <strong>966 隻寶可夢的多樣性</strong>：從關都到帕底亞，每個地區的寶可夢都有獨特的屬性與招式組合，讓每一局都能嘗試不同配隊策略。色違的 1/4096 機率也為長期遊玩增添收集樂趣。<strong>多人合作的樂趣</strong>：最多四人同時遊玩，隊友之間共享經驗值，倒地的玩家可以被隊友復活，團隊配合能挑戰更高難度，詳見<a href="/zh/co-op/">多人合作攻略</a>。<strong>移動端支援的便利性</strong>：無需下載 App，手機橫向瀏覽器即可遊玩，觸控操作經過優化，走到哪玩到哪。
+      </p>
+    </section>
+
+    <section id="glossary">
+      <h2>沒有中文介面：升級卡片中英對照表</h2>
+      <p>
+        常有人問有沒有 PokeSurvivor 中文版或 Poke Survivor 中文介面：沒有，遊戲只有英文與西班牙文。所以這份 PokeSurvivor 攻略把升級時最常看到的卡片整理成下表。中文名稱是本站譯法，不是官方翻譯；數值來自官方原始碼。
+      </p>
+      <div class="table-wrap">
+        <table class="glossary-table">
+          <colgroup><col class="col-en" /><col class="col-zh" /><col /></colgroup>
+          <caption>升級屬性卡中英對照（數值來源：官方 GitHub 原始碼）</caption>
+          <thead>
+            <tr><th scope="col">英文卡名</th><th scope="col">本站中文譯名</th><th scope="col">效果</th></tr>
+          </thead>
+          <tbody>
+            {statCards.map((r) => (
+              <tr><th scope="row" lang="en">{r.en}</th><td>{r.zh}</td><td>{r.fx}</td></tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <div class="table-wrap">
+        <table class="glossary-table">
+          <colgroup><col class="col-en" /><col class="col-zh" /><col /></colgroup>
+          <caption>其他常見選單與系統用語</caption>
+          <thead>
+            <tr><th scope="col">英文</th><th scope="col">中文</th><th scope="col">說明</th></tr>
+          </thead>
+          <tbody>
+            {otherTerms.map((r) => (
+              <tr><th scope="row" lang="en">{r.en}</th><td>{r.zh}</td><td>{r.fx}</td></tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p>
+        升級規則是新手最容易卡關、也是本篇 PokeSurvivor 攻略最想講清楚的地方。升級時從三張卡中選一張：新招式、已有招式的強化，或上表的屬性卡。招式最多帶 4 格，但只有「目前選中」的那一招會發動，招式最高 5 級。把招式練滿並在同一局拿到指定的強化卡，就會出現金色的招式進化卡。持有物共有 11 種，完整清單見<a href="https://pokesurvivor.com/en/items/" rel="noopener">官方道具頁</a>。
+      </p>
+      <h3>升級卡片系統細節</h3>
+      <p>
+        升級時，每張卡的出現機率會根據當前狀況調整。如果招式欄已滿且都是 5 級，屬性卡機率就會提高；若同一招連續強化三次，系統會自動提供其他選項。另外，持有物來自 BOSS 與寶箱，不會在升級卡中出現，並且一次只能攜帶一個，要換就要丟棄舊的。進化招式需要特定前置條件：例如將水槍練到 5 級後還必須拿到「水系威力提升」卡，才會解鎖金色的「水炮」進化卡。掌握這些細節能讓選卡更精準。
+      </p>
+      <h3>裝備系統介紹</h3>
+      <p>
+        持有物會顯著影響戰略走向。「吃剩的東西」每秒回復 1.5% HP，適合想專注走位不願冒險的穩健流；「講究頭帶」使傷害提高 40%，但代價是鎖死招式不能切換，配合高練度的主力招式可快速清場；「生命寶珠」傷害提升 30%，但每次攻擊扣血，適合已有高回復屬性或合成作用卡的進階配置。除了三大件以外，還有加速經驗、擴大拾取範圍、提升暴擊等持有物，依局勢選擇比固守一個套路更有效率。
+      </p>
+    </section>
+
+    <section id="language">
+      <h2>如何把遊戲切換成英文</h2>
+      <p>
+        依官方常見問題，遊戲會依瀏覽器語言顯示英文或西班牙文；中文瀏覽器若顯示西班牙文，到 Settings（設定）改成 English 即可。這份 PokeSurvivor 攻略建議用英文介面：英文卡名能直接對上對照表，之後查英文 PokeSurvivor 攻略或官方頁面也方便。
+      </p>
+    </section>
+
+    <section id="controls">
+      <h2>操作方式</h2>
+      <p>操作只有移動與切換招式兩件事：</p>
+      <ul>
+        <li>電腦：WASD 或方向鍵移動；按 1–4、Q/E 或點擊圖示切換招式；Esc 暫停。</li>
+        <li>手機與平板：只支援橫向。手指在畫面任意處拖曳即可移動（搖桿出現在你按下的位置），點擊招式切換，右上角按鈕暫停。</li>
+      </ul>
+      <p>手機用瀏覽器就能玩，不必安裝 App；觸控、自訂按鈕與存檔請看<a href="/zh/mobile/">手機版中文指南：觸控操作與加到主畫面</a>，和這份 PokeSurvivor 攻略搭配著看。</p>
+    </section>
+
+    <section id="starters">
+      <h2>29 隻初始夥伴與新手配隊建議</h2>
+      <p>
+        第一次開局時，遊戲會用 8 題「不可思議的迷宮」風格的性格測驗分配夥伴，候選是九個世代的御三家再加上可達鴨與呆呆獸，共 29 隻。不喜歡測驗結果也可以拒絕、改選別隻。注意：皮卡丘、伊布、超夢都不在初始名單裡。
+      </p>
+      <p>
+        初始招式只有六種：火花（Ember，九隻火系全部）、水槍（Water Gun）、泡沫（Bubble，波加曼與球球海獅）、藤鞭（Vine Whip）、飛葉快刀（Razor Leaf），以及念力（Confusion，可達鴨與呆呆獸）。水槍可以貫穿，官方形容它「任何距離都可靠」，冷卻 0.44 秒是六招最短，所以淚眼蜥與呱呱泡蛙都很穩。不過這份 PokeSurvivor 攻略和推薦頁一致，新手首選傷害最高的炎兔兒（攻擊倍率 1.09）或最耐打的呆呆獸（110 HP，念力會自動追蹤）。以上是粉絲意見，排名與理由見<a href="/zh/best-pokemon/">最強初始寶可夢推薦</a>與<a href="/zh/tier-list/">PokeSurvivor 強度排行</a>。
+      </p>
+      <div class="starter-groups">
+        {moveGroups.map((g) => (
+          <div class="move-group">
+            <p class="move-name" lang="en">{g.move} <span class="move-count">×{g.mons.length}</span></p>
+            <div class="sprite-grid">
+              {g.mons.map((m) => <Sprite dex={m.dex} name={m.name} size={40} />)}
+            </div>
+          </div>
+        ))}
+      </div>
+      <p>
+        新手配隊：水系夥伴下雨天 ×1.5、大晴天 ×0.5；升級先把主力招式練到 5 級，再補磁力或學習加快升級；持有物整場有效，吃剩的東西能持續回血，適合還不熟走位的新手。這段 PokeSurvivor 攻略的配隊思路是粉絲建議，不是官方配方。
+      </p>
+      <h3>推薦的新手初始寶可夢</h3>
+      <p>
+        除了炎兔兒與呆呆獸之外，還有幾個適合新手的選擇：<strong>呱呱泡蛙</strong>的水槍射速極快（0.44 秒冷卻）且能貫穿，讓你可以安心邊走邊輸出；<strong>小火龍</strong>的火花傷害穩定，搭配火系屬性能在大晴天發揮更好；<strong>妙蛙種子</strong>的藤鞭是近距離多目標招式，適合喜歡貼身清怪的打法。如果想體驗特殊打法，可以試試<strong>可達鴨</strong>，念力和呆呆獸一樣會自動追蹤，但 HP 較低需要小心走位。想知道更詳細的對比與數值，見<a href="/zh/best-pokemon/">最強初始寶可夢推薦</a>。
+      </p>
+    </section>
+
+    <section id="timeline">
+      <h2>一局的時間軸：BOSS、裂縫與阿爾宙斯</h2>
+      <p>一局可以拆成四個時間點：</p>
+      <ol class="timeline">
+        <li class="timeline-item timeline-rift">
+          <span class="timeline-mark" aria-hidden="true">1:15</span>
+          <div class="timeline-content">從 1:15 開始：每 30 秒判定一次是否開啟神祕裂縫，機率依 20/40/60/80/100% 遞增。裂縫開 45 秒，走進去就在 18 種屬性競技場之一挑戰傳說寶可夢，戰鬥限時 2 分鐘。</div>
+        </li>
+        <li class="timeline-item timeline-boss">
+          <span class="timeline-mark" aria-hidden="true">3–15</span>
+          <div class="timeline-content">第 3、6、9、12、15 分鐘：各出現一隻強力的非傳說 BOSS，打倒後有機會掉落 ×10 票券。BOSS 有 4 種預告攻擊，半血後會狂暴化。</div>
+        </li>
+        <li class="timeline-item timeline-rift-end">
+          <span class="timeline-mark" aria-hidden="true">28:00</span>
+          <div class="timeline-content">從 28:00 開始：不再出現新的裂縫。</div>
+        </li>
+        <li class="timeline-item timeline-final">
+          <span class="timeline-mark" aria-hidden="true">30:00</span>
+          <div class="timeline-content">第 30 分鐘：阿爾宙斯從天而降，把你帶到「審判遺跡」。阿爾宙斯無敵且會越來越快，每 5 秒就有一隻 HP 與傷害加倍的傳說寶可夢加入。</div>
+        </li>
+      </ol>
+      <p>
+        打贏裂縫有機會拿到 ×10 票券，並獲得「羈絆」；輸了會帶著 30% HP 回到地圖，沒有獎勵。早期裂縫最安全：血量健康時就去打，因為羈絆能讓一格同時發動兩招，最多 4 個；血量低、BOSS 快到或招式還太弱時就跳過。各競技場與傳說的打法，見<a href="/zh/rifts/">神秘裂縫攻略</a>。
+      </p>
+    </section>
+
+    <section id="enemies">
+      <h2>四種「個性」敵人</h2>
+      <p>2026-10-08 的更新加入了會補血、上護盾、召喚與自爆的敵人，依官方說明整理如下：</p>
+      <div class="enemy-cards">
+        <div class="card enemy-card">
+          <h3>治療型</h3>
+          <p class="enemy-examples">吉利蛋、幸福蛋、皮皮</p>
+          <p>每 3.5 秒替附近同伴回復 15%。</p>
+        </div>
+        <div class="card enemy-card">
+          <h3>護盾型</h3>
+          <p class="enemy-examples">壺壺、青銅鐘、魔牆人偶、冰岩怪</p>
+          <p>替 6 個同伴加上 35% HP 的護盾。</p>
+        </div>
+        <div class="card enemy-card">
+          <h3>召喚型</h3>
+          <p class="enemy-examples">尼多后、蜂女王、大嘴蝠、暴鯉龍</p>
+          <p>叫出 2 隻同伴。</p>
+        </div>
+        <div class="card enemy-card">
+          <h3>自爆型</h3>
+          <p class="enemy-examples">霹靂電球、頑皮雷彈、瓦斯彈、小拳石</p>
+          <p>靠近後預警 1 秒就爆炸。</p>
+        </div>
+      </div>
+      <p>官方建議先打治療型與護盾型；看到補血敵人，就切到單體傷害最高的招式。地上逐漸填滿的圓圈與直線是即將到來的攻擊，看到就離開。</p>
+    </section>
+
+    <section id="weather">
+      <h2>天氣</h2>
+      <p>從第 2 分鐘起，每分鐘有 18% 機率變天，大約持續 1 分鐘：</p>
+      <div class="weather-cards">
+        <div class="card weather-card">
+          <h3>下雨</h3>
+          <div class="weather-types">
+            <TypeBadge type="water" /> <span class="weather-boost">×1.5</span>
+            <TypeBadge type="electric" /> <span class="weather-boost">×1.2</span>
+            <TypeBadge type="fire" /> <span class="weather-debuff">×0.5</span>
+          </div>
+        </div>
+        <div class="card weather-card">
+          <h3>大晴天</h3>
+          <div class="weather-types">
+            <TypeBadge type="fire" /> <span class="weather-boost">×1.5</span>
+            <TypeBadge type="water" /> <span class="weather-debuff">×0.5</span>
+          </div>
+        </div>
+        <div class="card weather-card">
+          <h3>沙暴</h3>
+          <div class="weather-types">
+            <TypeBadge type="rock" /> <TypeBadge type="ground" /> <TypeBadge type="steel" /> <span class="weather-boost">增強</span>
+          </div>
+          <p class="weather-note">其他屬性持續受傷</p>
+        </div>
+        <div class="card weather-card">
+          <h3>下雪</h3>
+          <div class="weather-types">
+            <TypeBadge type="ice" /> <span class="weather-boost">增強</span>
+          </div>
+          <p class="weather-note">其他屬性持續受傷並減速</p>
+        </div>
+        <div class="card weather-card">
+          <h3>濃霧</h3>
+          <div class="weather-types">
+            <TypeBadge type="ghost" /> <TypeBadge type="fairy" /> <TypeBadge type="psychic" /> <span class="weather-boost">增強</span>
+          </div>
+        </div>
+      </div>
+      <p>屬性相剋也被調和過：效果絕佳 ×1.6、效果不好 ×0.6、免疫 ×0.3，對你和敵人都適用。選夥伴與切換招式時，記得把天氣算進去。</p>
+    </section>
+
+    <section id="official">
+      <h2>本站攻略和官方網站有什麼不同</h2>
+      <p>
+        官方網站 pokesurvivor.com 提供遊戲本體，以及英文、西班牙文的指南、招式、傳說、道具、屬性和圖鑑頁面，網站地圖裡只有西班牙文與 /en/ 頁面。本站是粉絲網站，PokeSurvivor 攻略裡的遊戲數據都對照官方頁面與 GitHub 原始碼；推薦與排名是我們的意見，衝突時以官方為準。
+      </p>
+      <p>
+        本頁是另外撰寫的中文 PokeSurvivor 攻略，不是官方頁面的翻譯。中文玩家可以接著看<a href="/zh/how-to-play/">新手玩法教學</a>與<a href="/zh/co-op/">多人合作攻略</a>；想看英文 PokeSurvivor 攻略，可以從<a href="/">英文攻略首頁</a>開始。
+      </p>
+      <p>
+        總結這份 PokeSurvivor 攻略：先把介面切成英文、開著對照表選卡；開局選炎兔兒或呆呆獸；血量健康時，裂縫出現就去打，並留意天氣與會補血的敵人。
+      </p>
+    </section>
+
+    <FAQ locale="zh" items={faqItems} />
+
+    <section class="sources">
+      <h2>我們如何撰寫這份攻略</h2>
+      <p>
+        本 PokeSurvivor 攻略的資料來源：<a href="https://pokesurvivor.com/en/guide/" rel="noopener">官方指南</a>、<a href="https://pokesurvivor.com/en/news/" rel="noopener">官方新聞</a>、<a href="https://pokesurvivor.com/en/legendaries/" rel="noopener">傳說頁</a>、<a href="https://pokesurvivor.com/en/types/" rel="noopener">屬性頁</a>，以及官方 GitHub 原始碼（2026-10-14 版本）。最後確認日期：2026-10-16。
+      </p>
+    </section>
+  </article>
+</BaseLayout>
+
+<style>
+  .guide { max-width: 900px; margin: 0 auto; }
+  .guide-header { margin-bottom: var(--space-xl); text-align: center; }
+  .hero-eyebrow { display: inline-block; padding: var(--space-1) var(--space-3); background: var(--surface-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-pill); font-size: var(--font-size-sm); font-weight: var(--font-semibold); color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: var(--space-sm); }
+  .guide-header h1 { font-size: clamp(1.7rem, 4vw, 2.4rem); line-height: var(--leading-tight); margin-bottom: var(--space-sm); }
+  .lead { font-size: 1.1rem; color: var(--text-secondary); max-width: 800px; margin: 0 auto var(--space-sm); }
+  .meta-badges { display: flex; gap: var(--space-2); justify-content: center; flex-wrap: wrap; margin-bottom: var(--space-md); }
+  .hero-sprites { display: flex; gap: var(--space-3); justify-content: center; flex-wrap: wrap; }
+  .hero-figure { margin: 0 0 var(--space-xl); }
+  .hero-figure img { display: block; border-radius: var(--radius-md); }
+  .hero-figure figcaption { color: var(--text-tertiary); font-size: var(--font-size-sm); margin-top: var(--space-2); text-align: center; }
+  .toc-chips { display: flex; gap: var(--space-2); flex-wrap: wrap; margin-bottom: var(--space-xl); }
+  .toc-chip { display: inline-block; padding: var(--space-2) var(--space-3); background: var(--surface-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-pill); font-size: var(--font-size-sm); color: var(--accent-primary); text-decoration: none; transition: all 0.2s; }
+  .toc-chip:hover { background: var(--surface-elevated); border-color: var(--accent-primary); }
+  .guide h2 { font-size: clamp(1.35rem, 3vw, 1.8rem); margin: var(--space-xl) 0 var(--space-sm); color: var(--accent-primary); }
+  .guide h3 { font-size: 1.15rem; margin: var(--space-md) 0 0.4rem; font-weight: var(--font-semibold); color: var(--text-primary); }
+  .guide p, .guide li { color: var(--text-secondary); }
+  .guide p { margin-bottom: var(--space-sm); }
+  .guide ul, .guide ol { padding-left: 1.4rem; margin-bottom: var(--space-sm); }
+  .guide li { margin-bottom: 0.4rem; }
+  .guide strong { color: var(--text-primary); }
+  .table-wrap { overflow-x: auto; margin-bottom: var(--space-sm); }
+  .glossary-table { width: 100%; border-collapse: collapse; background: var(--surface-elevated); }
+  .glossary-table caption { text-align: left; color: var(--text-tertiary); padding: 0.5rem 0; font-size: var(--font-size-sm); }
+  .glossary-table th, .glossary-table td { padding: 0.6rem 0.8rem; border: 1px solid var(--border-subtle); text-align: left; vertical-align: top; }
+  .glossary-table thead th { background: var(--surface-card); font-weight: var(--font-semibold); color: var(--text-primary); }
+  .glossary-table tbody th { font-weight: var(--font-semibold); color: var(--text-primary); }
+  .glossary-table tbody tr:hover { background: var(--surface-card); }
+  .glossary-table .col-en { width: 30%; }
+  .glossary-table .col-zh { width: 25%; }
+  .starter-groups { display: grid; gap: var(--space-md); margin: var(--space-md) 0; }
+  .move-group { background: var(--surface-elevated); padding: var(--space-md); border-radius: var(--radius-md); border: 1px solid var(--border-subtle); }
+  .move-name { font-weight: var(--font-semibold); color: var(--text-primary); margin: 0 0 var(--space-sm); font-size: 1rem; }
+  .move-count { color: var(--text-tertiary); font-weight: normal; font-size: var(--font-size-sm); }
+  .sprite-grid { display: flex; gap: var(--space-2); flex-wrap: wrap; }
+  .timeline { list-style: none; padding-left: 0; margin: var(--space-md) 0; border-left: 2px solid var(--border-subtle); }
+  .timeline-item { position: relative; padding-left: var(--space-lg); padding-bottom: var(--space-md); }
+  .timeline-mark { position: absolute; left: -1.9rem; top: 0; width: 3.5rem; height: 1.8rem; display: flex; align-items: center; justify-content: center; background: var(--surface-card); border: 2px solid var(--accent-primary); border-radius: var(--radius-md); font-weight: var(--font-bold); font-size: var(--font-size-sm); color: var(--accent-primary); }
+  .timeline-content { color: var(--text-secondary); font-size: var(--font-size-sm); }
+  .timeline-final .timeline-mark { background: var(--accent-primary); color: var(--text-on-accent); }
+  .enemy-cards, .weather-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-md); margin: var(--space-md) 0; }
+  .enemy-card, .weather-card { padding: var(--space-md); }
+  .enemy-card h3, .weather-card h3 { margin-top: 0; font-size: 1rem; }
+  .enemy-examples { color: var(--text-tertiary); font-size: var(--font-size-sm); margin-bottom: var(--space-xs); }
+  .weather-types { display: flex; gap: var(--space-2); flex-wrap: wrap; align-items: center; margin: var(--space-xs) 0; }
+  .weather-boost { color: var(--accent-primary); font-weight: var(--font-semibold); }
+  .weather-debuff { color: var(--text-tertiary); }
+  .weather-note { color: var(--text-tertiary); font-size: var(--font-size-sm); margin-top: var(--space-xs); }
+  .sources { margin-top: var(--space-xl); padding: var(--space-md); background: var(--surface-elevated); border-left: 3px solid var(--accent-primary); border-radius: var(--radius-md); }
+  .sources h2 { margin-top: 0; font-size: 1.2rem; }
+</style>

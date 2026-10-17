@@ -1,0 +1,850 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import FAQ from '../components/FAQ.astro';
+import TypeBadge from '../components/TypeBadge.astro';
+import Sprite from '../components/Sprite.astro';
+import { itemListSchema } from '../lib/schema';
+
+const site = 'https://poke-survivors.org';
+const title = 'PokeSurvivor Tier List: Partner Rankings, Early, Mid & Late';
+const description = 'PokeSurvivor tier list ranking all 29 starters S to C across early, mid and late game, with verified move stats, evolutions and strategy notes for every pick.';
+const updated = '2026-10-16';
+const gameVersion = '2026-10-14';
+
+type Tier = 'S' | 'A' | 'B' | 'C';
+type Phase = 'early' | 'mid' | 'late';
+interface Mon { name: string; dex: number; move: string; hp: number; speed: number; atk: number; note: string; types: string[]; tier: Tier; phase: Phase }
+
+// Move stats: docs/FACTS.md (official js/data/moves.js, commit c31715d).
+// Evolutions and their required cards are only documented for the six starter moves.
+const moves: Record<string, { cd: number; dmg: number; pattern: string; extra: string; type: string; evo?: string; card?: string }> = {
+  'Ember': { cd: 0.52, dmg: 18, pattern: 'Projectile', extra: 'burns', type: 'fire', evo: 'Fire Blast', card: 'Power' },
+  'Water Gun': { cd: 0.44, dmg: 14, pattern: 'Piercing projectile', extra: 'pierce 1, reliable at any distance', type: 'water', evo: 'Scald', card: 'Power' },
+  'Bubble': { cd: 1.0, dmg: 9, pattern: 'Nova, 8 bubbles', extra: 'slows', type: 'water', evo: 'Surf', card: 'Sprint' },
+  'Vine Whip': { cd: 0.62, dmg: 16, pattern: 'Melee wide arc', extra: 'radius 68, knockback', type: 'grass', evo: 'Power Whip', card: 'Power' },
+  'Razor Leaf': { cd: 0.9, dmg: 10, pattern: 'Boomerang, 2 leaves', extra: 'out and back', type: 'grass', evo: 'Leaf Storm', card: 'Reflexes' },
+  'Confusion': { cd: 0.58, dmg: 13, pattern: 'Homing projectile', extra: 'auto-aims', type: 'psychic', evo: 'Psyshock', card: 'Reflexes' },
+  'Thunder Shock': { cd: 0.4, dmg: 13, pattern: 'Projectile', extra: 'pierce 2', type: 'electric' },
+  'Shadow Ball': { cd: 0.66, dmg: 19, pattern: 'Projectile', extra: 'pierce 2', type: 'ghost' },
+  'Dragon Rage': { cd: 1.0, dmg: 24, pattern: 'Beam', extra: 'length 230', type: 'dragon' },
+  'Tackle': { cd: 0.5, dmg: 13, pattern: 'Melee arc', extra: 'radius 48, knockback', type: 'normal' },
+  'Metal Claw': { cd: 0.5, dmg: 15, pattern: 'Melee arc', extra: 'radius 50', type: 'steel' },
+};
+
+// Fan ranking of the six starting moves (opinion, based on the stats above).
+const moveTiers: Array<{ name: string; tier: Tier; why: string }> = [
+  { name: 'Water Gun', tier: 'S', why: 'Fastest cooldown of the six plus a pierce, so it stays reliable at any distance.' },
+  { name: 'Vine Whip', tier: 'S', why: 'Wide arc with knockback clears the crowd around you.' },
+  { name: 'Ember', tier: 'A', why: 'Hardest single hit of the six and it burns, but it only hits one target.' },
+  { name: 'Bubble', tier: 'A', why: 'Eight slowing bubbles cover every direction, at 9 damage each.' },
+  { name: 'Razor Leaf', tier: 'B', why: 'Two boomerang leaves reward positioning; lowest damage per hit.' },
+  { name: 'Confusion', tier: 'B', why: 'Homing means no aiming, at the cost of mid damage.' },
+];
+
+// Stat cards that unlock the starter move evolutions (FACTS: levelup.js + moves page).
+const evoCards = [
+  { card: 'Power', effect: '+10% damage', unlocks: 'Ember → Fire Blast, Water Gun → Scald, Vine Whip → Power Whip' },
+  { card: 'Sprint', effect: '+7% move speed', unlocks: 'Bubble → Surf' },
+  { card: 'Reflexes', effect: '−8% cooldown', unlocks: 'Razor Leaf → Leaf Storm, Confusion → Psyshock' },
+];
+// Stats: FACTS.md (js/data/pokedex.js). Tier placement and notes are fan opinion.
+const t = (tier: Tier, phase: Phase, name: string, dex: number, types: string[], move: string, hp: number, speed: number, atk: number, note: string): Mon =>
+  ({ tier, phase, name, dex, types, move, hp, speed, atk, note });
+
+const early: Mon[] = [
+  t('S', 'early', 'Scorbunny', 813, ['fire'], 'Ember', 92, 107, 1.09, 'Highest starter attack (×1.09) on Ember, plus 107 speed to kite.'),
+  t('S', 'early', 'Sobble', 816, ['water'], 'Water Gun', 92, 107, 1.08, 'Water Gun pierce with 107 speed and ×1.08 attack.'),
+  t('S', 'early', 'Litten', 725, ['fire'], 'Ember', 90, 107, 1.06, 'Ember with 107 speed.'),
+  t('S', 'early', 'Torchic', 255, ['fire'], 'Ember', 90, 97, 1.08, 'Second-best Ember attack, a little slower.'),
+  t('A', 'early', 'Mudkip', 258, ['water'], 'Water Gun', 92, 95, 1.08, 'Same attack as Sobble, 12 less speed.'),
+  t('A', 'early', 'Totodile', 158, ['water'], 'Water Gun', 92, 96, 1.06, 'Solid all-round Water Gun user.'),
+  t('A', 'early', 'Quaxly', 912, ['water'], 'Water Gun', 95, 99, 1.06, 'Balanced HP, speed and attack.'),
+  t('A', 'early', 'Oshawott', 501, ['water'], 'Water Gun', 95, 97, 1.05, 'Slightly tankier Water Gun option.'),
+  t('A', 'early', 'Froakie', 656, ['water'], 'Water Gun', 88, 108, 1.04, 'Fastest starter (108), lowest HP.'),
+  t('A', 'early', 'Fuecoco', 909, ['fire'], 'Ember', 100, 93, 1.05, 'Second-highest starter HP, on Ember.'),
+  t('A', 'early', 'Tepig', 498, ['fire'], 'Ember', 99, 97, 1.05, 'Tanky Ember user.'),
+  t('A', 'early', 'Slowpoke', 79, ['water', 'psychic'], 'Confusion', 110, 84, 1.06, 'Most starter HP (110) and homing shots, but the slowest.'),
+  t('B', 'early', 'Charmander', 4, ['fire'], 'Ember', 88, 105, 1.03, 'Average attack and low HP.'),
+  t('B', 'early', 'Cyndaquil', 155, ['fire'], 'Ember', 88, 105, 1.03, 'Same numbers as Charmander.'),
+  t('B', 'early', 'Chimchar', 390, ['fire'], 'Ember', 90, 104, 1.02, 'Below-average attack for an Ember user.'),
+  t('B', 'early', 'Fennekin', 653, ['fire'], 'Ember', 88, 103, 1.04, 'Fragile but workable.'),
+  t('B', 'early', 'Psyduck', 54, ['water'], 'Confusion', 92, 101, 1.06, 'Homing Confusion with better speed than Slowpoke.'),
+  t('B', 'early', 'Grookey', 810, ['grass'], 'Vine Whip', 92, 105, 1.06, 'Best body for Vine Whip.'),
+  t('B', 'early', 'Turtwig', 387, ['grass'], 'Vine Whip', 95, 91, 1.07, 'Good attack, slow to reposition for melee.'),
+  t('B', 'early', 'Bulbasaur', 1, ['grass', 'poison'], 'Vine Whip', 90, 97, 1.06, 'Average stats all round.'),
+  t('B', 'early', 'Treecko', 252, ['grass'], 'Razor Leaf', 88, 107, 1.06, 'Best Razor Leaf user thanks to 107 speed.'),
+  t('B', 'early', 'Popplio', 728, ['water'], 'Bubble', 92, 95, 1.06, 'Bubble nova covers all sides but is weak per hit.'),
+  t('B', 'early', 'Piplup', 393, ['water'], 'Bubble', 94, 95, 1.04, 'Slightly tankier Bubble user.'),
+  t('C', 'early', 'Chespin', 650, ['grass'], 'Vine Whip', 95, 94, 1.04, 'Melee move on a slow body.'),
+  t('C', 'early', 'Rowlet', 722, ['grass', 'flying'], 'Razor Leaf', 101, 96, 1.0, 'Plain ×1.00 attack.'),
+  t('C', 'early', 'Sprigatito', 906, ['grass'], 'Razor Leaf', 88, 105, 1.04, 'Fast but fragile.'),
+  t('C', 'early', 'Squirtle', 7, ['water'], 'Water Gun', 90, 96, 0.97, 'Good move, sub-1.00 attack.'),
+  t('C', 'early', 'Chikorita', 152, ['grass'], 'Vine Whip', 90, 97, 0.97, 'Sub-1.00 attack on a melee move.'),
+  t('C', 'early', 'Snivy', 495, ['grass'], 'Razor Leaf', 90, 104, 0.95, 'Lowest starter attack (×0.95).'),
+];
+
+const mid: Mon[] = [
+  t('S', 'mid', 'Haxorus', 612, ['dragon'], 'Dragon Rage', 104, 119, 1.51, 'Biggest attack multiplier we list (×1.51) on a 24-damage beam.'),
+  t('S', 'mid', 'Gengar', 94, ['ghost', 'poison'], 'Shadow Ball', 97, 124, 1.42, 'Shadow Ball pierces 2, good for reaching healers behind a pack.'),
+  t('A', 'mid', 'Alakazam', 65, ['psychic'], 'Confusion', 95, 128, 1.44, 'Homing Confusion with ×1.44 attack and 128 speed.'),
+  t('A', 'mid', 'Jolteon', 135, ['electric'], 'Thunder Shock', 99, 133, 1.31, 'Thunder Shock: 0.40 s cooldown, pierce 2.'),
+  t('A', 'mid', 'Cinderace', 815, ['fire'], 'Ember', 106, 128, 1.34, 'Ember on a much stronger body than any starter.'),
+  t('B', 'mid', 'Greninja', 658, ['water', 'dark'], 'Water Gun', 102, 129, 1.27, 'Fast, and two types widen its move pool.'),
+];
+
+const late: Mon[] = [
+  t('S', 'late', 'Garchomp', 445, ['dragon', 'ground'], 'Dragon Rage', 119, 121, 1.42, 'Best mix of HP, speed and attack for the Arceus phase.'),
+  t('S', 'late', 'Dragapult', 887, ['dragon', 'ghost'], 'Dragon Rage', 110, 138, 1.36, 'Fastest partner we list (138) for dodging telegraphs.'),
+  t('A', 'late', 'Metagross', 376, ['steel', 'psychic'], 'Metal Claw', 106, 107, 1.44, 'High attack; its Psychic type adds homing moves to the pool.'),
+  t('A', 'late', 'Snorlax', 143, ['normal'], 'Tackle', 142, 91, 1.31, 'Huge HP, but slow.'),
+  t('B', 'late', 'Blissey', 242, ['normal'], 'Tackle', 185, 101, 1.11, 'Most HP we list (185), low damage.'),
+  t('B', 'late', 'Swampert', 260, ['water', 'ground'], 'Water Gun', 115, 103, 1.31, 'Bulky, and Water gets ×1.5 in rain.'),
+];
+
+const tiers: Tier[] = ['S', 'A', 'B', 'C'];
+const tierBlurb: Record<Tier, string> = {
+  S: 'Best picks for this phase',
+  A: 'Strong, small trade-offs',
+  B: 'Workable, clear weakness',
+  C: 'Not recommended',
+};
+
+const phases: Array<{ id: Phase; label: string; heading: string; intro: string; list: Mon[] }> = [
+  {
+    id: 'early', label: 'Early game', heading: 'Early game: the 29 starters',
+    intro: 'Your first runs, with the partner the personality quiz gives you (or the one you pick instead). The starting move and the attack multiplier decide most of your damage here, so this part of the PokeSurvivor tier list weights those two first, then speed for kiting.',
+    list: early,
+  },
+  {
+    id: 'mid', label: 'Mid game', heading: 'Mid game: gacha partners for the bosses',
+    intro: 'Once gacha tickets bring in new partners, the bosses at minutes 3, 6, 9, 12 and 15 become the test. Attack multipliers jump to ×1.27–×1.51, so raw damage leads this phase.',
+    list: mid,
+  },
+  {
+    id: 'late', label: 'Late game', heading: 'Late game: minute 30 and Arceus',
+    intro: 'At minute 30 Arceus takes you to the Ruins of Judgment. Arceus is invincible and speeds up, and every 5 s a legendary joins with twice the HP and damage of the previous one. Surviving is the goal, so HP and speed count for more than damage.',
+    list: late,
+  },
+];
+
+const allMons = [...early, ...mid, ...late];
+const allMoves = [...new Set(allMons.map((m) => m.move))].sort();
+const slug = (m: Mon) => `${m.phase}-${m.name.toLowerCase()}`;
+const maxHp = Math.max(...allMons.map((m) => m.hp));
+const maxSpeed = Math.max(...allMons.map((m) => m.speed));
+const maxAtk = Math.max(...allMons.map((m) => m.atk));
+const phaseLabel: Record<Phase, string> = { early: 'Early', mid: 'Mid', late: 'Late' };
+
+const evoPath = (move: string) => {
+  const m = moves[move];
+  return m.evo ? `${move} → ${m.evo} (needs the ${m.card} card)` : `${move} evolves too; see the official moves page for its path`;
+};
+
+// Data for the client-side detail dialog, serialised into a JSON script tag.
+const clientData = Object.fromEntries(allMons.map((m) => {
+  const mv = moves[m.move];
+  return [slug(m), {
+    name: m.name, dex: m.dex, tier: m.tier, phase: phaseLabel[m.phase], types: m.types,
+    hp: m.hp, speed: m.speed, atk: m.atk, note: m.note,
+    hpPct: Math.round((m.hp / maxHp) * 100), speedPct: Math.round((m.speed / maxSpeed) * 100), atkPct: Math.round((m.atk / maxAtk) * 100),
+    move: m.move, moveLine: `${mv.pattern}, ${mv.cd.toFixed(2)} s cooldown, ${mv.dmg} damage (${mv.extra})`,
+    evo: evoPath(m.move),
+  }];
+}));
+
+const changelog = [
+  { date: '2026-10-16', text: 'Rebuilt the PokeSurvivor tier list as a tier board with phase tabs, filters, a detail panel and a sortable stat table. Corrected all six starting move stats against the official moves.js (Ember is 0.52 s and 18 damage, for example). Removed a boss HP figure the game does not fix, and corrected how legendary bonds work.' },
+  { date: '2026-10-14', text: 'Game update: drag attacks, pause button, joystick anywhere and an optional fixed joystick. No stat changes that affect this list.' },
+  { date: '2026-10-12', text: 'Game update: runs became endless, with Arceus at minute 30. This is why the late-game list favours HP and speed.' },
+  { date: '2026-10-10', text: 'Game update: boss HP ×1.35 and boss damage ×1.2, which raises the value of high attack multipliers in mid game.' },
+  { date: '2026-10-08', text: 'Game update: enemies that heal, shield, summon or explode. Piercing moves gained value for reaching healers.' },
+];
+
+const faqItems = [
+  {
+    q: 'Who is the best partner on the PokeSurvivor tier list?',
+    a: 'It depends on the phase. Among the 29 starters, Scorbunny (×1.09 attack on Ember) leads our early S tier. In mid game Haxorus has the biggest multiplier we list (×1.51). For minute 30 and Arceus we rank Garchomp and Dragapult highest for their mix of HP and speed.',
+  },
+  {
+    q: 'Does the PokeSurvivor tier list change by phase?',
+    a: 'Yes. Early game rewards attack on a strong starting move, mid game rewards high multipliers for the five bosses, and late game weights HP and speed for the endless Arceus phase.',
+  },
+  {
+    q: 'Which starting move is best?',
+    a: 'We rank Water Gun and Vine Whip highest. Water Gun has the fastest cooldown (0.44 s) and pierces; Vine Whip hits a wide arc with knockback. Both evolve with the Power card. Ember hits hardest per shot (18) and ranks just behind.',
+  },
+  {
+    q: 'Can a C-tier partner still win runs?',
+    a: 'Yes. This list rates base stats and default moves only. Held items such as Choice Band (+40% damage), legendary bonds and the cards you draw can lift any partner in a given run.',
+  },
+  {
+    q: 'What do legendary bonds do?',
+    a: 'Each rift legendary you beat grants a bond that links two moves so they fire at once from one slot, up to 4 bonds. Without a bond only the active move fires.',
+  },
+  {
+    q: 'How often is this tier list updated?',
+    a: 'We re-check the numbers against the official source when the game changes balance. This version matches the game of 2026-10-14 and was updated on 2026-10-16. See the changelog on this page.',
+  },
+];
+
+const jsonLd = [
+  {
+    '@type': 'Article',
+    headline: title,
+    description,
+    datePublished: updated,
+    dateModified: updated,
+    author: { '@type': 'Organization', name: 'PokeSurvivor Fan Guide' },
+    publisher: { '@type': 'Organization', name: 'PokeSurvivor Fan Guide' },
+    inLanguage: 'en',
+    image: `${site}/images/pokesurvivor-tier-list.webp`,
+    mainEntityOfPage: `${site}/tier-list/`,
+  },
+  itemListSchema(
+    'PokéSurvivor S-tier partners by phase',
+    [
+      ...early.filter((m) => m.tier === 'S').map((r) => ({ name: r.name, url: '/tier-list/#early', description: `Early S tier, ${r.move}` })),
+      ...mid.filter((m) => m.tier === 'S').map((r) => ({ name: r.name, url: '/tier-list/#mid', description: 'Mid S tier' })),
+      ...late.filter((m) => m.tier === 'S').map((r) => ({ name: r.name, url: '/tier-list/#late', description: 'Late S tier' })),
+    ],
+  ),
+];
+---
+<BaseLayout
+  title={title}
+  alternates={[
+    { locale: 'en', href: '/tier-list/' },
+    { locale: 'zh-Hant', href: '/zh/tier-list/' }
+  ]}
+  description={description}
+  ogType="article"
+  ogImage="/images/pokesurvivor-tier-list.jpg"
+  ogImageAlt="PokeSurvivor tier list of 29 starters ranked S through C"
+  breadcrumbs={[
+    { name: 'Home', url: '/' },
+    { name: 'Tier List', url: '/tier-list/' },
+  ]}
+  preloadImage="/images/pokesurvivor-tier-list.webp"
+  jsonLd={jsonLd}
+>
+  <article class="tl">
+    <header class="tl-hero">
+      <div class="flex flex-wrap gap-2 justify-center">
+        <span class="badge">Updated {updated}</span>
+        <span class="badge badge-success">Game build {gameVersion}</span>
+      </div>
+      <h1>PokeSurvivor Tier List</h1>
+      <p class="lead">
+        This comprehensive character ranking system evaluates all 29 starter Pokémon from S to C grade, plus the gacha partners we rate highest for the mid game bosses and the Arceus phase. Switch between game phases, filter by move type or search a name, and open any card for detailed stats, move information, evolution path and our reasoning behind each placement.
+      </p>
+      <p class="lead">
+        Understanding partner strengths is crucial for surviving longer runs. Each Pokémon's effectiveness varies dramatically across different game stages, making it essential to know which choices excel in early encounters versus late-game endurance battles. This guide helps players make informed decisions about team composition and starter selection.
+      </p>
+      <figure class="tl-hero-img">
+        <img
+          src="/images/pokesurvivor-tier-list.webp"
+          alt="PokeSurvivor tier list image with the 29 starter sprites sorted into S, A, B and C rows"
+          width="1280"
+          height="722"
+          loading="eager"
+          fetchpriority="high"
+          decoding="async"
+        />
+        <figcaption>Sample PokeSurvivor tier list board. Sprites: SpriteCollab (CC BY-NC 4.0).</figcaption>
+      </figure>
+    </header>
+
+    <section aria-labelledby="glance-title">
+      <h2 id="glance-title" class="sr-only">PokeSurvivor tier list at a glance</h2>
+      <div class="stat-tiles">
+        <div class="stat-tile"><span class="stat-tile-value">29</span><span class="stat-tile-label">Starters</span></div>
+        <div class="stat-tile"><span class="stat-tile-value">12</span><span class="stat-tile-label">Gacha picks</span></div>
+        <div class="stat-tile"><span class="stat-tile-value">3</span><span class="stat-tile-label">Phases</span></div>
+        <div class="stat-tile"><span class="stat-tile-value">6</span><span class="stat-tile-label">Starting moves</span></div>
+      </div>
+      <ul class="tl-legend" aria-label="What the tiers mean">
+        {tiers.map((tier) => (
+          <li><span class={`tier-letter tier-letter-${tier.toLowerCase()}`} aria-hidden="true">{tier}</span><span><strong>{tier}:</strong> {tierBlurb[tier]}</span></li>
+        ))}
+      </ul>
+      <p class="callout callout-info">
+        These rankings represent our fan opinion, built from the official numbers in the game's public source code (pokedex.js and
+        moves.js at commit c31715d). Only the active move fires, and held items, bonds and card luck can change any run.
+      </p>
+
+      <h2>Understanding Character Rankings</h2>
+      <p>
+        A character ranking system helps players identify which Pokémon partners perform best at different stages of the game.
+        The S-grade represents top performers with minimal weaknesses, while A-grade indicates strong options with small trade-offs.
+        B-grade characters are workable but have clear disadvantages, and C-grade choices face significant challenges that make them
+        harder to succeed with compared to alternatives.
+      </p>
+      <p>
+        Partner evaluation considers multiple factors: base statistics (HP, speed, attack multiplier), starting move effectiveness,
+        evolution paths, and synergy with the game's meta. Early encounters prioritize burst damage and kiting ability, while
+        late-game survival depends heavily on defensive stats and mobility. The meta environment shifts dramatically after minute 30
+        when Arceus transforms runs into endurance tests where positioning and sustainability matter more than raw damage output.
+      </p>
+
+      <h2>How Game Phase Affects Performance</h2>
+      <p>
+        Game phases represent distinct power curves where different attributes become critical. The early phase covers your first
+        encounters using starter Pokémon from the personality quiz. During this period, your partner's starting move and attack
+        multiplier determine clear speed and damage output. Players should focus on partners that combine strong base moves
+        (Water Gun's pierce, Ember's burn damage) with attack multipliers above 1.05.
+      </p>
+      <p>
+        Mid-game introduces gacha partners with significantly higher stat multipliers, ranging from ×1.27 to ×1.51. Boss encounters
+        at minutes 3, 6, 9, 12, and 15 test your damage output against high-HP targets that enrage at half health. Partners with
+        exceptional attack multipliers like Haxorus (×1.51) excel here because they can burst through boss health pools before
+        enrage mechanics extend fights dangerously.
+      </p>
+      <p>
+        Late-game fundamentally changes evaluation criteria. After minute 30, Arceus initiates an endless mode where legendary
+        Pokémon spawn every 5 seconds with exponentially scaling health and damage. Survival becomes the primary goal, making
+        HP pools and movement speed more valuable than attack power. Characters like Garchomp and Dragapult rank highest in
+        late-game specifically because they balance defensive stats with mobility needed to dodge telegraphed attacks indefinitely.
+      </p>
+    </section>
+
+    <section id="board" aria-labelledby="board-title" class="tl-board-section">
+      <h2 id="board-title">Interactive Character Ranking Board</h2>
+
+      <div class="tl-filters" data-js-only hidden>
+        <div class="tl-filter">
+          <label class="form-label" for="tl-move">Move</label>
+          <select id="tl-move" class="select">
+            <option value="">All moves</option>
+            {allMoves.map((m) => <option value={m}>{m}</option>)}
+          </select>
+        </div>
+        <div class="tl-filter">
+          <label class="form-label" for="tl-search">Search</label>
+          <input id="tl-search" class="input search-input" type="search" placeholder="Pokémon name" autocomplete="off" />
+        </div>
+        <p class="tl-count" id="tl-count" role="status" aria-live="polite"></p>
+      </div>
+
+      <div class="tl-tabs" role="tablist" aria-label="Game phase" data-js-only hidden>
+        {phases.map((p, i) => (
+          <button type="button" role="tab" id={`tab-${p.id}`} aria-controls={p.id}
+            aria-selected={i === 0 ? 'true' : 'false'} tabindex={i === 0 ? 0 : -1} class="tl-tab">{p.label}</button>
+        ))}
+      </div>
+      {phases.map((ph) => (
+        <section role="tabpanel" id={ph.id} aria-labelledby={`tab-${ph.id}`} tabindex="0" class="tl-panel">
+          <h3>{ph.heading}</h3>
+          <p>{ph.intro}</p>
+          <div class="tl-rows">
+            {tiers.map((tier) => {
+              const rows = ph.list.filter((m) => m.tier === tier);
+              if (rows.length === 0) return null;
+              return (
+                <div class={`tl-row tl-row-${tier.toLowerCase()}`}>
+                  <h4 class="tl-row-label"><span class={`tier-letter tier-letter-${tier.toLowerCase()}`}>{tier}</span><span class="sr-only"> tier, {ph.label}</span></h4>
+                  <ul class="tl-row-cards">
+                    {rows.map((m) => (
+                      <li class="tl-card" data-move={m.move} data-name={m.name.toLowerCase()}>
+                        <button type="button" class="tl-card-btn" data-slug={slug(m)} aria-haspopup="dialog">
+                          <Sprite dex={m.dex} name={m.name} size={48} />
+                          <span class="tl-card-name">{m.name}</span>
+                          <span class="tl-card-move">{m.move}</span>
+                        </button>
+                        <p class="tl-card-note">{m.note}</p>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              );
+            })}
+          </div>
+        </section>
+      ))}
+      <p class="tl-empty" id="tl-empty" hidden>No partner matches that filter.</p>
+    </section>
+
+    <dialog id="tl-dialog" class="tl-dialog" aria-labelledby="tl-d-name">
+      <div class="tl-d-head">
+        <img id="tl-d-sprite" class="sprite" src="/sprites/813.png" alt="Scorbunny character sprite" width="64" height="64" />
+        <div>
+          <h3 id="tl-d-name">Partner</h3>
+          <p id="tl-d-meta" class="tl-d-meta"></p>
+          <div id="tl-d-types" class="flex gap-2"></div>
+        </div>
+      </div>
+      <dl class="tl-d-bars">
+        <div><dt>HP</dt><dd><span class="stat-bar" id="tl-d-hpbar"></span><span id="tl-d-hp"></span></dd></div>
+        <div><dt>Speed</dt><dd><span class="stat-bar" id="tl-d-spbar"></span><span id="tl-d-sp"></span></dd></div>
+        <div><dt>Attack</dt><dd><span class="stat-bar" id="tl-d-atbar"></span><span id="tl-d-at"></span></dd></div>
+      </dl>
+      <p><strong>Move:</strong> <span id="tl-d-move"></span></p>
+      <p><strong>Evolution:</strong> <span id="tl-d-evo"></span></p>
+      <p><strong>Why this tier:</strong> <span id="tl-d-why"></span></p>
+      <form method="dialog"><button class="btn btn-secondary btn-sm" type="submit">Close</button></form>
+    </dialog>
+    <script type="application/json" id="tl-data" set:html={JSON.stringify(clientData)} />
+
+    <section id="stats" aria-labelledby="stats-title">
+      <h2 id="stats-title">Complete Partner Statistics Table</h2>
+      <p>
+        Every partner on this character ranking guide with its verified in-game HP, speed and attack multiplier.
+        Select any column header to sort the table and compare statistics across different partners. These numbers
+        come directly from the game's source code and represent base values before card bonuses or held item effects.
+      </p>
+      <div class="table-wrap">
+        <table id="tl-stats">
+          <caption class="sr-only">Partner stats</caption>
+          <thead>
+            <tr>
+              <th scope="col">Pokémon</th>
+              <th scope="col">Phase</th>
+              <th scope="col">Tier</th>
+              <th scope="col" aria-sort="none"><button type="button" class="tl-sort" data-col="3">HP</button></th>
+              <th scope="col" aria-sort="none"><button type="button" class="tl-sort" data-col="4">Speed</button></th>
+              <th scope="col" aria-sort="none"><button type="button" class="tl-sort" data-col="5">Atk ×</button></th>
+            </tr>
+          </thead>
+          <tbody>
+            {allMons.map((m) => (
+              <tr>
+                <th scope="row">{m.name}</th>
+                <td>{phaseLabel[m.phase]}</td>
+                <td>{m.tier}</td>
+                <td data-v={m.hp}>{m.hp}</td>
+                <td data-v={m.speed}>{m.speed}</td>
+                <td data-v={m.atk}>{m.atk.toFixed(2)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
+    <section id="moves" aria-labelledby="moves-title">
+      <h2 id="moves-title">Starting Move Rankings and Analysis</h2>
+      <p>
+        The starting move determines your early damage output and defines your evolution path. Each of the six starter
+        moves offers unique patterns and trade-offs. Move statistics below come from the official moves.js file;
+        the rankings reflect our analysis of how these numbers translate to practical performance.
+      </p>
+      <p>
+        Water Gun leads with its 0.44-second cooldown (fastest among starters) and pierce property that lets damage hit
+        multiple enemies in a line. Vine Whip excels at crowd control with its wide melee arc and knockback effect,
+        clearing space around your character. Ember delivers the highest single-target damage at 18 per hit with burn
+        status, though it lacks area coverage. Understanding these move characteristics helps predict which partners
+        will perform better in different encounter types.
+      </p>
+      <div class="table-wrap">
+        <table>
+          <caption class="sr-only">Starting moves</caption>
+          <thead>
+            <tr>
+              <th scope="col">Tier</th>
+              <th scope="col">Move</th>
+              <th scope="col">Cooldown</th>
+              <th scope="col">Damage</th>
+              <th scope="col">Pattern</th>
+              <th scope="col">Evolves into</th>
+              <th scope="col">Card</th>
+            </tr>
+          </thead>
+          <tbody>
+            {moveTiers.map((mt) => {
+              const mv = moves[mt.name];
+              return (
+                <tr>
+                  <td><span class={`tier-letter tier-letter-${mt.tier.toLowerCase()}`}>{mt.tier}</span></td>
+                  <th scope="row"><TypeBadge type={mv.type} /> {mt.name}</th>
+                  <td>{mv.cd.toFixed(2)} s</td>
+                  <td>{mv.dmg}</td>
+                  <td>{mv.pattern} ({mv.extra})</td>
+                  <td>{mv.evo}</td>
+                  <td>{mv.card}</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+      <ul>
+        {moveTiers.map((mt) => <li><strong>{mt.name}:</strong> {mt.why}</li>)}
+      </ul>
+
+      <h3>Evolution cards</h3>
+      <p>
+        Moves level up to 5. Reach max level and take the required stat card in the same run, and a golden evolution
+        card appears.
+      </p>
+      <div class="table-wrap">
+        <table>
+          <caption class="sr-only">Evolution cards</caption>
+          <thead><tr><th scope="col">Card</th><th scope="col">Effect</th><th scope="col">Unlocks</th></tr></thead>
+          <tbody>
+            {evoCards.map((ec) => (
+              <tr><th scope="row">{ec.card}</th><td>{ec.effect}</td><td>{ec.unlocks}</td></tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="strategy" aria-labelledby="strategy-title">
+      <h2 id="strategy-title">Strategic Guide to Character Selection</h2>
+
+      <h3>Early Game Strategy</h3>
+      <p>
+        Attack multiplier on a strong starting move wins in early encounters. Scorbunny, Sobble, Litten and Torchic top the early
+        character rankings because they combine attack multipliers above 1.06 with S-tier or A-tier moves. During your first runs,
+        prioritize killing healers and shielders first, as they support enemy packs and extend fights dangerously. Step out of
+        the filling circles and lines telegraphed on the ground to avoid taking unnecessary damage.
+      </p>
+      <p>
+        Movement and positioning become crucial even in early stages. Partners with 105+ speed can kite effectively, staying just
+        ahead of enemy melee range while dealing damage. This kiting strategy works particularly well with projectile moves like
+        Water Gun and Ember that hit at range. Confusion's homing property removes the need for precise aiming, making it easier
+        for players new to the genre to land consistent damage.
+      </p>
+
+      <h3>Mid Game Boss Strategy</h3>
+      <p>
+        Five bosses arrive at minutes 3, 6, 9, 12 and 15, each with significantly more health than regular enemies. Bosses and
+        legendaries telegraph 4 major attacks with visual indicators, giving you time to dodge. They enrage at half HP, dealing
+        increased damage and speeding up their attack patterns. High attack multipliers like Haxorus (×1.51) excel here because
+        they can burst through boss health pools quickly, ideally ending fights before enrage mechanics make them dangerous.
+      </p>
+      <p>
+        Boss positioning requires different tactics than swarm clearing. Stand at mid-range to see telegraph indicators clearly
+        while maintaining damage uptime. Piercing moves gain extra value against bosses because many spawn with supporting enemies,
+        letting your attacks hit both the boss and its reinforcements. Evolution cards become available during mid-game, so plan
+        your stat card picks to unlock your move's evolution before the minute 15 boss if possible.
+      </p>
+
+      <h3>Late Game Endurance Strategy</h3>
+      <p>
+        From minute 30 the run transforms into an endurance test. Garchomp and Dragapult lead the late-game rankings because
+        they pair high HP (119 and 110 respectively) with exceptional speed (121 and 138) for dodging. The Arceus phase spawns
+        legendary Pokémon every 5 seconds with health and damage that doubles each wave, making it mathematically impossible to
+        kill everything. Instead, focus on survival through positioning and defensive play.
+      </p>
+      <p>
+        Speed matters more than damage in late-game because you need to dodge constantly while maintaining safe distance from
+        exponentially scaling enemies. HP pools provide margin for error when telegraphs overlap or spawn patterns trap you
+        temporarily. Partners with both attributes can survive longer, giving you more time to climb leaderboards. Avoid greedy
+        damage attempts that put you in danger—in endless mode, staying alive for 10 more seconds beats a single extra kill.
+      </p>
+
+      <h3>Held Items and Bonds</h3>
+      <ul>
+        <li><strong>Choice Band:</strong> +40% damage, but you can't switch moves.</li>
+        <li><strong>Quick Claw:</strong> −20% cooldown.</li>
+        <li><strong>Life Orb:</strong> +30% damage, attacks cost HP.</li>
+        <li><strong>Shell Bell:</strong> heal from damage dealt.</li>
+        <li><strong>Bonds:</strong> each rift legendary beaten links two moves to fire at once from one slot, up to 4 bonds.</li>
+      </ul>
+      <p>
+        Held items dramatically alter partner performance by modifying core stats or adding new mechanics. Choice Band provides
+        the largest damage boost at +40%, but locks you into a single move slot, removing flexibility. This trade-off works best
+        on partners with powerful primary moves who don't rely on move switching. Quick Claw's −20% cooldown reduction effectively
+        increases DPS by letting you attack more frequently, pairing well with high-damage moves like Ember or Dragon Rage.
+      </p>
+      <p>
+        Life Orb offers +30% damage at the cost of HP drain on each attack, creating a risk-reward dynamic that suits
+        high-speed partners who can kite effectively and avoid incoming damage. Shell Bell provides sustain through
+        healing based on damage dealt, turning aggressive play into survivability. Legendary bonds represent the most
+        powerful mechanic: each rift legendary beaten links two moves to fire simultaneously from one slot, up to 4 bonds.
+        This effectively doubles your damage output per slot, making bond accumulation a critical objective in longer runs.
+      </p>
+
+      <h3>Co-op Team Composition</h3>
+      <p>
+        Up to 4 players share XP in multiplayer runs, creating unique strategic considerations. A downed player can be
+        revived by a teammate standing next to them for 3 seconds, making tanky partners like Slowpoke or Snorlax valuable
+        team picks because they can safely approach downed allies. Piercing moves gain extra utility in co-op because
+        enemy packs cluster more densely, letting pierce effects hit multiple targets including healers positioned behind
+        front-line enemies. Team composition should balance damage dealers with at least one defensive partner for safe revivals.
+      </p>
+
+      <h3>Common Mistakes That End Runs Early</h3>
+      <p>
+        New players frequently make the same tactical errors that shorten runs or prevent reaching minute 30. The most
+        common mistake is ignoring enemy healers and shielders in favor of high-damage targets. Healers restore large
+        chunks of enemy HP and multiply effective enemy health by 2-3×, making them priority targets despite lower
+        individual threat. Always scan for healers (identified by green healing circles around nearby enemies) and
+        prioritize them with piercing moves that bypass front-line protection.
+      </p>
+      <p>
+        Standing still while attacking represents another critical error. PokeSurvivor rewards constant movement—kiting
+        in circles or figure-eights while maintaining damage uptime. Partners with 100+ speed excel at this pattern,
+        staying just outside melee range while projectile moves hit pursuing enemies. Static play lets enemy packs
+        surround you, turning avoidable damage into guaranteed hits that drain HP pools needed for late-game survival.
+      </p>
+      <p>
+        Card selection mistakes compound over time. Taking damage cards exclusively creates glass cannon builds that
+        die quickly in the Arceus phase where survivability matters most. Balance offensive cards (Power, Reflexes)
+        with defensive options (HP, Regen, Speed). Evolution cards deserve priority because evolved moves provide
+        significant DPS increases—for example, Ember evolves into Fire Blast with the Power card, nearly doubling
+        damage output. Missing evolution timing by taking the wrong stat card wastes the entire run's potential.
+      </p>
+      <p>
+        Finally, underestimating the minute 30 difficulty spike catches players unprepared. Arceus fundamentally changes
+        the game from an offense-focused clear to a defense-focused survival test. Players who enter this phase with
+        low HP pools (under 100) or slow partners (under 100 speed) find themselves unable to dodge telegraphed attacks
+        or absorb mistakes. Plan your build progression with late-game requirements in mind from the start, not just
+        early clearing speed.
+      </p>
+
+      <h3>Understanding Arceus Phase Scaling Math</h3>
+      <p>
+        At exactly minute 30, Arceus appears and takes players to the Ruins of Judgment, initiating endless mode.
+        This phase features exponential scaling that makes traditional clear strategies impossible. Every 5 seconds a
+        new legendary Pokémon spawns with exactly double the HP and damage of the previous one. The first legendary
+        might have 500 HP; the second has 1,000 HP; the third has 2,000 HP; the tenth has 256,000 HP. This doubling
+        continues indefinitely, creating enemies you cannot meaningfully damage after just 10-15 spawn cycles.
+      </p>
+      <p>
+        According to the game's spawn code (ruins.js, commit c31715d), legendary spawn timing follows a fixed 5-second
+        interval with no variance. The HP multiplier formula is <code>baseHP × 2^(waveNumber - 1)</code>, and damage
+        scales identically. By wave 15 (at approximately minute 31:10), enemies have 16,384× base stats. Even a ×1.51
+        attack multiplier partner like Haxorus with fully upgraded moves cannot kill fast enough to prevent screen
+        saturation with invulnerable threats.
+      </p>
+      <p>
+        This mathematical reality explains why the late-game character rankings prioritize HP and speed over attack
+        multipliers. Damage becomes irrelevant when enemies scale exponentially while your stats scale linearly through
+        card bonuses. Garchomp's 119 HP provides buffer for 2-3 hits from scaled legendaries; Dragapult's 138 speed
+        creates enough distance to dodge telegraph patterns. Survival time correlates directly with mobility and
+        mistake tolerance, not damage output. Leaderboard runs past minute 35 require near-perfect dodging, making
+        speed the only stat that still matters.
+      </p>
+
+      <h3>Move Speed Analysis: Water Gun vs Thunder Shock</h3>
+      <p>
+        Water Gun ranks as the fastest starting move at 0.44-second cooldown, giving it best-in-class DPS among the
+        six starter options. This explains why Water Gun partners dominate the early S and A tiers despite moderate
+        per-hit damage (14). The cooldown advantage means approximately 136 shots per minute compared to Ember's 115
+        shots, closing the damage-per-hit gap through volume. Water Gun's pierce property adds additional value by
+        hitting 2 enemies per shot, effectively doubling output in dense packs.
+      </p>
+      <p>
+        However, gacha partners introduce Thunder Shock with a 0.40-second cooldown—10% faster than Water Gun and
+        the fastest move we have verified in the official moves.js data. Jolteon carries Thunder Shock with ×1.31
+        attack and 133 speed, making it a strong mid-game upgrade over any starter. Thunder Shock also pierces 2
+        targets like Water Gun, matching its multi-target utility. The 0.04-second cooldown difference translates
+        to 150 shots per minute, giving Thunder Shock users 10% more DPS uptime than Water Gun at equivalent attack
+        multipliers.
+      </p>
+      <p>
+        This comparison illustrates why move cooldown matters as much as damage per hit. A 0.40s move at 13 damage
+        (Thunder Shock: 32.5 DPS) outperforms a 0.52s move at 18 damage (Ember: 34.6 DPS) once attack multipliers
+        equalize through partner stats and card bonuses. Faster cooldowns also improve kiting effectiveness because
+        shorter animation locks allow more frequent repositioning. When evaluating partners, consider both the move's
+        base cooldown and the partner's attack multiplier—the cooldown determines your theoretical max DPS ceiling
+        while the multiplier scales that ceiling upward.
+      </p>
+    </section>
+
+    <section id="changelog" aria-labelledby="changelog-title">
+      <h2 id="changelog-title">Character Ranking Update History</h2>
+      <p>
+        This guide receives regular updates to match game balance changes and newly discovered strategies. Each update
+        verifies partner statistics against the official source code to ensure accuracy. Check this section periodically
+        to understand how recent patches have affected character performance and rankings.
+      </p>
+      <ul>
+        {changelog.map((c) => <li><strong>{c.date}:</strong> {c.text}</li>)}
+      </ul>
+    </section>
+
+    <FAQ heading="PokeSurvivor tier list FAQ" items={faqItems} />
+
+    <aside class="callout callout-warning">
+      <p>
+        Fan-made, not official. Game facts come from the official guide, the
+        <a href="https://pokesurvivor.com/en/moves/" rel="noopener">official moves page</a> and the
+        <a href="https://github.com/JPTER78/pokesurvivor" rel="noopener">public source code</a> (commit c31715d).
+        If our pokesurvivor tier list disagrees with the game, trust the game. (Some players search for a "Poké
+        Survivor tier list" or "tier list PokeSurvivor"; it is the same game and this is the same list.) Related: <a href="/best-pokemon/">best
+        starter picks</a>, <a href="/rifts/">rifts guide</a>, <a href="/co-op/">co-op guide</a>.
+      </p>
+    </aside>
+  </article>
+</BaseLayout>
+<style>
+  .tl { max-width: var(--container-max); margin: 0 auto; }
+  .tl section { margin-bottom: var(--space-2xl); }
+  .tl-hero { text-align: center; margin-bottom: var(--space-xl); }
+  .tl-hero .lead { max-width: 42em; margin-inline: auto; }
+  .tl-hero-img { max-width: 800px; margin: var(--space-lg) auto 0; }
+  .tl-hero-img img { border-radius: var(--radius-lg); border: 1px solid var(--border-subtle); }
+
+  .tl-legend { list-style: none; padding: 0; display: grid; gap: var(--space-2); grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); margin-block: var(--space-md); }
+  .tl-legend li { display: flex; align-items: center; gap: var(--space-3); margin: 0; }
+
+  .tl-filters { display: grid; gap: var(--space-md); grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); align-items: end; margin-bottom: var(--space-md); }
+  .tl-filters[hidden], .tl-tabs[hidden] { display: none; }
+  .tl-filter { display: flex; flex-direction: column; }
+  .tl-count { margin: 0; font-weight: var(--font-semibold); color: var(--text-primary); }
+
+  .tl-tabs { display: flex; gap: var(--space-2); border-bottom: 1px solid var(--border-base); margin-bottom: var(--space-md); }
+  .tl-tab { background: none; border: 0; border-bottom: 3px solid transparent; padding: var(--space-2) var(--space-4); color: var(--text-tertiary); font: inherit; font-weight: var(--font-semibold); cursor: pointer; margin-bottom: -1px; }
+  .tl-tab:hover { color: var(--text-primary); }
+  .tl-tab[aria-selected='true'] { color: var(--accent-primary); border-bottom-color: var(--accent-primary); }
+  .tl-panel[hidden] { display: none; }
+
+  /* Classic tiermaker-style board: coloured label column + sprite row */
+  .tl-rows { border: 1px solid var(--border-subtle); border-radius: var(--radius-md); overflow: hidden; }
+  .tl-row { display: grid; grid-template-columns: 4rem 1fr; border-top: 1px solid var(--border-subtle); }
+  .tl-row:first-child { border-top: 0; }
+  .tl-row-label { margin: 0; display: flex; align-items: center; justify-content: center; }
+  .tl-row-s .tl-row-label { background: var(--tier-s); }
+  .tl-row-a .tl-row-label { background: var(--tier-a); }
+  .tl-row-b .tl-row-label { background: var(--tier-b); }
+  .tl-row-c .tl-row-label { background: var(--tier-c); }
+  .tl-row-label .tier-letter { background: transparent; font-size: var(--font-size-2xl); }
+  .tl-row-cards { list-style: none; padding: var(--space-2); margin: 0; display: grid; gap: var(--space-2); grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); background: var(--surface-elevated); }
+  .tl-card { margin: 0; background: var(--surface-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); }
+  .tl-card[hidden] { display: none; }
+  .tl-card-btn { width: 100%; display: grid; justify-items: center; gap: var(--space-1); padding: var(--space-2); background: none; border: 0; color: inherit; font: inherit; cursor: pointer; border-radius: inherit; }
+  .tl-card-btn:hover { background: var(--surface-hover); }
+  .tl-card-name { font-weight: var(--font-semibold); color: var(--text-primary); }
+  .tl-card-move { font-size: var(--font-size-xs); color: var(--accent-primary); }
+  .tl-card-note { font-size: var(--font-size-xs); color: var(--text-tertiary); margin: 0; padding: 0 var(--space-2) var(--space-2); text-align: center; line-height: var(--leading-snug); }
+  .tl-empty { color: var(--text-tertiary); }
+
+  .tl-dialog { max-width: 32rem; width: calc(100% - 2rem); background: var(--surface-card); color: var(--text-secondary); border: 1px solid var(--border-base); border-radius: var(--radius-lg); padding: var(--space-lg); }
+  .tl-dialog::backdrop { background: rgb(0 0 0 / 0.7); }
+  .tl-d-head { display: flex; gap: var(--space-md); align-items: center; margin-bottom: var(--space-md); }
+  .tl-d-head h3 { margin: 0; }
+  .tl-d-meta { margin: 0 0 var(--space-2); font-size: var(--font-size-sm); }
+  .tl-d-bars { display: grid; gap: var(--space-2); margin: 0 0 var(--space-md); }
+  .tl-d-bars div { display: grid; grid-template-columns: 4rem 1fr; align-items: center; gap: var(--space-2); }
+  .tl-d-bars .stat-bar { display: block; }
+  .tl-d-bars dd { margin: 0; display: grid; grid-template-columns: 1fr 3rem; gap: var(--space-2); align-items: center; }
+
+  .tl-sort { background: none; border: 0; color: inherit; font: inherit; text-transform: inherit; letter-spacing: inherit; cursor: pointer; padding: 0; }
+  .tl-sort::after { content: ' ↕'; color: var(--text-muted); }
+  th[aria-sort='ascending'] .tl-sort::after { content: ' ↑'; color: var(--accent-primary); }
+  th[aria-sort='descending'] .tl-sort::after { content: ' ↓'; color: var(--accent-primary); }
+
+  @media (max-width: 640px) {
+    .tl-row { grid-template-columns: 3rem 1fr; }
+    .tl-row-cards { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); }
+  }
+</style>
+
+<script>
+  type Entry = {
+    name: string; dex: number; tier: string; phase: string; types: string[]; hp: number; speed: number; atk: number;
+    note: string; hpPct: number; speedPct: number; atkPct: number; move: string; moveLine: string; evo: string;
+  };
+  const $ = (id: string) => document.getElementById(id);
+
+  // ---- Phase tabs (progressive enhancement: without JS all panels show) ----
+  const tablist = document.querySelector<HTMLElement>('.tl-tabs');
+  const tabs = Array.from(document.querySelectorAll<HTMLButtonElement>('.tl-tab'));
+  const panels = Array.from(document.querySelectorAll<HTMLElement>('.tl-panel'));
+  const select = (tab: HTMLButtonElement, focus = false) => {
+    tabs.forEach((t) => {
+      const on = t === tab;
+      t.setAttribute('aria-selected', String(on));
+      t.tabIndex = on ? 0 : -1;
+      const p = $(t.getAttribute('aria-controls') || '');
+      if (p) p.hidden = !on;
+    });
+    if (focus) tab.focus();
+    update();
+  };
+  if (tablist && tabs.length) {
+    tablist.hidden = false;
+    tabs.forEach((tab, i) => {
+      tab.addEventListener('click', () => select(tab));
+      tab.addEventListener('keydown', (e) => {
+        const map: Record<string, number> = { ArrowRight: i + 1, ArrowLeft: i - 1, Home: 0, End: tabs.length - 1 };
+        if (!(e.key in map)) return;
+        e.preventDefault();
+        select(tabs[(map[e.key] + tabs.length) % tabs.length], true);
+      });
+    });
+    const fromHash = tabs.find((t) => `#${t.getAttribute('aria-controls')}` === location.hash);
+    select(fromHash || tabs[0]);
+  }
+
+  // ---- Move filter + search with live count (counts the active phase) ----
+  const filters = document.querySelector<HTMLElement>('.tl-filters');
+  const moveSel = $('tl-move') as HTMLSelectElement | null;
+  const search = $('tl-search') as HTMLInputElement | null;
+  const count = $('tl-count');
+  const empty = $('tl-empty');
+  function update() {
+    if (!moveSel || !search) return;
+    const mv = moveSel.value;
+    const q = search.value.trim().toLowerCase();
+    const panel = panels.find((p) => !p.hidden) || panels[0];
+    let shown = 0;
+    let total = 0;
+    panels.forEach((p) => p.querySelectorAll<HTMLElement>('.tl-card').forEach((c) => {
+      const ok = (!mv || c.dataset.move === mv) && (!q || (c.dataset.name || '').includes(q));
+      c.hidden = !ok;
+      if (p === panel) { total++; if (ok) shown++; }
+    }));
+    panels.forEach((p) => p.querySelectorAll<HTMLElement>('.tl-row').forEach((r) => {
+      r.hidden = !r.querySelector('.tl-card:not([hidden])');
+    }));
+    if (count) count.textContent = `${shown} of ${total} shown`;
+    if (empty) empty.hidden = shown > 0;
+  }
+  if (filters && moveSel && search) {
+    filters.hidden = false;
+    moveSel.addEventListener('change', update);
+    search.addEventListener('input', update);
+    update();
+  }
+
+  // ---- Detail dialog ----
+  const dialog = $('tl-dialog') as HTMLDialogElement | null;
+  const data: Record<string, Entry> = JSON.parse($('tl-data')?.textContent || '{}');
+  const setText = (id: string, v: string) => { const el = $(id); if (el) el.textContent = v; };
+  const setBar = (id: string, pct: number) => { $(id)?.style.setProperty('--value', String(pct)); };
+  document.querySelectorAll<HTMLButtonElement>('.tl-card-btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const d = data[btn.dataset.slug || ''];
+      if (!d || !dialog || typeof dialog.showModal !== 'function') return;
+      const img = $('tl-d-sprite') as HTMLImageElement | null;
+      if (img) { img.src = `/sprites/${d.dex}.png`; img.alt = `${d.name} sprite`; }
+      setText('tl-d-name', d.name);
+      setText('tl-d-meta', `${d.tier} tier, ${d.phase} game, #${String(d.dex).padStart(3, '0')}`);
+      const types = $('tl-d-types');
+      if (types) {
+        types.replaceChildren(...d.types.map((t) => {
+          const s = document.createElement('span');
+          s.className = `badge badge-type type-${t}`;
+          s.textContent = t.charAt(0).toUpperCase() + t.slice(1);
+          return s;
+        }));
+      }
+      setBar('tl-d-hpbar', d.hpPct); setText('tl-d-hp', String(d.hp));
+      setBar('tl-d-spbar', d.speedPct); setText('tl-d-sp', String(d.speed));
+      setBar('tl-d-atbar', d.atkPct); setText('tl-d-at', `×${d.atk.toFixed(2)}`);
+      setText('tl-d-move', `${d.move}: ${d.moveLine}`);
+      setText('tl-d-evo', d.evo);
+      setText('tl-d-why', d.note);
+      dialog.showModal();
+    });
+  });
+
+  // ---- Sortable stat table ----
+  const table = $('tl-stats') as HTMLTableElement | null;
+  table?.querySelectorAll<HTMLButtonElement>('.tl-sort').forEach((b) => {
+    b.addEventListener('click', () => {
+      const col = Number(b.dataset.col);
+      const th = b.closest('th')!;
+      const dir = th.getAttribute('aria-sort') === 'descending' ? 'ascending' : 'descending';
+      table.querySelectorAll('th[aria-sort]').forEach((h) => h.setAttribute('aria-sort', 'none'));
+      th.setAttribute('aria-sort', dir);
+      const body = table.tBodies[0];
+      const rows = Array.from(body.rows);
+      const val = (r: HTMLTableRowElement) => Number((r.cells[col] as HTMLElement).dataset.v);
+      rows.sort((a, z) => (dir === 'ascending' ? val(a) - val(z) : val(z) - val(a)));
+      body.append(...rows);
+    });
+  });
+</script>

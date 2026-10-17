@@ -1,0 +1,451 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import FAQ from '../../components/FAQ.astro';
+import Sprite from '../../components/Sprite.astro';
+import { itemListSchema } from '../../lib/schema';
+
+const site = 'https://poke-survivors.org';
+const title = 'PokeSurvivor 最強寶可夢推薦：新手必選 5 隻初始夥伴、玩法風格解析與 BOSS 應對攻略';
+const description = 'PokeSurvivor 最強寶可夢推薦：從 29 隻初始夥伴挑出 5 隻新手首選，依近戰、遠程、範圍清怪分類，說明招式優勢、進化方向與第 3 分鐘 BOSS 應對。';
+const updated = '2026-10-16';
+
+const picks = [
+  { id: 'scorbunny', name: '炎兔兒', role: '純粹輸出' },
+  { id: 'sobble', name: '淚眼蜥', role: '最穩定的輸出' },
+  { id: 'slowpoke', name: '呆呆獸', role: '容錯率最高' },
+  { id: 'froakie', name: '呱呱泡蛙', role: '移動速度最快' },
+  { id: 'litten-torchic', name: '火斑喵或火稚雞', role: '可靠的備選' },
+];
+
+const faqItems = [
+  {
+    q: '完全沒玩過的新手該選哪隻？',
+    a: '想玩得輕鬆就選呆呆獸（110 HP 加上會追蹤的念力），想打得快就選炎兔兒（火花搭配 1.09 攻擊倍率）。兩隻都在上方的 PokeSurvivor 最強寶可夢前 5 名裡，差別只在你比較重視安全還是擊殺速度。',
+  },
+  {
+    q: '測驗分配的夥伴可以換嗎？',
+    a: '可以。你可以拒絕測驗結果，從 29 隻初始夥伴中改選其他一隻。',
+  },
+  {
+    q: '皮卡丘是初始夥伴嗎？',
+    a: '不是。29 隻初始夥伴裡沒有皮卡丘、伊布或超夢。其他寶可夢要之後透過扭蛋券取得，傳說寶可夢則只會在遊玩中的<a href="/zh/rifts/">傳說裂縫</a>裡出現。',
+  },
+  {
+    q: '怎樣才算好的初始夥伴？',
+    a: '我們的看法是：攻擊倍率高、起手招式能同時對付 BOSS 和治療者，並且有足夠的 HP 或速度來閃避攻擊。',
+  },
+  {
+    q: '最弱的初始夥伴是哪隻？',
+    a: '單看數值是藤藤蛇（0.95 攻擊），其次是傑尼龜和菊草葉（0.97）。不過這三隻依然可以玩。',
+  },
+];
+
+const jsonLd = [
+  {
+    '@type': 'Article',
+    headline: 'PokeSurvivor 最強寶可夢：新手必選的 5 隻初始夥伴',
+    description,
+    datePublished: updated,
+    dateModified: updated,
+    author: { '@type': 'Organization', name: 'PokeSurvivor 粉絲攻略' },
+    publisher: { '@type': 'Organization', name: 'PokeSurvivor 粉絲攻略' },
+    inLanguage: 'zh-Hant',
+    image: `${site}/images/pokesurvivor-starters-29.webp`,
+    mainEntityOfPage: `${site}/zh/best-pokemon/`,
+  },
+  itemListSchema(
+    'PokéSurvivor 新手推薦初始夥伴前 5 名',
+    picks.map((p) => ({ name: p.name, url: `/zh/best-pokemon/#${p.id}`, description: `粉絲推薦：${p.role}` })),
+  ),
+];
+const groups = [
+  { move: '火花', pattern: '投射物，附帶灼傷', cd: '0.52 秒', dmg: '18', evo: '大字爆炎（需要力量）', mons: '小火龍、火球鼠、火稚雞、小火焰猴、暖暖豬、火狐狸、火斑喵、炎兔兒、呆火鱷' },
+  { move: '水槍', pattern: '穿透投射物（穿透 1）', cd: '0.44 秒', dmg: '14', evo: '熱水（需要力量）', mons: '傑尼龜、小鋸鱷、水躍魚、水水獺、呱呱泡蛙、淚眼蜥、潤水鴨' },
+  { move: '藤鞭', pattern: '近戰大範圍弧形，半徑 68，附帶擊退', cd: '0.62 秒', dmg: '16', evo: '強力鞭打（需要力量）', mons: '妙蛙種子、菊草葉、草苗龜、哈力栗、敲音猴' },
+  { move: '飛葉快刀', pattern: '迴力鏢，2 片葉子去程與回程', cd: '0.90 秒', dmg: '10', evo: '飛葉風暴（需要反射）', mons: '木守宮、藤藤蛇、木木梟、新葉喵' },
+  { move: '泡沫', pattern: '8 顆泡泡環狀擴散，附帶緩速', cd: '1.00 秒', dmg: '9', evo: '衝浪（需要衝刺）', mons: '波加曼、球球海獅' },
+  { move: '念力', pattern: '追蹤投射物', cd: '0.58 秒', dmg: '13', evo: '精神衝擊（需要反射）', mons: '可達鴨、呆呆獸' },
+];
+---
+
+<BaseLayout
+  title={title}
+  alternates={[
+    { locale: 'en', href: '/best-pokemon/' },
+    { locale: 'zh-Hant', href: '/zh/best-pokemon/' }
+  ]}
+  description={description}
+  locale="zh"
+  ogType="article"
+  ogImage="/images/pokesurvivor-starters-29.jpg"
+  ogImageAlt="個性測驗可能分配的 29 隻 PokéSurvivor 初始夥伴一覽"
+  breadcrumbs={[
+    { name: '首頁', url: '/zh/' },
+    { name: '最強寶可夢', url: '/zh/best-pokemon/' },
+  ]}
+  preloadImage="/images/pokesurvivor-starters-29.webp"
+  jsonLd={jsonLd}
+>
+  <article class="guide">
+    <header class="guide-header">
+      <h1>PokeSurvivor 最強寶可夢：第一局必選的 5 隻初始夥伴</h1>
+      <p class="lead">
+        在免費瀏覽器倖存者類遊戲 PokéSurvivor 裡，第一隻夥伴決定了你前期每一局的手感。這份 PokeSurvivor
+        最強寶可夢指南只回答一個問題：29 隻初始夥伴中第一局該選誰，以及牠怎麼應付第 3 分鐘的 BOSS。簡短答案是：
+        要輸出選炎兔兒，要輕鬆選呆呆獸。推薦屬於粉絲觀點，數值則來自
+        <a href="https://pokesurvivor.com/en/" rel="noopener">pokesurvivor.com 官方遊戲</a>與其
+        <a href="https://github.com/JPTER78/pokesurvivor" rel="noopener">官方原始碼</a>。
+      </p>
+      <p class="meta">更新日期：<time datetime={updated}>{updated}</time> · 遊戲版本 2026-10-14 · 粉絲觀點</p>
+      <aside class="callout callout-info">
+        <p>本頁是第一局的選角指南，不是完整排名。若要看所有夥伴（包含扭蛋寶可夢）在前期、中期、後期從 S 到 C 的排名，請參考我們的
+        <a href="/zh/tier-list/">PokéSurvivor 分階段強度排行</a>。剛接觸這款遊戲？可以先看
+        <a href="/zh/">PokéSurvivor 攻略首頁</a>或<a href="/zh/how-to-play/">操作與卡片的新手教學</a>。</p>
+      </aside>
+    </header>
+
+    <nav class="toc" aria-label="本頁內容">
+      <p class="toc-title">本頁內容</p>
+      <ul>
+        <li><a href="#quiz">如何取得第一隻夥伴</a></li>
+        <li><a href="#moves">29 隻初始夥伴依起手招式分類</a></li>
+        <li><a href="#top-5">我們推薦的前 5 名初始夥伴</a></li>
+        <li><a href="#style">哪隻最適合你的玩法</a></li>
+        <li><a href="#boss">對付第 3 分鐘 BOSS 的最佳選擇</a></li>
+        <li><a href="#stick">為什麼要專心培養一隻夥伴</a></li>
+        <li><a href="#faq">常見問題</a></li>
+      </ul>
+    </nav>
+
+    <section class="guide-section">
+      <h2 id="quiz">如何取得第一隻夥伴：個性測驗</h2>
+      <p>
+        第一次遊玩時，PokéSurvivor 會用類似《不可思議的迷宮》的方式問你 8 個個性問題，再根據答案分配 29 隻初始夥伴之一。
+        候選名單是全部 9 個世代的御三家，再加上可達鴨和呆呆獸。你不一定要接受結果：可以拒絕測驗分配的夥伴、改選其他初始夥伴，
+        所以最後還是由你決定。皮卡丘、伊布和超夢都不在初始名單裡；其他寶可夢只能之後透過扭蛋券取得，傳說寶可夢則只會出現在
+        <a href="/zh/rifts/">傳說裂縫競技場</a>中。
+      </p>
+      <figure>
+        <img
+          src="/images/pokesurvivor-starters-29.webp"
+          alt="全部 29 隻 PokéSurvivor 初始夥伴一覽，從妙蛙種子、小火龍到新葉喵、呆火鱷、潤水鴨，再加上可達鴨與呆呆獸"
+          width="1240"
+          height="1080"
+          loading="eager"
+          fetchpriority="high"
+          decoding="async"
+        />
+        <figcaption>測驗可能分配的 29 隻初始夥伴；本篇 PokeSurvivor 最強寶可夢指南的推薦全部出自這份名單。圖像：SpriteCollab（CC BY-NC 4.0）。</figcaption>
+      </figure>
+    </section>
+
+    <section class="guide-section">
+      <h2 id="moves">29 隻初始夥伴依起手招式分類</h2>
+      <p>
+        只有當前使用中的招式會自動攻擊，而開局時你只有一個招式。因此起手招式是決定 PokeSurvivor 最強寶可夢時影響最大的因素。
+        每隻初始夥伴的起手招式都是固定的。招式最高可升到 5 級，根據
+        <a href="https://pokesurvivor.com/en/moves/" rel="noopener">官方招式頁面</a>，滿級招式加上該局拿過的對應能力卡片，
+        就會解鎖金色進化卡片。
+      </p>
+      <div class="data-table">
+        <table>
+          <caption>29 隻初始夥伴的起手招式（數值取自官方 moves.js）</caption>
+          <thead>
+            <tr><th scope="col">招式</th><th scope="col">攻擊方式</th><th scope="col">冷卻</th><th scope="col">傷害</th><th scope="col">進化為</th><th scope="col">初始夥伴</th></tr>
+          </thead>
+          <tbody>
+            {groups.map((g) => (
+              <tr><th scope="row">{g.move}</th><td>{g.pattern}</td><td>{g.cd}</td><td>{g.dmg}</td><td>{g.evo}</td><td>{g.mons}</td></tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p>
+        我們自己粗算（傷害 ÷ 冷卻，單一目標，未升級）：火花每秒約 35 傷害，水槍約 32，藤鞭約 26，念力約 22，
+        飛葉快刀在兩片葉子都命中時約 22，泡沫對單一目標每顆約 9。泡沫靠打群體來彌補，每次施放最多可命中 8 次。
+        火花、水槍和藤鞭都需要「力量」（傷害 +10%）才能進化，而這張卡本來就值得拿。
+      </p>
+      <p>
+        簡單來說，火系和水系初始夥伴在純傷害上領先；草系分成近戰弧形（藤鞭）和迴力鏢（飛葉快刀）兩種；
+        兩隻額外的超能力系則用傷害換取追蹤彈。如果整張表只記得一件事，那就是：又快又強的單體招式能撐過第一隻 BOSS，
+        這也是為什麼下面的 PokeSurvivor 最強寶可夢推薦大多是火花和水槍使用者。
+      </p>
+    </section>
+
+    <section class="guide-section" id="top-5">
+      <h2>我們推薦的前 5 名初始夥伴</h2>
+      <p>
+        每隻初始夥伴都有三項數值：HP、速度和攻擊倍率（攻擊倍率會放大所有傷害）。以下是我們為前 30 分鐘整理的精選名單，
+        每一個推薦都與這些數值有關。第 5 名是火斑喵和火稚雞並列。如果只能選一隻，就按你的玩法挑這款 PokeSurvivor
+        最強寶可夢：要輸出選炎兔兒，要輕鬆選呆呆獸。
+      </p>
+      <div class="sprite-picks">
+        <div class="sprite-card">
+          <Sprite dex={813} name="炎兔兒" size={64} />
+          <p class="sprite-name">炎兔兒</p>
+          <p class="sprite-meta">攻擊 1.09 · 速度 107</p>
+        </div>
+        <div class="sprite-card">
+          <Sprite dex={816} name="淚眼蜥" size={64} />
+          <p class="sprite-name">淚眼蜥</p>
+          <p class="sprite-meta">攻擊 1.08 · 速度 107</p>
+        </div>
+        <div class="sprite-card">
+          <Sprite dex={79} name="呆呆獸" size={64} />
+          <p class="sprite-name">呆呆獸</p>
+          <p class="sprite-meta">HP 110 · 速度 84</p>
+        </div>
+        <div class="sprite-card">
+          <Sprite dex={656} name="呱呱泡蛙" size={64} />
+          <p class="sprite-name">呱呱泡蛙</p>
+          <p class="sprite-meta">速度 108</p>
+        </div>
+        <div class="sprite-card">
+          <Sprite dex={725} name="火斑喵" size={64} />
+          <p class="sprite-name">火斑喵</p>
+          <p class="sprite-meta">攻擊 1.06 · 速度 107</p>
+        </div>
+        <div class="sprite-card">
+          <Sprite dex={255} name="火稚雞" size={64} />
+          <p class="sprite-name">火稚雞</p>
+          <p class="sprite-meta">攻擊 1.08 · 速度 97</p>
+        </div>
+      </div>
+      <ol class="picks">
+        <li>
+          <h3 id="scorbunny">1. 炎兔兒（火花）：純粹輸出的最佳選擇</h3>
+          <p>
+            炎兔兒的攻擊倍率 1.09 是全部 29 隻初始夥伴中最高的，搭配的招式是火花這個單體傷害最強的起手招式。
+            再加上 107 速度和 92 HP，數值沒有浪費。在我們跑過的遊玩中，只要想讓 BOSS 快速倒下，就選牠。
+          </p>
+        </li>
+        <li>
+          <h3 id="sobble">2. 淚眼蜥（水槍）：最穩定的輸出</h3>
+          <p>
+            淚眼蜥的 1.08 攻擊與 107 速度落在水槍這個最快施放的起手招式（0.44 秒）上。牠的穿透 1 可以擊中第一個敵人身後的第二名，
+            官方資料說它在任何距離都很可靠。如果你比較喜歡，也可以選同樣 1.08 攻擊但速度 95 的水躍魚。
+          </p>
+        </li>
+        <li>
+          <h3 id="slowpoke">3. 呆呆獸（念力）：容錯率最高的夥伴</h3>
+          <p>
+            呆呆獸擁有 110 HP，是所有初始夥伴中最多的，而念力會自動追蹤目標，讓你能專注於閃避而不用擔心瞄準路徑。
+            代價是 84 速度，也就是 29 隻裡最慢的。對完全沒玩過的新手來說，我們認為牠是最好上手的夥伴。
+          </p>
+        </li>
+        <li>
+          <h3 id="froakie">4. 呱呱泡蛙（水槍）：移動速度第一名</h3>
+          <p>
+            呱呱泡蛙的 108 速度在初始名單中排第一，配上水槍的穿透。牠的 88 HP 偏低，所以適合懂得風箏走位而不是硬扛傷害的玩家。
+          </p>
+        </li>
+        <li>
+          <h3 id="litten-torchic">5. 火斑喵或火稚雞（火花）：可靠的備選</h3>
+          <p>
+            火斑喵搭配火花、107 速度與 1.06 攻擊；火稚雞用速度（97）換攻擊（1.08）。如果測驗分配給你這兩隻其中一個，都可以用。
+          </p>
+          <p>
+            為什麼 S 級的火稚雞排第 5 名，但 A 級的呆呆獸排第 3 名？排行榜單純以起手招式的數值來排，而這份 PokeSurvivor
+            最強寶可夢推薦還加入了玩法風格與第一局的容錯率。對新手而言，呆呆獸的 110 HP 加上追蹤的念力，蓋過了牠 84 速度的短處。
+          </p>
+        </li>
+      </ol>
+      <p>
+        哪隻初始夥伴最弱？藤藤蛇攻擊最低（0.95），接著是傑尼龜和菊草葉（0.97）。牠們依然可以玩，但攻擊倍率的缺陷讓牠們無法進入我們的
+        PokeSurvivor 最強寶可夢精選名單，如果你想要輸出，我們會拒絕測驗分配牠們。若要看全部 29 隻從 S 到 C 的排名，
+        請看<a href="/zh/tier-list/#early">前期初始夥伴強度排名</a>。
+      </p>
+    </section>
+
+    <section class="guide-section" id="style">
+      <h2>哪隻推薦最適合你的玩法？</h2>
+      <p>
+        以上 5 隻推薦並不是單純的排行榜。每個 PokeSurvivor 最強寶可夢推薦回答的都是不同問題，所以請配合你喜歡的玩法來選：
+      </p>
+      <ul>
+        <li><strong>想要快速擊殺 BOSS：</strong>炎兔兒，或者火稚雞作為速度較慢但同樣能打的備選。</li>
+        <li><strong>常常打不中或在人群中手忙腳亂：</strong>呆呆獸。追蹤的念力加上最高的 HP 讓你有犯錯的空間。</li>
+        <li><strong>喜歡風箏走位、保持移動：</strong>呱呱泡蛙或火斑喵，兩隻都有 107 或更快的速度。</li>
+        <li><strong>想要輸出但不想在遠距離瞄準：</strong>淚眼蜥，牠的穿透水槍每 0.44 秒施放一次。</li>
+      </ul>
+      <p>
+        如果兩隻推薦感覺差不多，就選攻擊倍率較高的那隻。攻擊倍率會放大你造成的每一點傷害，所以在前幾分鐘裡，
+        它比 HP 或速度的幾點差距更重要。這條規則貫穿整篇 PokeSurvivor 最強寶可夢指南。
+      </p>
+    </section>
+
+    <section class="guide-section" id="boss">
+      <h2>對付第 3 分鐘 BOSS 的最佳前期寶可夢</h2>
+      <p>
+        PokeSurvivor 給你的最佳前期寶可夢，就是能應付 5 隻 BOSS 中第一隻的那個，牠會在第 3 分鐘出現。
+        原始碼中牠的基礎 HP 是 1,400，從 2026-10-10 起再乘以 1.35。遊戲接著會依跑圖時間和隊伍人數進一步放大
+        BOSS 的 HP，所以實際會比這更高。牠是隨機的強力非傳說寶可夢。BOSS 的攻擊會預告（地面的圓形和直線標記），
+        並且在剩一半 HP 時進入狂暴，所以要離開標記範圍。
+      </p>
+      <p>
+        支援型敵人同樣重要。治療者如吉利蛋、幸福蛋和皮可西每 3.5 秒為附近的友方恢復約 7% HP（實際值隨玩家攻擊倍率動態調整，基礎為 7%）。
+        護盾者如壺壺、青銅鐘和魔牆人偶會為 6 名友方上 35% HP 的護盾。
+        <a href="https://pokesurvivor.com/en/guide/" rel="noopener">官方指南</a>說要優先擊殺治療者和護盾者。
+        我們認為每種起手招式的應對如下：
+      </p>
+      <ul>
+        <li><strong>火花：</strong>單體傷害最強，能快速打爆 BOSS 並迅速擊殺治療者。灼傷會追加持續傷害。</li>
+        <li><strong>水槍：</strong>穿透可以打到站在前排敵人身後的治療者，0.44 秒冷卻讓牠持續對 BOSS 施壓。</li>
+        <li><strong>藤鞭：</strong>傷害和擊退都不錯，但近戰範圍（68）代表你得走進 BOSS 的攻擊範圍。</li>
+        <li><strong>飛葉快刀：</strong>兩片葉子在去程和回程都能命中；瞄準穿過治療者就能打兩次。</li>
+        <li><strong>泡沫：</strong>單打 BOSS 很弱；緩速能幫你脫逃，環狀擴散能清群體。</li>
+        <li><strong>念力：</strong>追蹤能不用排隊形就打到人群中的治療者，但對 BOSS 的傷害不高。</li>
+      </ul>
+      <p>
+        天氣也可能從第 2 分鐘開始出現：雨天讓水系 ×1.5、火系 ×0.5，大晴天則相反。這讓火花和水槍在多次遊玩中拉平，
+        也是炎兔兒和淚眼蜥在我們的 PokeSurvivor 最強寶可夢名單上都排得靠前的原因。和朋友一起玩？隊友可以在
+        <a href="/zh/co-op/">PokéSurvivor 合作模式</a>中復活你，這讓呱呱泡蛙這種脆皮選擇安全得多。
+      </p>
+    </section>
+
+    <section class="guide-section" id="stick">
+      <h2>為什麼專心培養一隻夥伴會有回報</h2>
+      <p>
+        用寶可幣購買的永久升級是綁定單一寶可夢的。其中一項「招式目錄」能讓該寶可夢在開局時就有 2 個招式。
+        你花在初始夥伴上的每一枚金幣都會留在這隻夥伴身上。如果你換成新的扭蛋夥伴，牠會從零開始。我們的建議是：
+        選一隻適合你玩法的初始夥伴，然後專心培養牠、學習遊戲。有幾項升級的初始夥伴通常能打贏看起來更強、
+        卻沒有升級的新扭蛋夥伴。之後如果想比較扭蛋夥伴，可以參考
+        <a href="/zh/tier-list/#mid">中後期夥伴強度排名</a>。若想了解操作和卡片，請看
+        <a href="/zh/how-to-play/">PokéSurvivor 玩法教學</a>。想看英文版？我們也有
+        <a href="/" lang="en">English PokéSurvivor guide</a>。
+      </p>
+    </section>
+
+    <FAQ heading="初始夥伴常見問題" items={faqItems} locale="zh" />
+
+    <section>
+      <h2>資料來源與推薦依據</h2>
+      <p>
+        我們讀了官方的 starters.js、pokedex.js、moves.js 和 enemies.js 檔案（commit c31715d，2026-10-14）
+        以及官方的<a href="https://pokesurvivor.com/en/guide/" rel="noopener">指南</a>、
+        <a href="https://pokesurvivor.com/en/moves/" rel="noopener">招式</a>和
+        <a href="https://pokesurvivor.com/en/news/" rel="noopener">消息</a>頁面。每秒傷害的數字是我們自己簡單算的。
+        遊戲經常更新，所以平衡可能會變動，我們的 PokeSurvivor 最強寶可夢推薦也會跟著調整。簡單來說，
+        我們為第一局推薦的 PokeSurvivor 最強寶可夢是：要輸出選炎兔兒、要輕鬆選呆呆獸，淚眼蜥、呱呱泡蛙、
+        火稚雞或火斑喵則緊追在後。
+      </p>
+    </section>
+  </article>
+</BaseLayout>
+
+<style>
+  .guide { max-width: var(--container-narrow); margin: 0 auto; }
+  .guide h2 { font-size: var(--font-size-2xl); color: var(--accent-primary); margin: var(--space-xl) 0 var(--space-md); }
+  .guide h3 { font-size: var(--font-size-lg); margin: var(--space-md) 0 var(--space-sm); }
+  .guide p { margin-bottom: var(--space-md); }
+  .guide ul, .guide ol { padding-left: 1.5rem; margin-bottom: var(--space-md); }
+  .guide li { margin-bottom: var(--space-sm); }
+
+  .guide-header { margin-bottom: var(--space-xl); }
+  .guide-header h1 { font-size: var(--font-size-4xl); line-height: var(--leading-tight); margin-bottom: var(--space-sm); }
+  .lead { font-size: var(--font-size-lg); color: var(--text-secondary); line-height: var(--leading-relaxed); }
+  .meta { color: var(--text-tertiary); font-size: var(--font-size-sm); margin-top: var(--space-2); }
+
+  figure { margin: var(--space-lg) 0; }
+  figure img { display: block; width: 100%; border-radius: var(--radius-md); }
+  figcaption { color: var(--text-tertiary); font-size: var(--font-size-sm); margin-top: var(--space-2); text-align: center; }
+
+  .toc {
+    background: var(--surface-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: var(--space-md) var(--space-lg);
+    margin: var(--space-lg) 0;
+  }
+  .toc-title {
+    font-weight: var(--font-bold);
+    color: var(--text-primary);
+    margin-bottom: var(--space-sm);
+  }
+  .toc ul { margin: 0; padding-left: var(--space-md); }
+  .toc li { margin-bottom: var(--space-2); }
+
+  .callout {
+    background: var(--surface-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: var(--space-md) var(--space-lg);
+    margin: var(--space-lg) 0;
+  }
+  .callout-info { border-left: 3px solid var(--accent-primary); }
+  .callout p:last-child { margin-bottom: 0; }
+
+  .data-table {
+    overflow-x: auto;
+    margin: var(--space-lg) 0;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+  }
+  .data-table table { width: 100%; border-collapse: collapse; font-size: var(--font-size-sm); }
+  .data-table caption { text-align: left; padding: var(--space-sm) var(--space-md); font-weight: var(--font-semibold); background: var(--surface-elevated); }
+  .data-table th, .data-table td { padding: var(--space-2) var(--space-md); text-align: left; border-bottom: 1px solid var(--border-subtle); }
+  .data-table thead th { background: var(--surface-elevated); color: var(--text-primary); font-weight: var(--font-semibold); }
+  .data-table tbody th { font-weight: var(--font-semibold); color: var(--text-primary); }
+  .data-table tbody td { color: var(--text-secondary); }
+  .data-table tbody tr:last-child th,
+  .data-table tbody tr:last-child td { border-bottom: none; }
+
+  .sprite-picks {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: var(--space-md);
+    margin: var(--space-lg) 0;
+  }
+
+  .sprite-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-md);
+    background: var(--surface-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    text-align: center;
+  }
+
+  .sprite-name {
+    margin: 0;
+    font-size: var(--font-size-base);
+    font-weight: var(--font-bold);
+    color: var(--text-primary);
+  }
+
+  .sprite-meta {
+    margin: 0;
+    font-size: var(--font-size-xs);
+    color: var(--text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-wide);
+  }
+
+  .picks {
+    list-style: decimal;
+    padding-left: 1.5rem;
+  }
+
+  .picks li {
+    margin-bottom: var(--space-lg);
+  }
+
+  .picks h3 {
+    font-size: var(--font-size-lg);
+    margin: 0 0 var(--space-sm);
+  }
+
+  .sources {
+    margin-top: var(--space-xl);
+    padding: var(--space-md) var(--space-lg);
+    background: var(--surface-elevated);
+    border-radius: var(--radius-md);
+    border-left: 3px solid var(--accent-primary);
+  }
+  .sources h2 { margin-top: 0; font-size: var(--font-size-xl); }
+</style>
+
+

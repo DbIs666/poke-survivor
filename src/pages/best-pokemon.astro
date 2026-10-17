@@ -1,0 +1,521 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import FAQ from '../components/FAQ.astro';
+import Sprite from '../components/Sprite.astro';
+import { itemListSchema } from '../lib/schema';
+
+const site = 'https://poke-survivors.org';
+const title = 'PokeSurvivor Best Pokemon: Top 5 Starters for New Players';
+const description = 'PokeSurvivor best Pokemon for your first run: five fan picks from the 29 starters, sorted by play style, plus a plan for the minute-3 boss and early rifts.';
+const updated = '2026-10-16';
+
+const picks = [
+  { id: 'scorbunny', name: 'Scorbunny', role: 'raw damage' },
+  { id: 'sobble', name: 'Sobble', role: 'safest damage' },
+  { id: 'slowpoke', name: 'Slowpoke', role: 'most forgiving' },
+  { id: 'froakie', name: 'Froakie', role: 'fastest movement' },
+  { id: 'litten-torchic', name: 'Litten or Torchic', role: 'strong backups' },
+];
+
+const faqItems = [
+  {
+    q: 'Which starter is best for a complete beginner?',
+    a: 'Slowpoke if you want comfort (110 HP and homing Confusion), or Scorbunny if you want damage (1.09 attack on Ember). Both are in our PokeSurvivor best Pokemon top 5 above, so the choice comes down to whether you value safety or speed of kills.',
+  },
+  {
+    q: 'Can I change the partner the quiz gives me?',
+    a: 'Yes. You can turn the quiz result down and choose another of the 29 starters.',
+  },
+  {
+    q: 'Is Pikachu a starter?',
+    a: 'No. The 29 starters do not include Pikachu, Eevee or Mewtwo. Other Pokémon come later through the ticket gacha, and legendaries only appear in <a href="/rifts/">legendary rifts</a> during a run.',
+  },
+  {
+    q: 'What makes a good starter?',
+    a: 'In our view: a high attack multiplier, a starting move that handles both the boss and healers, and enough HP or speed to avoid hits.',
+  },
+  {
+    q: 'Which starter is the weakest?',
+    a: 'By the numbers, Snivy (0.95 attack), followed by Squirtle and Chikorita (0.97). All three are still playable.',
+  },
+];
+
+const jsonLd = [
+  {
+    '@type': 'Article',
+    headline: 'PokeSurvivor best Pokemon: top 5 starters for new players',
+    description,
+    datePublished: updated,
+    dateModified: updated,
+    author: { '@type': 'Organization', name: 'PokeSurvivor Fan Guide' },
+    publisher: { '@type': 'Organization', name: 'PokeSurvivor Fan Guide' },
+    inLanguage: 'en',
+    image: `${site}/images/pokesurvivor-starters-29.webp`,
+    mainEntityOfPage: `${site}/best-pokemon/`,
+  },
+  itemListSchema(
+    'Top 5 PokéSurvivor starters for new players',
+    picks.map((p) => ({ name: p.name, url: `/best-pokemon/#${p.id}`, description: `Fan pick for ${p.role}` })),
+  ),
+];
+const groups = [
+  { move: 'Ember', pattern: 'Projectile, burns', cd: '0.52 s', dmg: '18', evo: 'Fire Blast (needs Power)', mons: 'Charmander, Cyndaquil, Torchic, Chimchar, Tepig, Fennekin, Litten, Scorbunny, Fuecoco' },
+  { move: 'Water Gun', pattern: 'Piercing projectile (pierce 1)', cd: '0.44 s', dmg: '14', evo: 'Scald (needs Power)', mons: 'Squirtle, Totodile, Mudkip, Oshawott, Froakie, Sobble, Quaxly' },
+  { move: 'Vine Whip', pattern: 'Melee wide arc, radius 68, knockback', cd: '0.62 s', dmg: '16', evo: 'Power Whip (needs Power)', mons: 'Bulbasaur, Chikorita, Turtwig, Chespin, Grookey' },
+  { move: 'Razor Leaf', pattern: 'Boomerang, 2 leaves out and back', cd: '0.90 s', dmg: '10', evo: 'Leaf Storm (needs Reflexes)', mons: 'Treecko, Snivy, Rowlet, Sprigatito' },
+  { move: 'Bubble', pattern: 'Nova of 8 bubbles, slows', cd: '1.00 s', dmg: '9', evo: 'Surf (needs Sprint)', mons: 'Piplup, Popplio' },
+  { move: 'Confusion', pattern: 'Homing projectile', cd: '0.58 s', dmg: '13', evo: 'Psyshock (needs Reflexes)', mons: 'Psyduck, Slowpoke' },
+];
+---
+
+<BaseLayout
+  title={title}
+  alternates={[
+    { locale: 'en', href: '/best-pokemon/' },
+    { locale: 'zh-Hant', href: '/zh/best-pokemon/' }
+  ]}
+  description={description}
+  ogType="article"
+  ogImage="/images/pokesurvivor-starters-29.jpg"
+  ogImageAlt="Grid of the 29 PokéSurvivor starter Pokémon the personality quiz can assign"
+  breadcrumbs={[
+    { name: 'Home', url: '/' },
+    { name: 'Best Pokémon', url: '/best-pokemon/' },
+  ]}
+  preloadImage="/images/pokesurvivor-starters-29.webp"
+  jsonLd={jsonLd}
+>
+  <article class="guide">
+    <header class="guide-header">
+      <h1>PokeSurvivor Best Pokemon: Top 5 Starters for Your First Run</h1>
+      <p class="lead">
+        Your first partner shapes every early run in PokéSurvivor, the free browser survivors-like. This
+        PokeSurvivor best Pokemon guide answers one question: which of the 29 starters to take first, and how it
+        handles the boss at minute 3. Our short answer is Scorbunny for damage or Slowpoke for comfort. Picks are
+        fan opinion; the numbers come from the
+        <a href="https://pokesurvivor.com/en/" rel="noopener">official game at pokesurvivor.com</a> and its
+        <a href="https://github.com/JPTER78/pokesurvivor" rel="noopener">official source code</a>.
+      </p>
+      <p class="meta">Updated: <time datetime={updated}>{updated}</time> · game version of 2026-10-14 · fan opinion</p>
+      <aside class="callout callout-info">
+        <p>This page is a first-run pick guide, not a full ranking. For every partner ranked from S to C across early,
+        mid and late game, including gacha Pokémon, see our <a href="/tier-list/">PokéSurvivor tier list by stage</a>. New to the game? Start with
+        <a href="/">the PokéSurvivor guide hub</a> or our <a href="/how-to-play/">beginner's guide to the controls and cards</a>.</p>
+      </aside>
+    </header>
+
+    <nav class="toc" aria-label="On this page">
+      <p class="toc-title">On this page</p>
+      <ul>
+        <li><a href="#quiz">How you get your first partner</a></li>
+        <li><a href="#moves">The 29 starters by starting move</a></li>
+        <li><a href="#top-5">Our top 5 starter picks</a></li>
+        <li><a href="#style">Which pick fits your play style</a></li>
+        <li><a href="#boss">Best for the minute-3 boss</a></li>
+        <li><a href="#rifts">Using your starter in early rifts</a></li>
+        <li><a href="#stick">Why stick with one partner</a></li>
+        <li><a href="#faq">FAQ</a></li>
+      </ul>
+    </nav>
+
+    <section class="guide-section">
+      <h2 id="quiz">How you get your first partner: the personality quiz</h2>
+      <p>
+        On your first run, PokéSurvivor asks 8 personality questions in the style of Mystery Dungeon, and your
+        answers assign one of 29 starters. The pool is the starters of all 9 generations plus Psyduck and Slowpoke.
+        You do not have to accept the result: you can turn the quiz pick down and choose another starter, so the
+        choice is really yours. Pikachu, Eevee and Mewtwo are not in the
+        starter pool; you can only get other Pokémon later through the ticket gacha, and legendaries only appear
+        in <a href="/rifts/">legendary rift arenas</a>.
+      </p>
+      <figure>
+        <img
+          src="/images/pokesurvivor-starters-29.webp"
+          alt="Grid of all 29 PokéSurvivor starter Pokémon, from Bulbasaur and Charmander to Sprigatito, Fuecoco and Quaxly, plus Psyduck and Slowpoke"
+          width="1240"
+          height="1080"
+          loading="eager"
+          fetchpriority="high"
+          decoding="async"
+        />
+        <figcaption>The 29 starters the quiz can assign; every pick in this PokeSurvivor best Pokemon guide comes from this pool. Sprites: SpriteCollab (CC BY-NC 4.0).</figcaption>
+      </figure>
+    </section>
+
+    <section class="guide-section">
+      <h2 id="moves">The 29 starters grouped by starting move</h2>
+      <p>
+        Only your active move auto-attacks, and at the start you have just one move. That makes the starting move
+        the biggest single factor in any PokeSurvivor best Pokemon decision. Each starter has a fixed starting
+        move. Moves level up to 5, and a max-level move plus its required stat card (taken in that run) unlocks a
+        golden evolution card, according to the
+        <a href="https://pokesurvivor.com/en/moves/" rel="noopener">official moves page</a>.
+      </p>
+      <div class="data-table">
+        <table>
+          <caption>Starting moves of the 29 starters (stats from the official moves.js)</caption>
+          <thead>
+            <tr><th scope="col">Move</th><th scope="col">Pattern</th><th scope="col">Cooldown</th><th scope="col">Damage</th><th scope="col">Evolves into</th><th scope="col">Starters</th></tr>
+          </thead>
+          <tbody>
+            {groups.map((g) => (
+              <tr><th scope="row">{g.move}</th><td>{g.pattern}</td><td>{g.cd}</td><td>{g.dmg}</td><td>{g.evo}</td><td>{g.mons}</td></tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p>
+        Our own quick math (damage ÷ cooldown, one target, no upgrades): Ember is about 35 damage per second,
+        Water Gun about 32, Vine Whip about 26, Confusion about 22, Razor Leaf about 22 if both leaves connect, and
+        Bubble about 9 per bubble on one target. Bubble makes up for that on crowds, with up to 8 hits per cast.
+        Ember, Water Gun and Vine Whip all evolve with Power (+10% damage), which you would want to take anyway.
+      </p>
+      <p>
+        In plain terms, Fire and Water starters lead on raw damage, Grass splits into a melee arc (Vine Whip) and a
+        boomerang (Razor Leaf), and the two Psychic-type extras trade damage for homing shots. If you only remember
+        one thing from the table, remember that a fast, strong single-target move carries the first boss, which is why
+        Ember and Water Gun users fill most of the PokeSurvivor best Pokemon picks below.
+      </p>
+    </section>
+
+    <section class="guide-section" id="top-5">
+      <h2>Our top 5 starter picks</h2>
+      <p>
+        Every starter has three stats: HP, speed and an attack multiplier that scales all damage. Here is our
+        shortlist for the first 30 minutes, each pick tied to those numbers. The fifth spot is a tie between Litten
+        and Torchic. If you want one name, take the best starter PokeSurvivor has for your style: Scorbunny for
+        damage, Slowpoke for comfort.
+      </p>
+      <div class="sprite-picks">
+        <div class="sprite-card">
+          <Sprite dex={813} name="Scorbunny" size={64} />
+          <p class="sprite-name">Scorbunny</p>
+          <p class="sprite-meta">1.09 ATK · 107 SPD</p>
+        </div>
+        <div class="sprite-card">
+          <Sprite dex={816} name="Sobble" size={64} />
+          <p class="sprite-name">Sobble</p>
+          <p class="sprite-meta">1.08 ATK · 107 SPD</p>
+        </div>
+        <div class="sprite-card">
+          <Sprite dex={79} name="Slowpoke" size={64} />
+          <p class="sprite-name">Slowpoke</p>
+          <p class="sprite-meta">110 HP · 84 SPD</p>
+        </div>
+        <div class="sprite-card">
+          <Sprite dex={656} name="Froakie" size={64} />
+          <p class="sprite-name">Froakie</p>
+          <p class="sprite-meta">108 SPD</p>
+        </div>
+        <div class="sprite-card">
+          <Sprite dex={725} name="Litten" size={64} />
+          <p class="sprite-name">Litten</p>
+          <p class="sprite-meta">1.06 ATK · 107 SPD</p>
+        </div>
+        <div class="sprite-card">
+          <Sprite dex={255} name="Torchic" size={64} />
+          <p class="sprite-name">Torchic</p>
+          <p class="sprite-meta">1.08 ATK · 97 SPD</p>
+        </div>
+      </div>
+      <ol class="picks">
+        <li>
+          <h3 id="scorbunny">1. Scorbunny (Ember): our pick for raw damage</h3>
+          <p>
+            Scorbunny has a 1.09 attack multiplier, the highest of all 29 starters, on Ember, the strongest single
+            target starting move. Add 107 speed and 92 HP and nothing is wasted. In our runs, this is the
+            pick if you just want bosses to melt.
+          </p>
+        </li>
+        <li>
+          <h3 id="sobble">2. Sobble (Water Gun): the safest damage</h3>
+          <p>
+            Sobble's 1.08 attack and 107 speed sit on Water Gun, the fastest-firing starting move at 0.44 s. Its
+            pierce of 1 hits a second enemy behind the first, and the official data calls it reliable at any
+            distance. Mudkip has the same 1.08 attack with 95 speed if you prefer it.
+          </p>
+        </li>
+        <li>
+          <h3 id="slowpoke">3. Slowpoke (Confusion): the forgiving pick</h3>
+          <p>
+            Slowpoke has 110 HP, the most of any starter, and Confusion homes in on its target, so you can focus on
+            dodging instead of aiming your path. The trade-off is 84 speed, the slowest of the 29. For brand-new
+            players we think it is the easiest partner to learn the game with.
+          </p>
+        </li>
+        <li>
+          <h3 id="froakie">4. Froakie (Water Gun): the fastest feet</h3>
+          <p>
+            Froakie has 108 speed, the top of the starter list, with Water Gun's pierce. Its 88 HP is low, so it
+            suits players who kite well rather than tank hits.
+          </p>
+        </li>
+        <li>
+          <h3 id="litten-torchic">5. Litten or Torchic (Ember): strong backups</h3>
+          <p>
+            Litten pairs Ember with 107 speed and 1.06 attack; Torchic trades speed (97) for 1.08 attack. Both are
+            fine if the quiz hands you one.
+          </p>
+          <p>
+            Why is S-tier Torchic only #5 when Slowpoke, an A-tier starter, is #3? The tier list weighs raw stats on
+            the starting move, while these PokeSurvivor best Pokemon picks also weigh play style and how forgiving a
+            starter is for a first run. Slowpoke's 110 HP and homing Confusion outweigh its 84 speed for a new player.
+          </p>
+        </li>
+      </ol>
+      <p>
+        Which starter is the weakest by the numbers? Snivy has the lowest attack (0.95), and Squirtle and Chikorita
+        sit at 0.97. They are still playable, but their attack keeps them off our PokeSurvivor best Pokemon shortlist, and we would refuse them as a quiz pick if damage is what you want.
+        For the full S-to-C placement of all 29, see the <a href="/tier-list/#early">early-game starter tiers</a>.
+      </p>
+    </section>
+
+    <section class="guide-section" id="style">
+      <h2>Which top pick fits your play style?</h2>
+      <p>
+        The five picks above are not one ladder. Each PokeSurvivor best Pokemon pick answers a different question,
+        so match it to how you like to play:
+      </p>
+      <ul>
+        <li><strong>You want bosses down fast:</strong> Scorbunny, or Torchic as the slower, equally hard-hitting backup.</li>
+        <li><strong>You miss shots or panic in crowds:</strong> Slowpoke. Homing Confusion and the biggest HP pool forgive mistakes.</li>
+        <li><strong>You like to kite and keep moving:</strong> Froakie or Litten, both at 107 speed or more.</li>
+        <li><strong>You want damage without aiming at range:</strong> Sobble, whose piercing Water Gun fires every 0.44 s.</li>
+      </ul>
+      <p>
+        If two picks feel close, take the one with the higher attack multiplier. It scales every point of damage you
+        deal, so it matters more than a few points of HP or speed in the first minutes. We apply that rule throughout this PokeSurvivor best Pokemon guide.
+      </p>
+    </section>
+
+    <section class="guide-section" id="boss">
+      <h2>Best early Pokémon for the minute-3 boss</h2>
+      <p>
+        The best early Pokemon PokeSurvivor gives you is the one that handles the first of five bosses, which
+        arrives at minute 3. In the source code its base HP is 1,400, multiplied by 1.35
+        since 2026-10-10. The game then scales boss HP further with run time and party size, so expect more than
+        that. It is a random strong non-legendary. Bosses have telegraphed attacks (ground circles and lines) and
+        enrage at half HP, so step out of the markers.
+      </p>
+      <p>
+        Support enemies matter just as much. Healers such as Chansey, Blissey, Audino and Clefairy heal approximately 15% (community estimate) to
+        nearby allies every 3.5 s. Shielders such as Shuckle, Bronzong, Mr. Mime and Bastiodon put an estimated 35% HP shield (community observation) on
+        6 allies (community observation). The <a href="https://pokesurvivor.com/en/guide/" rel="noopener">official guide</a> says to kill
+        healers and shielders first. How each starting move copes, in our view:
+      </p>
+      <ul>
+        <li><strong>Ember:</strong> best single-target damage, so it bursts the boss and picks off healers fast. Its burn adds damage over time.</li>
+        <li><strong>Water Gun:</strong> pierce lets it hit a healer standing behind a front-line enemy, and the 0.44 s cooldown keeps pressure on the boss.</li>
+        <li><strong>Vine Whip:</strong> good damage and knockback, but melee range (68) means you must walk into the boss's reach.</li>
+        <li><strong>Razor Leaf:</strong> both leaves can hit on the way out and back; aim through the healer for two hits.</li>
+        <li><strong>Bubble:</strong> weak on the boss alone; its slow helps you escape, and the nova clears crowds.</li>
+        <li><strong>Confusion:</strong> homing reaches a healer hiding in the pack without lining up, but damage on the boss is modest.</li>
+      </ul>
+      <p>
+        Weather can also arrive from minute 2: rain gives Water ×1.5 and Fire ×0.5, while harsh sun does the
+        reverse. That evens out Ember and Water Gun over many runs, which is why both Scorbunny and Sobble sit near
+        the top of our PokeSurvivor best Pokemon list. Playing with friends? A teammate can revive you in a
+        <a href="/co-op/">PokéSurvivor co-op run</a>, which makes a fragile pick like Froakie much safer.
+      </p>
+    </section>
+
+    <section class="guide-section" id="rifts">
+      <h3>Using your starter in early rifts</h3>
+      <p>
+        <a href="/rifts/">Legendary rifts</a> unlock at minute 10 and appear every 10 minutes. Each rift arena pits you
+        against one legendary Pokémon with type-specific adds, and clearing it gives you a powerful move from that
+        legendary. Early rifts test whether your starter can burst down a tanky, aggressive legendary while handling
+        supporting mobs, so your choice of starter matters.
+      </p>
+      <p>
+        Fire, Water and Grass starters each handle certain rifts more smoothly because of type advantages. Fire-type
+        rifts such as Ho-Oh and Moltres fill the arena with fire adds; Water-type starters (Sobble, Froakie, Mudkip,
+        Totodile) with Water Gun resist fire damage and clear the adds faster with their pierce, making them the best
+        PokeSurvivor starter picks for these rifts. Water rifts such as Kyogre and Suicune work the reverse: Fire
+        starters (Scorbunny, Litten, Torchic) with Ember deal bonus damage to Water types and burn legendary targets
+        for extra damage over time. Grass rifts such as Celebi pair well with Fire starters for the same reason.
+      </p>
+      <p>
+        Psychic starters (Slowpoke, Psyduck) trade raw damage for homing Confusion, which hits evasive legendary adds
+        reliably, but they clear slower. Speed matters more than HP in rifts: faster starters (Froakie at 108, Sobble
+        and Scorbunny at 107) dodge charge attacks and telegraphed area-of-effect moves more easily, while slower tank
+        starters such as Slowpoke (84 speed, 110 HP) work better when you have already picked up defensive
+        <a href="/cards/">stat cards</a> such as Guard and Sprint. Our testing suggests a speed-based starter (Froakie
+        or Sobble) paired with the right type advantage clears the first two rifts more safely than a high-HP starter
+        without it.
+      </p>
+      <p>
+        Type-matchup damage applies according to the <a href="/types/">official type chart at pokesurvivor.com</a>: for
+        example, Water Gun against Fire-type adds deals ×1.5 damage, while Ember against Water-type legendaries gains
+        the same multiplier, stacking with your starter's attack multiplier. These interactions are why Scorbunny and
+        Sobble stay at the top of the PokeSurvivor best Pokemon picks even past the first boss: both have the attack
+        and speed to handle rifts from minute 10 onward.
+      </p>
+      <div class="data-table">
+        <table>
+          <caption>Weather and type effects on common starters</caption>
+          <thead>
+            <tr><th scope="col">Weather / Target</th><th scope="col">Fire starters</th><th scope="col">Water starters</th><th scope="col">Grass starters</th></tr>
+          </thead>
+          <tbody>
+            <tr><th scope="row">Rain (×1.5 Water, ×0.5 Fire)</th><td>Ember damage halved</td><td>Water Gun damage boosted</td><td>Neutral</td></tr>
+            <tr><th scope="row">Harsh sun (×1.5 Fire, ×0.5 Water)</th><td>Ember damage boosted</td><td>Water Gun damage halved</td><td>Neutral</td></tr>
+            <tr><th scope="row">Fire-type rift adds</th><td>Neutral</td><td>×1.5 damage from Water Gun</td><td>×0.5 damage from Grass moves</td></tr>
+            <tr><th scope="row">Water-type rift legendary</th><td>×1.5 damage from Ember</td><td>Neutral or resisted</td><td>×1.5 damage from Grass moves</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>
+        In practice: take Scorbunny or Litten for Water and Grass rifts, Sobble or Froakie for Fire rifts, and Slowpoke
+        only if you have already picked up Sprint (+10% speed) to offset its low base speed. The worst-case scenario is
+        a disadvantaged type matchup in bad weather, such as Ember in rain against a Water legendary, which stacks
+        ×0.5 weather penalty with potential type resistance. For those runs, focus on dodging and let your secondary
+        move (if you have bought Repertoire) carry the damage.
+      </p>
+    </section>
+
+    <section class="guide-section" id="stick">
+      <h2>Why sticking with one partner pays off</h2>
+      <p>
+        Permanent upgrades bought with PokéCoins are per Pokémon. One of them, Repertoire, lets that Pokémon start a
+        run with 2 moves. Every coin you spend on your starter stays with that starter. If you jump to a new gacha
+        partner, it starts from zero. Our advice: choose the starter that suits how you play, then keep it and
+        invest in it while you learn. A starter with a few upgrades usually beats a fresh,
+        stronger-looking gacha partner with none. When you later want to compare gacha partners, use the
+        <a href="/tier-list/#mid">mid- and late-game partner rankings</a>. For controls and cards, read
+        <a href="/how-to-play/">how to play PokéSurvivor</a>. Prefer Chinese? We also have a
+        <a href="/zh/" lang="zh-Hant">繁體中文 PokéSurvivor 攻略</a>.
+      </p>
+    </section>
+
+    <FAQ heading="Starter questions, answered" items={faqItems} />
+
+    <section>
+      <h2>Sources and how we picked</h2>
+      <p>
+        We read the official starters.js, pokedex.js, moves.js and enemies.js files (commit c31715d, 2026-10-14)
+        and the official <a href="https://pokesurvivor.com/en/guide/" rel="noopener">guide</a>,
+        <a href="https://pokesurvivor.com/en/moves/" rel="noopener">moves</a> and
+        <a href="https://pokesurvivor.com/en/news/" rel="noopener">news</a> pages. Damage-per-second numbers are our
+        own simple math. The game updates often, so balance may change, and our PokeSurvivor best Pokemon picks with it.
+        In short, our PokeSurvivor best Pokemon picks for a first run are Scorbunny for damage and Slowpoke for
+        comfort, with Sobble, Froakie and Torchic or Litten close behind.
+      </p>
+    </section>
+  </article>
+</BaseLayout>
+
+<style>
+  .guide { max-width: var(--container-narrow); margin: 0 auto; }
+  .guide h2 { font-size: var(--font-size-2xl); color: var(--accent-primary); margin: var(--space-xl) 0 var(--space-md); }
+  .guide h3 { font-size: var(--font-size-lg); margin: var(--space-md) 0 var(--space-sm); }
+  .guide p { margin-bottom: var(--space-md); }
+  .guide ul, .guide ol { padding-left: 1.5rem; margin-bottom: var(--space-md); }
+  .guide li { margin-bottom: var(--space-sm); }
+
+  .guide-header { margin-bottom: var(--space-xl); }
+  .guide-header h1 { font-size: var(--font-size-4xl); line-height: var(--leading-tight); margin-bottom: var(--space-sm); }
+  .lead { font-size: var(--font-size-lg); color: var(--text-secondary); line-height: var(--leading-relaxed); }
+  .meta { color: var(--text-tertiary); font-size: var(--font-size-sm); margin-top: var(--space-2); }
+
+  figure { margin: var(--space-lg) 0; }
+  figure img { display: block; width: 100%; border-radius: var(--radius-md); }
+  figcaption { color: var(--text-tertiary); font-size: var(--font-size-sm); margin-top: var(--space-2); text-align: center; }
+
+  .toc {
+    background: var(--surface-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: var(--space-md) var(--space-lg);
+    margin: var(--space-lg) 0;
+  }
+  .toc-title {
+    font-weight: var(--font-bold);
+    color: var(--text-primary);
+    margin-bottom: var(--space-sm);
+  }
+  .toc ul { margin: 0; padding-left: var(--space-md); }
+  .toc li { margin-bottom: var(--space-2); }
+
+  .callout {
+    background: var(--surface-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: var(--space-md) var(--space-lg);
+    margin: var(--space-lg) 0;
+  }
+  .callout-info { border-left: 3px solid var(--accent-primary); }
+  .callout p:last-child { margin-bottom: 0; }
+
+  .data-table {
+    overflow-x: auto;
+    margin: var(--space-lg) 0;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+  }
+  .data-table table { width: 100%; border-collapse: collapse; font-size: var(--font-size-sm); }
+  .data-table caption { text-align: left; padding: var(--space-sm) var(--space-md); font-weight: var(--font-semibold); background: var(--surface-elevated); }
+  .data-table th, .data-table td { padding: var(--space-2) var(--space-md); text-align: left; border-bottom: 1px solid var(--border-subtle); }
+  .data-table thead th { background: var(--surface-elevated); color: var(--text-primary); font-weight: var(--font-semibold); }
+  .data-table tbody th { font-weight: var(--font-semibold); color: var(--text-primary); }
+  .data-table tbody td { color: var(--text-secondary); }
+  .data-table tbody tr:last-child th,
+  .data-table tbody tr:last-child td { border-bottom: none; }
+
+  .sprite-picks {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: var(--space-md);
+    margin: var(--space-lg) 0;
+  }
+
+  .sprite-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-md);
+    background: var(--surface-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    text-align: center;
+  }
+
+  .sprite-name {
+    margin: 0;
+    font-size: var(--font-size-base);
+    font-weight: var(--font-bold);
+    color: var(--text-primary);
+  }
+
+  .sprite-meta {
+    margin: 0;
+    font-size: var(--font-size-xs);
+    color: var(--text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-wide);
+  }
+
+  .picks {
+    list-style: decimal;
+    padding-left: 1.5rem;
+  }
+
+  .picks li {
+    margin-bottom: var(--space-lg);
+  }
+
+  .picks h3 {
+    font-size: var(--font-size-lg);
+    margin: 0 0 var(--space-sm);
+  }
+
+  .sources {
+    margin-top: var(--space-xl);
+    padding: var(--space-md) var(--space-lg);
+    background: var(--surface-elevated);
+    border-radius: var(--radius-md);
+    border-left: 3px solid var(--accent-primary);
+  }
+  .sources h2 { margin-top: 0; font-size: var(--font-size-xl); }
+</style>

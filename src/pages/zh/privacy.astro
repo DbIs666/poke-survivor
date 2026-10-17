@@ -1,0 +1,181 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+const title = '隱私政策 | PokeSurvivor 繁體中文攻略';
+const description = 'PokéSurvivor 非官方粉絲攻略網站的隱私政策。了解我們如何處理您的資料並保護您的隱私。';
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  locale="zh"
+  canonical="/zh/privacy/"
+  breadcrumbs={[
+    { name: '首頁', url: '/zh/' },
+    { name: '隱私政策', url: '/zh/privacy/' },
+  ]}
+>
+  <article class="content-article">
+    <h1>隱私政策</h1>
+    <p class="updated-date">最後更新：2026年10月17日</p>
+
+    <section>
+      <h2>概述</h2>
+      <p>
+        本隱私政策適用於 <strong>poke-survivors.org</strong>，這是一個為 PokéSurvivor
+        網頁遊戲創建的非官方粉絲攻略網站。我們致力於保護您的隱私，並對我們收集的資料保持透明。
+      </p>
+    </section>
+
+    <section>
+      <h2>我們收集的資料</h2>
+      <h3>分析資料</h3>
+      <p>
+        我們使用注重隱私的分析工具來了解訪客如何使用我們的網站。這可能包括：
+      </p>
+      <ul>
+        <li>訪問的頁面和在每個頁面停留的時間</li>
+        <li>引薦來源（您從哪裡來的）</li>
+        <li>瀏覽器類型和裝置類別（桌面、行動裝置、平板電腦）</li>
+        <li>國家或地區（基於 IP 位址，不會儲存）</li>
+      </ul>
+      <p>
+        我們<strong>不</strong>使用 Cookie 進行追蹤或分析。我們的分析由 Cloudflare
+        Web Analytics 提供，該服務不使用 Cookie，也不會跨網站追蹤您。
+      </p>
+
+      <h3>伺服器記錄</h3>
+      <p>
+        我們的託管服務提供商（Cloudflare Pages）會自動收集標準伺服器記錄，其中可能包括您的
+        IP 位址、使用者代理和請求的 URL。這些記錄僅用於安全、效能監控和除錯目的。
+      </p>
+    </section>
+
+    <section>
+      <h2>我們不收集的資料</h2>
+      <ul>
+        <li>我們不要求帳戶註冊或登入</li>
+        <li>我們不收集姓名或電子郵件地址等個人資訊</li>
+        <li>我們不使用廣告 Cookie 或追蹤器</li>
+        <li>我們不會將您的資料出售或分享給第三方</li>
+        <li>我們不會在其他網站上追蹤您</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>第三方服務</h2>
+      <h3>Cloudflare</h3>
+      <p>
+        我們的網站託管在 Cloudflare Pages 上。Cloudflare 可能會按照其
+        <a href="https://www.cloudflare.com/zh-tw/privacypolicy/" rel="noopener"
+          >隱私政策</a
+        >
+        中所述處理您的資料。
+      </p>
+
+      <h3>外部連結</h3>
+      <p>
+        本網站包含指向外部網站的連結，包括位於
+        <a href="https://pokesurvivor.com/" rel="noopener"
+          >pokesurvivor.com</a
+        >
+        的官方 PokéSurvivor 遊戲。我們不對外部網站的隱私做法負責。
+      </p>
+    </section>
+
+    <section>
+      <h2>兒童隱私</h2>
+      <p>
+        我們的網站是一個面向大眾的粉絲攻略，不會故意收集兒童的個人資訊。我們不要求註冊或索取任何個人資料。
+      </p>
+    </section>
+
+    <section>
+      <h2>您的權利</h2>
+      <p>
+        由於我們不收集除匿名分析之外的個人資訊，因此沒有可存取、修改或刪除的個人資料。如果您對我們的資料處理方式有疑問，請參閱下方的聯絡部分。
+      </p>
+    </section>
+
+    <section>
+      <h2>政策變更</h2>
+      <p>
+        我們可能會不時更新本隱私政策。本頁面頂部的「最後更新」日期將反映最近的變更。變更後繼續使用本網站即表示接受更新後的政策。
+      </p>
+    </section>
+
+    <section>
+      <h2>聯絡方式</h2>
+      <p>
+        如果您對本隱私政策有疑問，可以透過本專案的
+        <a href="https://github.com/pokesurvivor-fan/poke-survivors.org" rel="noopener"
+          >GitHub 儲存庫</a
+        >（如適用）或本網站提供的其他聯絡方式與我們聯絡。
+      </p>
+    </section>
+  </article>
+</BaseLayout>
+
+<style>
+  .content-article {
+    max-width: 70ch;
+    margin: 0 auto;
+    padding: var(--space-lg) var(--space-md);
+  }
+
+  .updated-date {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    margin-top: -0.5rem;
+    margin-bottom: var(--space-lg);
+  }
+
+  h1 {
+    font-size: clamp(2rem, 5vw, 2.5rem);
+    margin-bottom: var(--space-sm);
+  }
+
+  h2 {
+    margin-top: var(--space-xl);
+    margin-bottom: var(--space-md);
+    font-size: clamp(1.5rem, 4vw, 1.75rem);
+  }
+
+  h3 {
+    margin-top: var(--space-lg);
+    margin-bottom: var(--space-sm);
+    font-size: 1.25rem;
+  }
+
+  section {
+    margin-bottom: var(--space-lg);
+  }
+
+  p {
+    line-height: 1.7;
+    margin-bottom: var(--space-md);
+  }
+
+  ul {
+    margin: var(--space-md) 0;
+    padding-left: var(--space-lg);
+    line-height: 1.7;
+  }
+
+  li {
+    margin-bottom: var(--space-sm);
+  }
+
+  a {
+    color: var(--accent-primary);
+    text-decoration: underline;
+    text-underline-offset: 0.15em;
+  }
+
+  a:hover {
+    color: var(--accent-bright);
+  }
+
+  strong {
+    font-weight: 600;
+  }
+</style>

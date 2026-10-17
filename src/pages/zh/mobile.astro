@@ -1,0 +1,291 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import FAQ from '../../components/FAQ.astro';
+import Sprite from '../../components/Sprite.astro';
+
+const title = 'Poke Survivor 中文手機攻略：iPhone 與 Android 免下載觸控操作、加到主畫面與雲端存檔';
+const description = 'Poke Survivor 中文手機攻略：iPhone 與 Android 免下載瀏覽器玩法、橫向觸控操作、自訂按鈕、加到主畫面與雲端存檔，並教你避開假 App。';
+const heroAlt = '手機橫向畫面的觸控配置示意圖：手指拖曳出現的搖桿、招式切換按鈕與右上角的暫停按鈕';
+
+const starterSprites = [
+  { dex: 1, name: 'Bulbasaur' }, { dex: 4, name: 'Charmander' }, { dex: 7, name: 'Squirtle' },
+  { dex: 54, name: 'Psyduck' }, { dex: 79, name: 'Slowpoke' }, { dex: 813, name: 'Scorbunny' },
+];
+
+const faqItems = [
+  {
+    q: 'PokeSurvivor 有手機 App 嗎？',
+    a: '沒有。我們查過的官方來源都沒有提到 App Store 或 Google Play 版本，唯一的官方網站是 pokesurvivor.com。用手機瀏覽器打開就能玩，要你下載或付費的商店 App 都不是官方的。',
+  },
+  {
+    q: 'iPhone 怎麼把遊戲加到主畫面？',
+    a: '用 Safari 打開 pokesurvivor.com，點「分享」按鈕，往下找到「加入主畫面」，確認名稱後點「新增」。之後從主畫面圖示開啟，玩的仍是同一個官方網頁遊戲。',
+  },
+  {
+    q: '手機存檔會不見嗎？',
+    a: '用帳號登入（名稱加密碼，或 Google）時，進度會存到雲端，換手機或改用電腦都能繼續；訪客模式則什麼都不會保存。所以想長期玩，請先建立帳號。',
+  },
+  {
+    q: '手機可以直向玩嗎？',
+    a: '不行，手機與平板只支援橫向畫面。如果轉了手機畫面卻沒有跟著轉，請先檢查系統的螢幕方向鎖定是否開著。',
+  },
+  {
+    q: '手機可以和朋友連線嗎？',
+    a: '可以。合作模式最多 4 人，需要帳號；手機當房主時盡量不要切到其他 App，因為房主切換分頁會讓所有人暫停。詳細規則見本頁「手機上的連線合作」一節。',
+  },
+];
+const pageUrl = 'https://poke-survivors.org/zh/mobile/';
+const imageUrl = 'https://poke-survivors.org/images/pokesurvivor-mobile-controls.webp';
+
+const jsonLd = [
+  {
+    '@type': 'Article',
+    headline: 'Poke Survivor 中文手機指南：觸控操作、加到主畫面與存檔',
+    description,
+    publisher: { '@type': 'Organization', name: 'PokeSurvivor Fan Guide' },
+    datePublished: '2026-10-16',
+    dateModified: '2026-10-16',
+    author: { '@type': 'Organization', name: 'PokeSurvivor Fan Guide' },
+    inLanguage: 'zh-Hant',
+    image: imageUrl,
+    mainEntityOfPage: pageUrl,
+  },
+];
+---
+
+<BaseLayout
+  title={title}
+  alternates={[
+    { locale: 'en', href: '/mobile/' },
+    { locale: 'zh-Hant', href: '/zh/mobile/' }
+  ]}
+  description={description}
+  locale="zh"
+  ogType="article"
+  ogImage="/images/pokesurvivor-mobile-controls.jpg"
+  ogImageAlt={heroAlt}
+  breadcrumbs={[
+    { name: 'PokeSurvivor Fan Guide', url: '/' },
+    { name: '繁體中文攻略', url: '/zh/' },
+    { name: '手機版指南', url: '/zh/mobile/' },
+  ]}
+  preloadImage="/images/pokesurvivor-mobile-controls.webp"
+
+  jsonLd={jsonLd}
+>
+  <article class="guide">
+    <header class="guide-header">
+      <p class="hero-eyebrow">手機版指南</p>
+      <h1>Poke Survivor 中文手機指南：觸控操作、加到主畫面與存檔</h1>
+      <p class="lead">
+        想用手機玩 PokéSurvivor 不用找 App：它是免費的瀏覽器遊戲，手機免下載，打開<a href="https://pokesurvivor.com/en/" rel="noopener">官方網站 pokesurvivor.com</a> 就能玩，玩起來就像一款倖存者類手遊。遊戲介面只有英文與西班牙文、沒有中文版，卡片名稱的中英對照請看<a href="/zh/">寶可夢倖存者中文攻略首頁</a>。本指南會說明橫向畫面、觸控、加到主畫面、存檔與常見問題。
+      </p>
+      <p class="meta meta-badges">
+        <span class="badge">更新日期：<time datetime="2026-10-16">2026-10-16</time></span>
+        <span class="badge badge-warning">非官方粉絲網站</span>
+      </p>
+      <div class="hero-sprites">
+        {starterSprites.map((s) => <Sprite dex={s.dex} name={s.name} size={48} />)}
+      </div>
+    </header>
+
+    <figure class="hero-figure">
+      <img
+        src="/images/pokesurvivor-mobile-controls.webp"
+        width="1200"
+        height="700"
+        loading="eager"
+        fetchpriority="high"
+        decoding="async"
+        alt={heroAlt}
+      />
+      <figcaption>本站製作的觸控配置示意圖（橫向）。Sprites: SpriteCollab (CC BY-NC 4.0).</figcaption>
+    </figure>
+    <section>
+      <h2>在手機瀏覽器遊玩：只支援橫向</h2>
+      <p>
+        根據<a href="https://pokesurvivor.com/en/guide/" rel="noopener">官方指南</a>，遊戲可在電腦、平板和手機瀏覽器玩，手機與平板只支援橫向。官方指南提到觸控搖桿的設定；自動調整畫質功能來自 <a href="https://pokesurvivor.com/en/news/" rel="noopener">2026-10-09 官方新聞</a>。介面語言只有英文與西班牙文，所以本指南只能幫你看懂英文介面，無法把遊戲變成中文。
+      </p>
+    </section>
+
+    <section>
+      <h2>觸控操作</h2>
+      <p>最常被問的是怎麼出招：答案是不用，攻擊全自動，你只要負責走位與切換招式。</p>
+      <div class="controls-cards">
+        <div class="card control-card">
+          <div class="control-icon">👆</div>
+          <h3>移動</h3>
+          <p>手指在畫面任意位置按住拖曳，搖桿會出現在你按下的地方。</p>
+        </div>
+        <div class="card control-card">
+          <div class="control-icon">💫</div>
+          <h3>切換招式</h3>
+          <p>直接點擊招式圖示。夥伴只會發動目前選中的那一招，攻擊是自動的。</p>
+        </div>
+        <div class="card control-card">
+          <div class="control-icon">⏸️</div>
+          <h3>暫停</h3>
+          <p>點右上角的暫停按鈕。</p>
+        </div>
+        <div class="card control-card">
+          <div class="control-icon">🎴</div>
+          <h3>升級</h3>
+          <p>從三張卡片中點選一張。卡片名稱是英文，可以對照<a href="/zh/#glossary">升級卡片中英對照表</a>。</p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>2026-10-14 更新：自訂按鈕位置與固定搖桿</h2>
+      <p>
+        依照<a href="https://pokesurvivor.com/en/news/" rel="noopener">官方新聞</a>，2026-10-14 起可以在 Settings（設定）→ Controls（操作）→ Place the buttons（擺放按鈕）裡，把招式按鈕、暫停按鈕和搖桿拖到你想要的位置，也可以把搖桿鎖定在固定位置。在我們的實際遊玩中，手比較小或用平板的玩家，把搖桿固定在左下角、招式按鈕放在右手拇指附近會比較順手。這是粉絲建議，請依自己的習慣調整。
+      </p>
+    </section>
+
+    <section>
+      <h2>加到主畫面：像 App 一樣開啟</h2>
+      <p>
+        官方說遊戲不需要下載，但可以用「加入主畫面」把它裝成像 App 一樣的圖示。官方的網頁設定是全螢幕、橫向顯示。以下是一般瀏覽器的通用步驟，選單名稱可能因系統版本略有不同：
+      </p>
+      <div class="install-steps">
+        <div class="step-card">
+          <div class="step-number">iOS</div>
+          <div class="step-content">
+            <h3>iPhone／iPad（Safari）</h3>
+            <ol>
+              <li>用 Safari 打開 pokesurvivor.com。</li>
+              <li>點下方或上方的「分享」按鈕。</li>
+              <li>往下找到「加入主畫面」，確認名稱後點「新增」。</li>
+            </ol>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-number">Android</div>
+          <div class="step-content">
+            <h3>Android（Chrome）</h3>
+            <ol>
+              <li>用 Chrome 打開 pokesurvivor.com。</li>
+              <li>點右上角的「⋮」選單。</li>
+              <li>選「加到主畫面」或「安裝應用程式」，再確認。</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+      <p>從主畫面圖示開啟後，存檔規則一樣，所以本頁其他的手機版說明照樣適用。</p>
+    </section>
+
+    <section>
+      <h2>帳號、雲端存檔與訪客模式</h2>
+      <p>
+        官方指南說明：用帳號登入（名稱加密碼，或 Google）會把進度存到雲端，可以在任何裝置繼續；訪客可以馬上開玩，但什麼都不會保存。2026-10-14 起，用名稱與密碼註冊的玩家也能綁定 Gmail，忘記密碼時用 Google 登入就是同一個帳號。如果你會在手機和電腦之間切換，或打算和朋友連線，請一定要建立帳號，這是我們最想提醒手機玩家的一件事。
+      </p>
+    </section>
+
+    <section>
+      <h2>itch.io 離線版</h2>
+      <p>
+        開發者在 <a href="https://jpter78.itch.io/pokesurvivor" rel="noopener">itch.io 頁面</a>提供可下載的 HTML5 離線包，說明是「解壓縮後雙擊 index.html」。離線版只能單人遊玩，存檔留在瀏覽器裡；連線合作、雲端存檔和排行榜只有在 pokesurvivor.com 線上版才有。這個壓縮包主要是給電腦用的，手機上直接用線上版加到主畫面會比較方便。
+      </p>
+    </section>
+
+    <section>
+      <h2>沒有 App Store／Google Play 版本，小心假 App</h2>
+      <aside class="callout callout-warning">
+        <p><strong>⚠️ 警告：</strong>我們查過的所有官方來源，都沒有提到 App Store 或 Google Play 上的應用程式。官方在 2026-10-14 明確表示唯一的官方網站是 pokesurvivor.com，遊戲「永遠免費」，如果其他網站要你付錢，那就是仿冒品。所以如果商店裡有自稱手機版、要你下載或付費的 App，請不要安裝。</p>
+      </aside>
+    </section>
+
+    <section>
+      <h2>手機上的連線合作</h2>
+      <p>
+        合作模式最多 4 人，需要帳號。用暱稱加好友、邀請進房間，由房主開始遊戲。經驗值共享，升級時每個人都要選卡，遊戲會等所有人選完。倒下的隊友只要有人站在旁邊 3 秒就能救起。要注意：多人時暫停不會停止遊戲；房主切換分頁時，所有人都會暫停；房主離開，這局就結束。手機用房主身分時，最好不要切到其他 App。
+      </p>
+      <p>
+        官方提醒，連線是瀏覽器對瀏覽器（WebRTC，類似視訊通話），因此隊友可能看到你的 IP 位址，請只和認識的人一起玩。想了解房間設定與合作打法，請看<a href="/zh/co-op/">多人連線合作模式攻略</a>。
+      </p>
+    </section>
+
+    <section>
+      <h2>手機效能與常見問題排除（粉絲建議）</h2>
+      <p>以下是我們實際用手機遊玩的心得，不是官方說明：</p>
+      <ul>
+        <li>開始前關掉其他分頁與背景 App，減少發熱與掉幀。</li>
+        <li>從主畫面圖示開啟，可以用全螢幕、少掉網址列佔用的空間。</li>
+        <li>官方設定有自動畫質；如果還是卡，可以到設定裡看看畫質選項。</li>
+        <li>後期敵人與特效很多，手機容易發熱，建議接上充電器並取下厚手機殼。</li>
+        <li>合作模式盡量使用穩定的 Wi-Fi。</li>
+      </ul>
+      <details class="troubleshoot">
+        <summary><h3>畫面不會轉成橫向怎麼辦</h3></summary>
+        <p>
+          遊戲只支援橫向，如果你把手機轉過來畫面卻不動，通常是系統的螢幕方向鎖定開著。iPhone 可以從控制中心關掉「直向鎖定」；Android 則在快速設定裡打開「自動旋轉」。關掉鎖定後再轉一次手機，或重新整理頁面。
+        </p>
+      </details>
+      <details class="troubleshoot">
+        <summary><h3>避免玩到一半螢幕變暗或休眠</h3></summary>
+        <p>
+          倖存者類的手遊大部分時間只用一根手指拖曳，有些手機會誤以為你沒在操作而調暗螢幕。如果常常玩到一半變暗，可以暫時把「自動鎖定」或「螢幕逾時」時間調長，玩完再改回來。
+        </p>
+      </details>
+      <details class="troubleshoot">
+        <summary><h3>省電模式與瀏覽器版本</h3></summary>
+        <p>
+          省電模式通常會限制效能與畫面更新率，後期敵人一多就更容易掉幀，玩之前可以先關掉。瀏覽器方面，建議使用系統內建或常見的瀏覽器（iPhone 用 Safari、Android 用 Chrome），並更新到最新版本；如果某個瀏覽器出現異常，換另一個試試看通常就能判斷是不是瀏覽器的問題。
+        </p>
+      </details>
+      <p>
+        手機設定好之後，下一步就是選夥伴。只用一根手指走位時，射程長、會自動追蹤的招式比較省力，可以先看<a href="/zh/best-pokemon/">手機上好操作的最強初始寶可夢推薦</a>；想知道哪些寶可夢後期夠強，再參考<a href="/zh/tier-list/">寶可夢強度排行榜</a>。遊戲過程中，神祕裂縫有機會從很早就開始出現（機率逐步提高），可以搭配<a href="/zh/rifts/">神秘裂縫攻略</a>。本指南負責手機設定，選卡與配隊則交給這些攻略。
+      </p>
+    </section>
+
+    <FAQ locale="zh" items={faqItems} />
+
+    <section class="sources">
+      <h2>我們如何撰寫這篇指南</h2>
+      <p>
+        本篇手機版指南的遊戲資料來自<a href="https://pokesurvivor.com/en/guide/" rel="noopener">官方指南</a>、<a href="https://pokesurvivor.com/en/news/" rel="noopener">官方新聞</a>、itch.io 頁面與官方 GitHub 原始碼；技巧與建議為粉絲意見。最後確認日期：2026-10-16。想從頭學起，也可以看<a href="/zh/how-to-play/">完整新手玩法教學</a>。
+      </p>
+    </section>
+  </article>
+</BaseLayout>
+
+<style>
+  .guide { max-width: 900px; margin: 0 auto; }
+  .guide-header { margin-bottom: var(--space-xl); text-align: center; }
+  .hero-eyebrow { display: inline-block; padding: var(--space-1) var(--space-3); background: var(--surface-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-pill); font-size: var(--font-size-sm); font-weight: var(--font-semibold); color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: var(--space-sm); }
+  .guide-header h1 { font-size: clamp(1.7rem, 4vw, 2.4rem); line-height: var(--leading-tight); margin-bottom: var(--space-sm); }
+  .lead { font-size: 1.05rem; color: var(--text-secondary); max-width: 800px; margin: 0 auto var(--space-sm); }
+  .meta-badges { display: flex; gap: var(--space-2); justify-content: center; flex-wrap: wrap; margin-bottom: var(--space-md); }
+  .hero-sprites { display: flex; gap: var(--space-3); justify-content: center; flex-wrap: wrap; }
+  .hero-figure { margin: 0 0 var(--space-xl); }
+  .hero-figure img { display: block; border-radius: var(--radius-md); }
+  .hero-figure figcaption { color: var(--text-tertiary); font-size: var(--font-size-sm); margin-top: var(--space-2); text-align: center; }
+  .guide h2 { font-size: clamp(1.35rem, 3vw, 1.8rem); margin: var(--space-xl) 0 var(--space-sm); color: var(--accent-primary); }
+  .guide h3 { font-size: 1.1rem; margin: 0; font-weight: var(--font-semibold); color: var(--text-primary); }
+  .guide p, .guide li { color: var(--text-secondary); }
+  .guide p { margin-bottom: var(--space-sm); }
+  .guide ul, .guide ol { padding-left: 1.4rem; margin-bottom: var(--space-sm); }
+  .guide li { margin-bottom: 0.4rem; }
+  .guide strong { color: var(--text-primary); }
+  .controls-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-md); margin: var(--space-md) 0; }
+  .control-card { padding: var(--space-md); text-align: center; }
+  .control-icon { font-size: 2rem; margin-bottom: var(--space-2); }
+  .control-card h3 { margin-bottom: var(--space-xs); }
+  .install-steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: var(--space-md); margin: var(--space-md) 0; }
+  .step-card { display: flex; gap: var(--space-md); background: var(--surface-card); padding: var(--space-md); border-radius: var(--radius-md); border: 1px solid var(--border-subtle); }
+  .step-number { flex-shrink: 0; width: 3.5rem; height: 3.5rem; display: flex; align-items: center; justify-content: center; background: var(--accent-primary); color: var(--text-on-accent); border-radius: var(--radius-md); font-weight: var(--font-bold); font-size: 0.9rem; }
+  .step-content h3 { margin-bottom: var(--space-xs); }
+  .step-content ol { margin-top: var(--space-xs); }
+  .callout { padding: var(--space-md); background: var(--surface-elevated); border-radius: var(--radius-md); border-left: 3px solid var(--accent-primary); margin: var(--space-md) 0; }
+  .callout-warning { border-left-color: #f59e0b; }
+  .callout p { margin-bottom: 0; }
+  .troubleshoot { background: var(--surface-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: var(--space-md); margin-bottom: var(--space-sm); }
+  .troubleshoot summary { cursor: pointer; font-weight: var(--font-semibold); color: var(--text-primary); list-style: none; display: flex; align-items: center; justify-content: space-between; }
+  .troubleshoot summary::-webkit-details-marker { display: none; }
+  .troubleshoot summary::after { content: '▼'; font-size: 0.7rem; color: var(--text-tertiary); transition: transform 0.2s; }
+  .troubleshoot[open] summary::after { transform: rotate(180deg); }
+  .troubleshoot summary h3 { display: inline; font-size: 1rem; }
+  .troubleshoot p { margin-top: var(--space-xs); }
+  .sources { margin-top: var(--space-xl); padding: var(--space-md); background: var(--surface-elevated); border-left: 3px solid var(--accent-primary); border-radius: var(--radius-md); }
+  .sources h2 { margin-top: 0; font-size: 1.2rem; }
+</style>

@@ -1,0 +1,204 @@
+---
+/**
+ * Pokemon sprite from SpriteCollab portraits.
+ * Renders with pixelated image-rendering for crisp pixels.
+ *
+ * Image sources:
+ *   - local: /sprites/{dex}.png (40x40, served from public/)
+ *   - cdn:   https://pokesurvivor.com/assets/pokemon/{dex}/Idle.png
+ *            (an animation sheet: 8 direction rows x N frames; the first
+ *            down-facing frame is cropped client-side)
+ *   - auto:  local if public/sprites/{dex}.png exists at build time, else cdn.
+ *            Runtime chain on error: local -> cdn -> fallback placeholder.
+ *
+ * If public/sprites/{dex}.webp exists at build time, a <picture> with a WebP
+ * <source> is emitted; browsers without WebP support use the PNG.
+ *
+ * Usage:
+ *   <Sprite dex={25} name="Pikachu" size={64} />
+ *   <Sprite dex={133} name="Eevee" />
+ *   <Sprite dex={1000} name="Gholdengo" source="cdn" lazy={false} />
+ */
+import { existsSync } from 'node:fs';
+import { join } from 'node:path';
+
+export type SpriteSource = 'local' | 'cdn' | 'auto';
+
+export interface Props {
+  /** National Dex number (unpadded) */
+  dex: number;
+  /** Pokemon name for alt text */
+  name: string;
+  /** Size in pixels (width & height). Default 40 (native size). */
+  size?: number;
+  /** Additional CSS classes */
+  class?: string;
+  /** Image source strategy. Default 'auto'. */
+  source?: SpriteSource;
+  /** Placeholder image used when every source fails. Default: /sprites/fallback.svg. */
+  fallback?: string;
+  /** Lazy-load the image. Default true. */
+  lazy?: boolean;
+}
+
+const CDN_BASE = 'https://pokesurvivor.com/assets/pokemon';
+// Shared placeholder in public/ (one cacheable file instead of a data URI per <img>).
+const DEFAULT_FALLBACK = '/sprites/fallback.svg';
+
+const {
+  dex,
+  name,
+  size = 40,
+  class: className,
+  source = 'auto',
+  fallback = DEFAULT_FALLBACK,
+  lazy = true,
+} = Astro.props;
+
+const localSrc = `/sprites/${dex}.png`;
+const cdnSrc = `${CDN_BASE}/${dex}/Idle.png`;
+const publicDir = join(process.cwd(), 'public', 'sprites');
+const hasLocal = existsSync(join(publicDir, `${dex}.png`));
+const hasWebp = existsSync(join(publicDir, `${dex}.webp`));
+
+// 'local' always uses the local path (backward compatible); 'auto' skips a
+// guaranteed 404 when the file is known to be missing at build time.
+const useCdn = source === 'cdn' || (source === 'auto' && !hasLocal);
+const src = useCdn ? cdnSrc : localSrc;
+// Next source to try on error: auto/local -> cdn (only for auto), then fallback.
+const nextSrc = !useCdn && source === 'auto' ? cdnSrc : '';
+const alt = `${name} sprite`;
+---
+
+{
+  !useCdn && hasWebp ? (
+    <picture>
+      <source srcset={`/sprites/${dex}.webp`} type="image/webp" />
+      <img
+        src={src}
+        alt={alt}
+        width={size}
+        height={size}
+        class:list={['sprite', className]}
+        loading={lazy ? 'lazy' : 'eager'}
+        decoding="async"
+        data-sprite
+        data-sprite-next={nextSrc}
+        data-sprite-fallback={fallback}
+      />
+    </picture>
+  ) : (
+    <img
+      src={src}
+      alt={alt}
+      width={size}
+      height={size}
+      class:list={['sprite', className]}
+      loading={lazy ? 'lazy' : 'eager'}
+      decoding="async"
+      crossorigin={useCdn ? 'anonymous' : undefined}
+      data-sprite
+      data-sprite-sheet={useCdn ? '' : undefined}
+      data-sprite-next={nextSrc}
+      data-sprite-fallback={fallback}
+    />
+  )
+}
+
+<style>
+  /* Hide raw CDN sheets until the first frame is cropped (no flash of the full sheet). */
+  img[data-sprite-sheet]:not([data-sprite-done]) {
+    opacity: 0;
+  }
+</style>
+
+<script>
+  const ROWS = 8; // PMD sheets: one row per facing direction, row 0 faces down
+
+  /** Crop the first down-facing frame out of an animation sheet. */
+  function cropFirstFrame(img: HTMLImageElement): string | null {
+    const w = img.naturalWidth;
+    const h = img.naturalHeight;
+    if (!w || h % ROWS !== 0) return null;
+    const fh = h / ROWS;
+    const sheet = document.createElement('canvas');
+    sheet.width = w;
+    sheet.height = fh;
+    const ctx = sheet.getContext('2d', { willReadFrequently: true });
+    if (!ctx) return null;
+    ctx.drawImage(img, 0, 0, w, fh, 0, 0, w, fh);
+    const { data } = ctx.getImageData(0, 0, w, fh); // throws if tainted
+
+    // Find where the first opaque run of columns ends, then take the smallest
+    // frame width that divides the sheet width and contains that run.
+    const opaque = (x: number) => {
+      for (let y = 0; y < fh; y++) if (data[(y * w + x) * 4 + 3] > 0) return true;
+      return false;
+    };
+    let x = 0;
+    while (x < w && !opaque(x)) x++;
+    while (x < w && opaque(x)) x++;
+    let fw = w;
+    for (let c = Math.max(x, 1); c <= w; c++) {
+      if (w % c === 0) {
+        fw = c;
+        break;
+      }
+    }
+
+    // Draw the frame centred in a square canvas so aspect ratio is preserved.
+    const side = Math.max(fw, fh);
+    const out = document.createElement('canvas');
+    out.width = side;
+    out.height = side;
+    const octx = out.getContext('2d');
+    if (!octx) return null;
+    octx.imageSmoothingEnabled = false;
+    octx.drawImage(sheet, 0, 0, fw, fh, (side - fw) / 2, (side - fh) / 2, fw, fh);
+    return out.toDataURL('image/png');
+  }
+
+  function onLoad(img: HTMLImageElement) {
+    if (!img.hasAttribute('data-sprite-sheet') || img.hasAttribute('data-sprite-done')) return;
+    let cropped: string | null = null;
+    try {
+      cropped = cropFirstFrame(img);
+    } catch {
+      cropped = null; // canvas tainted or unreadable: show the sheet as-is
+    }
+    img.setAttribute('data-sprite-done', '');
+    if (cropped) img.src = cropped;
+  }
+
+  function onError(img: HTMLImageElement) {
+    const next = img.dataset.spriteNext;
+    if (next) {
+      img.dataset.spriteNext = '';
+      // The CDN replaces a failed local image: drop the WebP source so the
+      // <picture> does not keep selecting it, then mark the img as a sheet.
+      img.parentElement?.querySelectorAll('source').forEach((s) => s.remove());
+      img.crossOrigin = 'anonymous';
+      img.setAttribute('data-sprite-sheet', '');
+      img.src = next;
+      return;
+    }
+    const fallback = img.dataset.spriteFallback;
+    img.removeAttribute('data-sprite-sheet');
+    img.removeAttribute('crossorigin');
+    if (fallback && img.getAttribute('src') !== fallback) img.src = fallback;
+  }
+
+  function init(img: HTMLImageElement) {
+    if (img.dataset.spriteBound) return;
+    img.dataset.spriteBound = '1';
+    img.addEventListener('load', () => onLoad(img));
+    img.addEventListener('error', () => onError(img));
+    // Module scripts run after parsing; catch images that already settled.
+    if (img.complete) {
+      if (img.naturalWidth === 0) onError(img);
+      else onLoad(img);
+    }
+  }
+
+  document.querySelectorAll<HTMLImageElement>('img[data-sprite]').forEach(init);
+</script>

@@ -1,0 +1,290 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import FAQ from '../components/FAQ.astro';
+import Sprite from '../components/Sprite.astro';
+
+const title = 'PokeSurvivor Mobile Guide: Play on iPhone & Android';
+const description = 'PokeSurvivor mobile guide for iPhone and Android: play in browser with no download, learn landscape touch controls, add to home screen, and keep cloud saves.';
+const heroAlt = 'Diagram showing PokeSurvivor mobile touch controls in landscape orientation with virtual joystick, move buttons, and pause button';
+
+const starterSprites = [
+  { dex: 1, name: 'Bulbasaur' }, { dex: 4, name: 'Charmander' }, { dex: 7, name: 'Squirtle' },
+  { dex: 54, name: 'Psyduck' }, { dex: 79, name: 'Slowpoke' }, { dex: 813, name: 'Scorbunny' },
+];
+
+const faqItems = [
+  {
+    q: 'Is there a PokeSurvivor mobile app?',
+    a: 'No. All official sources we checked confirm there is no App Store or Google Play version. The only official site is pokesurvivor.com. You can play on your mobile browser without downloading anything—store apps asking for downloads or payment are not official.',
+  },
+  {
+    q: 'How do I add PokeSurvivor to my iPhone home screen?',
+    a: 'Open pokesurvivor.com in Safari, tap the Share button, scroll to "Add to Home Screen," confirm the name, and tap "Add." The icon on your home screen will open the same official web game.',
+  },
+  {
+    q: 'Will my mobile save data be lost?',
+    a: 'If you log in with an account (username + password, or Google), your progress is saved to the cloud and syncs across any device. Guest mode saves nothing. We strongly recommend creating an account if you plan to play long-term or switch devices.',
+  },
+  {
+    q: 'Can I play in portrait mode on mobile?',
+    a: 'No, mobile and tablet only support landscape orientation. If your screen does not rotate, check that screen rotation lock is turned off in your device settings.',
+  },
+  {
+    q: 'Can I play co-op with friends on mobile?',
+    a: 'Yes. Co-op mode supports up to 4 players and requires an account. When hosting on mobile, avoid switching to other apps—the host switching tabs pauses the game for everyone. See the "Mobile Co-op Play" section for details.',
+  },
+];
+const pageUrl = 'https://poke-survivors.org/mobile/';
+const imageUrl = 'https://poke-survivors.org/images/pokesurvivor-mobile-controls.webp';
+
+const jsonLd = [
+  {
+    '@type': 'Article',
+    headline: 'PokeSurvivor Mobile Guide: Touch Controls, Add to Home Screen & Save Data',
+    description,
+    publisher: { '@type': 'Organization', name: 'PokeSurvivor Fan Guide' },
+    datePublished: '2026-10-16',
+    dateModified: '2026-10-16',
+    author: { '@type': 'Organization', name: 'PokeSurvivor Fan Guide' },
+    inLanguage: 'en',
+    image: imageUrl,
+    mainEntityOfPage: pageUrl,
+  },
+];
+---
+
+<BaseLayout
+  title={title}
+  alternates={[
+    { locale: 'en', href: '/mobile/' },
+    { locale: 'zh-Hant', href: '/zh/mobile/' }
+  ]}
+  description={description}
+  locale="en"
+  ogType="article"
+  ogImage="/images/pokesurvivor-mobile-controls.jpg"
+  ogImageAlt={heroAlt}
+  breadcrumbs={[
+    { name: 'PokeSurvivor Fan Guide', url: '/' },
+    { name: 'Mobile Guide', url: '/mobile/' },
+  ]}
+  preloadImage="/images/pokesurvivor-mobile-controls.webp"
+
+  jsonLd={jsonLd}
+>
+  <article class="guide">
+    <header class="guide-header">
+      <p class="hero-eyebrow">Mobile Guide</p>
+      <h1>PokeSurvivor Mobile Guide: Touch Controls, Add to Home Screen & Save Data</h1>
+      <p class="lead">
+        Want to play PokeSurvivor on your phone? No app required—it's a free browser game. Just open <a href="https://pokesurvivor.com/en/" rel="noopener">the official site pokesurvivor.com</a> on iPhone or Android and play instantly. This mobile guide covers landscape orientation, touch controls, how to add the game to your home screen, cloud save setup, and common troubleshooting tips.
+      </p>
+      <p class="meta meta-badges">
+        <span class="badge">Updated: <time datetime="2026-10-16">2026-10-16</time></span>
+        <span class="badge badge-warning">Unofficial fan site</span>
+      </p>
+      <div class="hero-sprites">
+        {starterSprites.map((s) => <Sprite dex={s.dex} name={s.name} size={48} />)}
+      </div>
+    </header>
+
+    <figure class="hero-figure">
+      <img
+        src="/images/pokesurvivor-mobile-controls.webp"
+        width="1200"
+        height="700"
+        loading="eager"
+        fetchpriority="high"
+        decoding="async"
+        alt={heroAlt}
+      />
+      <figcaption>PokeSurvivor mobile touch control layout (landscape) created by this site. Sprites: SpriteCollab (CC BY-NC 4.0).</figcaption>
+    </figure>
+    <section>
+      <h2>Playing in Mobile Browser: Landscape Only</h2>
+      <p>
+        According to the <a href="https://pokesurvivor.com/en/guide/" rel="noopener">official guide</a>, PokeSurvivor can be played on PC, tablet, and mobile browsers, with mobile and tablet supporting landscape orientation only. The official guide mentions virtual joystick controls and auto-quality settings. The game UI is available in English and Spanish only—this guide helps you navigate the English interface, but cannot change the game language itself. Whether you search for "PokeSurvivor mobile" or find it on social media, you're playing the same web version—there is no separate mobile game release.
+      </p>
+    </section>
+
+    <section>
+      <h2>Touch Controls</h2>
+      <p>The most common question is how to attack: you don't—attacks are fully automatic. You only need to move and switch between your moves.</p>
+      <div class="controls-cards">
+        <div class="card control-card">
+          <div class="control-icon">👆</div>
+          <h3>Movement</h3>
+          <p>Press and drag anywhere on the screen. A virtual joystick appears where you touch.</p>
+        </div>
+        <div class="card control-card">
+          <div class="control-icon">💫</div>
+          <h3>Switch Moves</h3>
+          <p>Tap a move icon directly. Your partner only uses the currently selected move; attacks fire automatically.</p>
+        </div>
+        <div class="card control-card">
+          <div class="control-icon">⏸️</div>
+          <h3>Pause</h3>
+          <p>Tap the pause button in the top-right corner.</p>
+        </div>
+        <div class="card control-card">
+          <div class="control-icon">🎴</div>
+          <h3>Upgrade</h3>
+          <p>Tap one of the three cards that appear when you level up.</p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>October 14, 2026 Update: Custom Button Placement & Fixed Joystick</h2>
+      <p>
+        Per the <a href="https://pokesurvivor.com/en/news/" rel="noopener">official news</a>, as of October 14, 2026, you can now customize button positions in Settings → Controls → Place the buttons. Drag move buttons, the pause button, and the joystick to your preferred locations, and you can lock the joystick to a fixed position. In our experience, players with smaller hands or tablet users often find it more comfortable to lock the joystick in the bottom-left corner and place move buttons within thumb reach on the right. This is a fan suggestion—adjust to your own preference.
+      </p>
+    </section>
+
+    <section>
+      <h2>Add to Home Screen: Launch Like an App</h2>
+      <p>
+        The official site notes the game requires no download, but you can use "Add to Home Screen" to install an icon that launches like an app. The page is configured for fullscreen, landscape display. Below are standard browser steps—exact menu names may vary by OS version:
+      </p>
+      <div class="install-steps">
+        <div class="step-card">
+          <div class="step-number">iOS</div>
+          <div class="step-content">
+            <h3>iPhone / iPad (Safari)</h3>
+            <ol>
+              <li>Open pokesurvivor.com in Safari.</li>
+              <li>Tap the Share button (bottom or top bar).</li>
+              <li>Scroll to "Add to Home Screen," confirm the name, and tap "Add."</li>
+            </ol>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-number">Android</div>
+          <div class="step-content">
+            <h3>Android (Chrome)</h3>
+            <ol>
+              <li>Open pokesurvivor.com in Chrome.</li>
+              <li>Tap the "⋮" menu in the top-right.</li>
+              <li>Select "Add to Home screen" or "Install app," then confirm.</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+      <p>Launching from the home screen icon follows the same save rules, so the rest of this guide applies equally.</p>
+    </section>
+
+    <section>
+      <h2>Account, Cloud Save, and Guest Mode</h2>
+      <p>
+        The official guide explains: logging in with an account (username + password, or Google) saves your progress to the cloud, syncing across any device. Guest mode lets you start immediately but saves nothing. As of October 14, 2026, players who registered with username and password can now link their Gmail—if you forget your password, logging in with Google accesses the same account. If you plan to switch between mobile and PC, or play co-op with friends, we strongly recommend creating an account. This is the single most important tip for mobile players.
+      </p>
+    </section>
+
+    <section>
+      <h2>itch.io Offline Version</h2>
+      <p>
+        The developer offers a downloadable HTML5 offline package on the <a href="https://jpter78.itch.io/pokesurvivor" rel="noopener">itch.io page</a>, with instructions to "unzip and double-click index.html." The offline version is single-player only, with saves stored in your browser. Co-op, cloud saves, and leaderboards are only available on the pokesurvivor.com online version. This package is primarily for PC—on mobile, using the online version with Add to Home Screen is more convenient.
+      </p>
+    </section>
+
+    <section>
+      <h2>No App Store / Google Play Version—Beware of Fake Apps</h2>
+      <aside class="callout callout-warning">
+        <p><strong>⚠️ Warning:</strong> All official sources we checked confirm there is no App Store or Google Play release. The official statement from October 14, 2026 declares pokesurvivor.com as the only official site, that the game is "free forever," and that any site asking for payment is a copycat. If you find an app in a store claiming to be PokeSurvivor mobile and requesting download or payment, do not install it.</p>
+      </aside>
+    </section>
+
+    <section>
+      <h2>Mobile Co-op Play</h2>
+      <p>
+        Co-op mode supports up to 4 players and requires an account. Add friends by username, invite them to a room, and the host starts the game. XP is shared, and when leveling up, each player must pick a card—the game waits for everyone to choose. Downed teammates can be revived if someone stands next to them for 3 seconds. Important notes: pausing in multiplayer does not stop the game; if the host switches tabs, all players are paused; if the host leaves, the run ends. When hosting on mobile, avoid switching to other apps.
+      </p>
+      <p>
+        The official site notes that co-op uses browser-to-browser connections (WebRTC, similar to video calls), so teammates may see your IP address—only play with people you know. For room settings and co-op strategies, see the <a href="/co-op/">co-op mode guide</a>.
+      </p>
+    </section>
+
+    <section>
+      <h2>Mobile Performance & Troubleshooting (Fan Tips)</h2>
+      <p>These tips are from our real mobile play experience, not official documentation:</p>
+      <ul>
+        <li>Close other browser tabs and background apps before starting to reduce heat and frame drops.</li>
+        <li>Launch from the home screen icon for fullscreen play without the address bar.</li>
+        <li>The official settings include auto-quality; if you still experience lag, check quality options in settings.</li>
+        <li>Late-game enemy swarms and effects can heat up phones—consider plugging in a charger and removing thick cases.</li>
+        <li>Use stable Wi-Fi for co-op mode.</li>
+      </ul>
+      <details class="troubleshoot">
+        <summary><h3>Screen won't rotate to landscape</h3></summary>
+        <p>
+          The game only supports landscape. If your phone won't rotate when you turn it, screen rotation lock is usually on. On iPhone, open Control Center and turn off "Portrait Orientation Lock"; on Android, enable "Auto-rotate" in Quick Settings. After turning off the lock, rotate your phone again or refresh the page.
+        </p>
+      </details>
+      <details class="troubleshoot">
+        <summary><h3>Prevent screen dimming or sleep during play</h3></summary>
+        <p>
+          Survivor-like mobile games often require only one-finger dragging, which some phones misinterpret as inactivity and dim the screen. If your screen frequently dims mid-game, temporarily increase the "Auto-Lock" or "Screen timeout" duration in settings, then restore it after playing.
+        </p>
+      </details>
+      <details class="troubleshoot">
+        <summary><h3>Battery saver mode and browser version</h3></summary>
+        <p>
+          Battery saver mode typically limits performance and refresh rate, making late-game enemy swarms lag even worse—turn it off before playing. For browsers, use the system default or mainstream browsers (Safari on iPhone, Chrome on Android) and keep them updated. If one browser shows issues, switching to another usually helps diagnose browser-specific problems.
+        </p>
+      </details>
+      <p>
+        Once your mobile setup is complete, the next step is choosing a partner. When you're moving with one finger, long-range auto-tracking moves are easier to manage—see <a href="/best-pokemon/">recommended starters for mobile play</a>. For late-game strength rankings, check the <a href="/tier-list/">Pokémon tier list</a>. When you survive past 1:15 and mysterious rifts start appearing, pair this with the <a href="/rifts/">legendary rift guide</a>. This mobile guide handles device setup—card choices and team building are covered in those other guides.
+      </p>
+    </section>
+
+    <FAQ locale="en" items={faqItems} />
+
+    <section class="sources">
+      <h2>How We Wrote This Guide</h2>
+      <p>
+        This PokeSurvivor mobile guide draws game information from the <a href="https://pokesurvivor.com/en/guide/" rel="noopener">official guide</a>, <a href="https://pokesurvivor.com/en/news/" rel="noopener">official news</a>, the itch.io page, and the official GitHub source code. Tips and recommendations are fan opinions. Last verified: October 16, 2026. For complete beginner instruction, see the <a href="/how-to-play/">full how-to-play tutorial</a>.
+      </p>
+    </section>
+  </article>
+</BaseLayout>
+
+<style>
+  .guide { max-width: 900px; margin: 0 auto; }
+  .guide-header { margin-bottom: var(--space-xl); text-align: center; }
+  .hero-eyebrow { display: inline-block; padding: var(--space-1) var(--space-3); background: var(--surface-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-pill); font-size: var(--font-size-sm); font-weight: var(--font-semibold); color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: var(--space-sm); }
+  .guide-header h1 { font-size: clamp(1.7rem, 4vw, 2.4rem); line-height: var(--leading-tight); margin-bottom: var(--space-sm); }
+  .lead { font-size: 1.05rem; color: var(--text-secondary); max-width: 800px; margin: 0 auto var(--space-sm); }
+  .meta-badges { display: flex; gap: var(--space-2); justify-content: center; flex-wrap: wrap; margin-bottom: var(--space-md); }
+  .hero-sprites { display: flex; gap: var(--space-3); justify-content: center; flex-wrap: wrap; }
+  .hero-figure { margin: 0 0 var(--space-xl); }
+  .hero-figure img { display: block; border-radius: var(--radius-md); }
+  .hero-figure figcaption { color: var(--text-tertiary); font-size: var(--font-size-sm); margin-top: var(--space-2); text-align: center; }
+  .guide h2 { font-size: clamp(1.35rem, 3vw, 1.8rem); margin: var(--space-xl) 0 var(--space-sm); color: var(--accent-primary); }
+  .guide h3 { font-size: 1.1rem; margin: 0; font-weight: var(--font-semibold); color: var(--text-primary); }
+  .guide p, .guide li { color: var(--text-secondary); }
+  .guide p { margin-bottom: var(--space-sm); }
+  .guide ul, .guide ol { padding-left: 1.4rem; margin-bottom: var(--space-sm); }
+  .guide li { margin-bottom: 0.4rem; }
+  .guide strong { color: var(--text-primary); }
+  .controls-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-md); margin: var(--space-md) 0; }
+  .control-card { padding: var(--space-md); text-align: center; }
+  .control-icon { font-size: 2rem; margin-bottom: var(--space-2); }
+  .control-card h3 { margin-bottom: var(--space-xs); }
+  .install-steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: var(--space-md); margin: var(--space-md) 0; }
+  .step-card { display: flex; gap: var(--space-md); background: var(--surface-card); padding: var(--space-md); border-radius: var(--radius-md); border: 1px solid var(--border-subtle); }
+  .step-number { flex-shrink: 0; width: 3.5rem; height: 3.5rem; display: flex; align-items: center; justify-content: center; background: var(--accent-primary); color: var(--text-on-accent); border-radius: var(--radius-md); font-weight: var(--font-bold); font-size: 0.9rem; }
+  .step-content h3 { margin-bottom: var(--space-xs); }
+  .step-content ol { margin-top: var(--space-xs); }
+  .callout { padding: var(--space-md); background: var(--surface-elevated); border-radius: var(--radius-md); border-left: 3px solid var(--accent-primary); margin: var(--space-md) 0; }
+  .callout-warning { border-left-color: #f59e0b; }
+  .callout p { margin-bottom: 0; }
+  .troubleshoot { background: var(--surface-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: var(--space-md); margin-bottom: var(--space-sm); }
+  .troubleshoot summary { cursor: pointer; font-weight: var(--font-semibold); color: var(--text-primary); list-style: none; display: flex; align-items: center; justify-content: space-between; }
+  .troubleshoot summary::-webkit-details-marker { display: none; }
+  .troubleshoot summary::after { content: '▼'; font-size: 0.7rem; color: var(--text-tertiary); transition: transform 0.2s; }
+  .troubleshoot[open] summary::after { transform: rotate(180deg); }
+  .troubleshoot summary h3 { display: inline; font-size: 1rem; }
+  .troubleshoot p { margin-top: var(--space-xs); }
+  .sources { margin-top: var(--space-xl); padding: var(--space-md); background: var(--surface-elevated); border-left: 3px solid var(--accent-primary); border-radius: var(--radius-md); }
+  .sources h2 { margin-top: 0; font-size: 1.2rem; }
+</style>

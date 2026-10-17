@@ -1,0 +1,221 @@
+---
+import SEOHead from '../components/SEOHead.astro';
+import RelatedGuides from '../components/RelatedGuides.astro';
+import LanguageBanner from '../components/LanguageBanner.astro';
+import LanguageSwitcher from '../components/LanguageSwitcher.astro';
+// Single source of truth for tokens + shared components. Do not redefine tokens elsewhere.
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description: string;
+  keywords?: string;
+  locale?: 'en' | 'zh';
+  ogType?: 'website' | 'article';
+  ogImage?: string;
+  ogImageAlt?: string;
+  /** Pass `false` to omit the canonical tag (e.g. 404). */
+  canonical?: string | false;
+  noindex?: boolean;
+  alternates?: Array<{ locale: string; href: string }>;
+  breadcrumbs?: Array<{ name: string; url: string }>;
+  jsonLd?: Array<Record<string, unknown>>;
+  /** Above-the-fold LCP image to preload. Must exactly match the rendered eager <img src>. */
+  preloadImage?: string;
+}
+
+const {
+  title,
+  description,
+  keywords,
+  locale = 'en',
+  ogType,
+  ogImage,
+  ogImageAlt,
+  canonical,
+  noindex,
+  alternates,
+  breadcrumbs,
+  jsonLd,
+  preloadImage,
+} = Astro.props;
+
+const isZh = locale === 'zh';
+const path = Astro.url.pathname;
+
+const navEn = [
+  { href: '/', label: 'Home' },
+  { href: '/how-to-play/', label: 'How to Play' },
+  { href: '/mobile/', label: 'Mobile' },
+  { href: '/tier-list/', label: 'Tier List' },
+  { href: '/best-pokemon/', label: 'Best Pokémon' },
+  { href: '/pokedex/', label: 'Pokédex' },
+  { href: '/rifts/', label: 'Rifts' },
+  { href: '/co-op/', label: 'Co-op' },
+];
+const navZh = [
+  { href: '/zh/', label: '首頁攻略' },
+  { href: '/zh/mobile/', label: '手機版' },
+  { href: '/zh/pokedex/', label: '圖鑑' },
+  { href: '/zh/how-to-play/', label: '玩法教學' },
+  { href: '/zh/tier-list/', label: '強度排行' },
+  { href: '/zh/best-pokemon/', label: '最佳初始' },
+  { href: '/zh/rifts/', label: '裂縫指南' },
+  { href: '/zh/co-op/', label: '多人合作' },
+];
+const nav = isZh ? navZh : navEn;
+
+const footerGuides = isZh
+  ? [
+      { href: '/zh/', label: '首頁攻略' },
+      { href: '/zh/mobile/', label: '手機版' },
+      { href: '/zh/pokedex/', label: '寶可夢圖鑑' },
+      { href: '/zh/how-to-play/', label: '玩法教學' },
+      { href: '/zh/tier-list/', label: '強度排行' },
+      { href: '/zh/best-pokemon/', label: '最佳初始夥伴' },
+      { href: '/zh/rifts/', label: '傳說裂縫指南' },
+      { href: '/zh/co-op/', label: '多人合作' },
+      { href: '/', label: '英文攻略首頁' },
+    ]
+  : [
+      { href: '/', label: 'PokeSurvivor Guide (Home)' },
+      { href: '/how-to-play/', label: 'How to Play' },
+      { href: '/mobile/', label: 'Mobile Guide' },
+      { href: '/tier-list/', label: 'Tier List' },
+      { href: '/best-pokemon/', label: 'Best Pokémon Picks' },
+      { href: '/pokedex/', label: 'Pokédex' },
+      { href: '/rifts/', label: 'Legendary Rifts' },
+      { href: '/co-op/', label: 'Co-op Guide' },
+    ];
+const footerLangs = [
+  { href: '/zh/', label: '繁體中文攻略', lang: 'zh-Hant' },
+  { href: '/zh/mobile/', label: '繁體中文：手機版', lang: 'zh-Hant' },
+];
+const isCurrent = (href: string) => path === href;
+---
+
+<!doctype html>
+<html lang={isZh ? 'zh-Hant' : 'en'}>
+  <head>
+    <SEOHead
+      title={title}
+      description={description}
+      keywords={keywords}
+      locale={locale}
+      ogType={ogType}
+      ogImage={ogImage}
+      ogImageAlt={ogImageAlt}
+      canonical={canonical}
+      noindex={noindex}
+      alternates={alternates}
+      breadcrumbs={breadcrumbs}
+      jsonLd={jsonLd}
+    />
+    {preloadImage && <link rel="preload" as="image" href={preloadImage} fetchpriority="high" />}
+  </head>
+  <body>
+    <LanguageBanner locale={locale} />
+    <a class="skip-link" href="#main">{isZh ? '跳到主要內容' : 'Skip to content'}</a>
+    <header class="site-header">
+      <div class="header-container">
+        <a href={isZh ? '/zh/' : '/'} class="site-logo">
+          <img src="/favicon.svg" alt="" width="32" height="32" aria-hidden="true" />
+          <span class="logo-text">PokeSurvivor</span>
+        </a>
+        <nav aria-label={isZh ? '主選單' : 'Main'}>
+          <ul class="nav-links">
+            {nav.map((item) => (
+              <li>
+                <a
+                  href={item.href}
+                  lang={item.lang}
+                  aria-current={isCurrent(item.href) ? 'page' : undefined}
+                  class={isCurrent(item.href) ? 'active' : ''}
+                >
+                  {item.label}
+                </a>
+              </li>
+            ))}
+            <li class="nav-lang-item">
+              <LanguageSwitcher locale={locale} currentPath={path} />
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    {breadcrumbs && breadcrumbs.length > 1 && (
+      <nav class="breadcrumbs" aria-label={isZh ? '麵包屑' : 'Breadcrumb'}>
+        <ol>
+          {breadcrumbs.map((crumb, i) => (
+            <li>
+              {i < breadcrumbs.length - 1 ? (
+                <a href={crumb.url}>{crumb.name}</a>
+              ) : (
+                <span aria-current="page">{crumb.name}</span>
+              )}
+            </li>
+          ))}
+        </ol>
+      </nav>
+    )}
+
+    <main id="main" class="site-main" tabindex="-1">
+      <slot />
+    </main>
+
+    <RelatedGuides locale={locale} current={path} />
+
+    <footer class="site-footer">
+      <div class="footer-container">
+        <div class="footer-section">
+          <p class="footer-title">PokeSurvivor Fan Guide</p>
+          {isZh
+            ? <p>免費網頁遊戲 PokéSurvivor 的非官方粉絲攻略。<a href="https://pokesurvivor.com/en/" rel="noopener">前往官方網站 pokesurvivor.com 開始遊玩</a>。</p>
+            : <p>Unofficial guides for the free browser game PokéSurvivor. <a href="https://pokesurvivor.com/en/" rel="noopener">Play the official game at pokesurvivor.com</a>.</p>}
+        </div>
+        <div class="footer-section">
+          <p class="footer-title">{isZh ? '英文進階攻略' : 'Guides'}</p>
+          <ul>
+            {footerGuides.map((l) => <li><a href={l.href}>{l.label}</a></li>)}
+          </ul>
+        </div>
+        <div class="footer-section">
+          <p class="footer-title">{isZh ? '語言' : 'Languages'}</p>
+          <ul>
+            <li><a href="/" lang="en">English</a></li>
+            {footerLangs.map((l) => <li><a href={l.href} lang={l.lang}>{l.label}</a></li>)}
+          </ul>
+        </div>
+        <div class="footer-section">
+          <p class="footer-title">{isZh ? '法律資訊' : 'Legal'}</p>
+          <ul>
+            <li><a href={isZh ? '/zh/privacy/' : '/privacy/'}>{isZh ? '隱私政策' : 'Privacy Policy'}</a></li>
+            <li><a href={isZh ? '/zh/disclaimer/' : '/disclaimer/'}>{isZh ? '免責聲明' : 'Disclaimer'}</a></li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <p class="footer-title">{isZh ? '開源專案' : 'Open Source'}</p>
+          <ul>
+            <li><a href="https://github.com/alexcss/poke-survivor" target="_blank" rel="noopener">{isZh ? 'GitHub 原始碼' : 'GitHub Repository'}</a></li>
+            <li><a href="https://github.com/alexcss/poke-survivor/issues" target="_blank" rel="noopener">{isZh ? '回報問題' : 'Report Issues'}</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        {isZh ? (
+          <Fragment>
+            <p>© 2026 PokeSurvivor 粉絲攻略：非官方粉絲網站，與 PokéSurvivor 開發者、任天堂、GAME FREAK 及 The Pokémon Company 均無關係。官方遊戲請至 <a href="https://pokesurvivor.com/en/" rel="noopener">pokesurvivor.com</a> 遊玩。</p>
+            <p>角色圖像：<a href="https://github.com/PMDCollab/SpriteCollab" rel="noopener">SpriteCollab</a>（<a href="https://creativecommons.org/licenses/by-nc/4.0/" rel="noopener license">CC BY-NC 4.0</a>）</p>
+          </Fragment>
+        ) : (
+          <Fragment>
+            <p>© 2026 PokeSurvivor fan guide — unofficial fan site, not affiliated with the PokéSurvivor developer, Nintendo, GAME FREAK or The Pokémon Company. Play the official game at <a href="https://pokesurvivor.com/en/" rel="noopener">pokesurvivor.com</a>.</p>
+            <p>Sprites: <a href="https://github.com/PMDCollab/SpriteCollab" rel="noopener">SpriteCollab</a> (<a href="https://creativecommons.org/licenses/by-nc/4.0/" rel="noopener license">CC BY-NC 4.0</a>)</p>
+          </Fragment>
+        )}
+      </div>
+    </footer>
+  </body>
+</html>
+

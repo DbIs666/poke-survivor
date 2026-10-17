@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <defs>
+    <linearGradient id="top" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FF4D4D"/>
+      <stop offset="1" stop-color="#E3000F"/>
+    </linearGradient>
+    <linearGradient id="bottom" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FFFFFF"/>
+      <stop offset="1" stop-color="#E6E6E6"/>
+    </linearGradient>
+  </defs>
+  <!-- outer ring -->
+  <circle cx="50" cy="50" r="47" fill="#222224"/>
+  <!-- red upper half -->
+  <path d="M8 50 A42 42 0 0 1 92 50 Z" fill="url(#top)"/>
+  <!-- white lower half -->
+  <path d="M8 50 A42 42 0 0 0 92 50 Z" fill="url(#bottom)"/>
+  <!-- center band -->
+  <rect x="6" y="45" width="88" height="10" fill="#222224"/>
+  <!-- highlight on red half -->
+  <path d="M24 30 A30 30 0 0 1 40 17" stroke="#FFFFFF" stroke-opacity="0.55" stroke-width="5" fill="none" stroke-linecap="round"/>
+  <!-- button -->
+  <circle cx="50" cy="50" r="15" fill="#222224"/>
+  <circle cx="50" cy="50" r="10" fill="#FFFFFF"/>
+  <circle cx="50" cy="50" r="6" fill="none" stroke="#D0D0D0" stroke-width="1.5"/>
+</svg>

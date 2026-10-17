@@ -1,0 +1,527 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import FAQ from '../../components/FAQ.astro';
+
+const site = 'https://poke-survivors.org';
+const title = 'PokeSurvivor 玩法教學與新手攻略：操作方式、升級系統、招式進化與前 10 分鐘流程';
+const description = 'PokeSurvivor 玩法教學與新手攻略：鍵盤與觸控操作、3 選 1 升級系統、招式進化條件、敵人與第 3 分鐘 BOSS 打法，附前 10 分鐘流程規劃。';
+const updated = '2026-10-16';
+
+const plan = [
+  { name: '0:00 到 1:00：學習移動', text: '學習移動操作。若出現磁鐵卡片可以拿一張,其餘升級起手招式。' },
+  { name: '1:15 之後：裂縫可能開啟', text: '裂縫可能開始出現。血量滿時進入最安全;如果招式還很弱就先跳過,因為失敗會以 30% HP 回到地圖。詳見裂縫指南。' },
+  { name: '2:00：天氣可能開始', text: '天氣可能開始出現。注意天氣對你的屬性是有利還是不利。' },
+  { name: '2:00 到 3:00：準備進化', text: '確保你已經拿過進化所需的卡片一次。增加第二個不同攻擊範圍的招式。' },
+  { name: '3:00：第一個 BOSS', text: '第一個 BOSS 登場。注意地面標記,持續移動,切換到你最強的單體傷害招式。' },
+  { name: '3:00 到 6:00：進化起手招式', text: '將起手招式推到 5 級並拿下金色進化卡片。優先擊殺治療者和護盾者。' },
+  { name: '6:00：第二個 BOSS', text: '第二個 BOSS。裝備你找到的攜帶道具;一次只能裝一個。' },
+  { name: '6:00 到 9:00：增加防禦', text: '混入活力或護甲卡片。讓第二個招式朝 5 級邁進。' },
+  { name: '9:00 到 10:00：第三個 BOSS', text: '第 9 分鐘的第三個 BOSS。第一次跑能到這裡代表基礎已經掌握了。' },
+];
+
+const faq = [
+  { q: '為什麼只有一個招式在攻擊?', a: '只有當前使用的招式會自動攻擊。在 PC 上用 1–4 或 Q/E 切換,在觸控裝置上點擊招式圖示。' },
+  { q: '招式什麼時候進化?', a: '招式到達 5 級時,如果你在該局中也拿過必要的卡片,就會出現金色進化卡片。' },
+  { q: '哪裡可以查詢招式和道具的確切數值?', a: '使用官方頁面：<a href="https://pokesurvivor.com/en/moves/" rel="noopener">招式頁面</a>查詢進化需求,<a href="https://pokesurvivor.com/en/items/" rel="noopener">道具清單</a>查詢攜帶道具效果,以及<a href="https://pokesurvivor.com/en/guide/" rel="noopener">官方指南</a>查詢其他內容。本頁面著重在學習順序,不是每個數值。' },
+  { q: '可以和朋友一起玩嗎?', a: '可以,最多 4 人線上合作。詳見我們的<a href="/zh/co-op/">多人合作指南</a>。' },
+  { q: '新手最常犯的錯誤是什麼?', a: '根據我們的經驗,是一開始就拿四個新招式。因為只有一個招式會攻擊,所以升級主力招式的效益比較高。' },
+];
+
+const jsonLd = [
+  {
+    '@type': 'Article',
+    headline: '如何玩 PokeSurvivor：你的前 10 分鐘',
+    description,
+    datePublished: updated,
+    dateModified: updated,
+    author: { '@type': 'Organization', name: 'PokeSurvivor 粉絲攻略' },
+    publisher: { '@type': 'Organization', name: 'PokeSurvivor 粉絲攻略' },
+    inLanguage: 'zh-Hant',
+    image: `${site}/images/pokesurvivor-menu.webp`,
+    mainEntityOfPage: `${site}/zh/how-to-play/`,
+  },
+  {
+    '@type': 'HowTo',
+    name: 'PokeSurvivor 前 10 分鐘規劃(粉絲建議)',
+    description: '根據遊戲的天氣、裂縫和 BOSS 時間點,為 PokeSurvivor 第一次跑規劃的逐分鐘計劃。',
+    inLanguage: 'zh-Hant',
+    totalTime: 'PT10M',
+    image: `${site}/images/pokesurvivor-menu.webp`,
+    tool: [{ '@type': 'HowToTool', name: '打開 pokesurvivor.com 的網頁瀏覽器' }],
+    step: plan.map((st, i) => ({
+      '@type': 'HowToStep',
+      position: i + 1,
+      name: st.name,
+      text: st.text,
+      url: `${site}/zh/how-to-play/#first-10-minutes`,
+    })),
+  },
+];
+---
+
+<BaseLayout
+  title={title}
+  alternates={[
+    { locale: 'en', href: '/how-to-play/' },
+    { locale: 'zh-Hant', href: '/zh/how-to-play/' }
+  ]}
+  description={description}
+  locale="zh"
+  ogType="article"
+  ogImage="/images/pokesurvivor-menu.jpg"
+  ogImageAlt="PokéSurvivor 主選單,顯示初始夥伴測驗和遊玩按鈕"
+  breadcrumbs={[
+    { name: '首頁', url: '/zh/' },
+    { name: '玩法教學', url: '/zh/how-to-play/' },
+  ]}
+  preloadImage="/images/pokesurvivor-menu.webp"
+  jsonLd={jsonLd}
+>
+  <article class="guide">
+    <header class="guide-header">
+      <h1>如何玩 PokeSurvivor：新手攻略與你的前 10 分鐘</h1>
+      <p class="lead">
+        這是我們對「如何玩 PokeSurvivor」的實用回答,為你的第一次跑而寫。簡單說：你操控移動,夥伴寶可夢自動攻擊,每次升級讓你從 3 張卡片中選 1 張。這份 PokeSurvivor 指南跳過百科全書式的介紹,著重在該做什麼,逐分鐘規劃。
+      </p>
+      <p class="meta">更新：<time datetime={updated}>{updated}</time> · 玩家製作的非官方粉絲指南</p>
+    </header>
+
+    <nav class="toc" aria-label="本頁內容">
+      <p class="toc-title">本頁內容</p>
+      <ul>
+        <li><a href="#quiz">測驗與你的初始夥伴</a></li>
+        <li><a href="#controls">PC 和觸控裝置上的操作</a></li>
+        <li><a href="#levelup">升級循環</a></li>
+        <li><a href="#evolution">招式進化</a></li>
+        <li><a href="#enemies">敵人類型</a></li>
+        <li><a href="#bosses">BOSS、道具與天氣</a></li>
+        <li><a href="#first-10-minutes">你的前 10 分鐘</a></li>
+        <li><a href="#faq">常見問題</a></li>
+      </ul>
+    </nav>
+
+    <section class="guide-section" id="quiz">
+      <h2>第一次跑之前：測驗與你的初始夥伴</h2>
+      <figure>
+        <img
+          src="/images/pokesurvivor-menu.webp"
+          alt="PokéSurvivor 主選單,顯示初始夥伴測驗和遊玩按鈕"
+          width="1280"
+          height="720"
+          loading="eager"
+          fetchpriority="high"
+          decoding="async"
+        />
+        <figcaption>官方遊戲的主選單(我們的截圖)。圖像：SpriteCollab (CC BY-NC 4.0)。</figcaption>
+      </figure>
+      <p>
+        你的第一次跑會以神奇寶貝不可思議迷宮風格的 8 道性格測驗開始。測驗會從 29 隻初始夥伴中分配一隻給你:全部 9 個世代的御三家加上可達鴨和呆呆獸。你可以拒絕測驗結果並選擇另一隻。不用想太多。每個初始夥伴都以六個招式之一開始,全部六個都能進化。完整比較請閱讀<a href="/zh/best-pokemon/">最強初始寶可夢推薦</a>;排名請看<a href="/zh/tier-list/">PokeSurvivor 強度排行</a>。
+      </p>
+      <p>
+        如果你是這個類型的遊戲的新手,「如何玩 PokeSurvivor」的簡短版本是:走位是你唯一的直接輸入,所以本頁其他內容都是關於如何讓你的夥伴攻擊命中,同時保持安全。
+      </p>
+      <p>
+        給新手的一個 PokeSurvivor 建議:如果你只想要輕鬆的第一次跑,水槍初始夥伴很寬容。官方招式資料稱它是「在任何距離都可靠」的穿透射擊,而且 0.44 秒的冷卻時間是六個初始招式中最快的。
+      </p>
+    </section>
+
+    <section class="guide-section" id="controls">
+      <h2>PC 和觸控螢幕上的操作</h2>
+      <p>
+        你只需要移動。你的夥伴會自動攻擊。以下的 PokeSurvivor 操作來自<a href="https://pokesurvivor.com/en/guide/" rel="noopener">官方指南</a>,只有三個動作要學。
+      </p>
+      <div class="data-table">
+        <table>
+          <caption>PC 和觸控裝置上的 PokeSurvivor 操作</caption>
+          <thead>
+            <tr><th scope="col">動作</th><th scope="col">PC</th><th scope="col">手機 / 平板</th></tr>
+          </thead>
+          <tbody>
+            <tr><th scope="row">移動</th><td><kbd>WASD</kbd> 或 <kbd>↑</kbd><kbd>←</kbd><kbd>↓</kbd><kbd>→</kbd></td><td>在任何地方拖曳手指;搖桿會出現在你觸碰的地方(也有固定搖桿選項)</td></tr>
+            <tr><th scope="row">切換使用中的招式</th><td><kbd>1–4</kbd>、<kbd>Q</kbd>/<kbd>E</kbd>,或點擊招式圖示</td><td>點擊招式</td></tr>
+            <tr><th scope="row">暫停</th><td><kbd>Esc</kbd></td><td>右上角按鈕</td></tr>
+            <tr><th scope="row">螢幕</th><td>瀏覽器(未說明方向規則)</td><td>僅橫向</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <figure>
+        <img
+          src="/images/pokesurvivor-mobile-controls.webp"
+          alt="觸控操作示意圖:在任何地方拖曳以移動,點擊招式以切換"
+          width="1200"
+          height="700"
+          loading="lazy"
+          decoding="async"
+        />
+        <figcaption>粉絲製作的觸控配置示意圖:在任何地方拖曳以移動,點擊招式圖示以切換,右上角暫停。圖像：SpriteCollab (CC BY-NC 4.0)。</figcaption>
+      </figure>
+      <p>
+        在手機上,開始前先將裝置轉為橫向。搖桿會出現在你的拇指落下的任何地方,所以你不需要尋找它;如果你偏好固定位置的搖桿,2026-10-14 加入的固定搖桿是可選的。中文玩家可以在我們的<a href="/zh/" lang="zh-Hant">中文攻略</a>中找到相同的基礎知識。
+      </p>
+    </section>
+
+    <section class="guide-section" id="levelup">
+      <h2>升級循環:3 選 1 卡片</h2>
+      <p>
+        擊敗的敵人會掉落經驗珠。它們會停在原地直到你進入拾取(磁鐵)範圍,然後飛向你。每次升級會顯示 3 張卡片,你拿一張:新招式、你擁有的招式的升級,或屬性提升。如果都不合適還有重抽選項。學習如何玩好 PokeSurvivor 主要就是學習要拿哪張卡片。
+      </p>
+      <h3>4 個槽位與「只有使用中的招式會攻擊」</h3>
+      <p>
+        你最多可以持有 4 個招式,但只有使用中的那個會攻擊。這是與其他倖存者類遊戲的關鍵差異,在那些遊戲中每個武器都會同時攻擊。第二個招式是你切換到的工具(用於人群的大範圍近戰弧形,用於分散敵人的追蹤射擊),而不是額外的傷害。來自裂縫的傳說羈絆稍後可以讓兩個招式從一個槽位同時攻擊。
+      </p>
+      <h3>我們的卡片建議(粉絲意見)</h3>
+      <p class="disclaimer">以下數值來自玩家測試與社群觀察,官方指南未公開具體數字:</p>
+      <ul>
+        <li><strong>早期:</strong>先升級你的起手招式。在我們的跑中,專注的招式勝過四個弱的招式,因為只有一個會攻擊。</li>
+        <li><strong>第二個招式:</strong>拿一個與你的初始招式攻擊範圍不同的,這樣切換才真的能改變什麼。</li>
+        <li><strong>屬性:</strong>力量(+10% 傷害,社群觀察)和反射神經(−8% 冷卻,社群觀察)對任何配置都有幫助。磁鐵(+30% 拾取範圍,社群觀察)讓早期升級來得更快。活力(+20 最大 HP,社群觀察)或護甲(+6% 減傷,上限 70%,社群觀察)在 BOSS 開始打得很痛時拿。</li>
+        <li><strong>文柚果</strong>一次回復 45%(社群觀察)。我們只在真的血量低時才拿。</li>
+      </ul>
+    </section>
+
+    <section class="guide-section" id="evolution">
+      <h2>招式進化:5 級加上正確的卡片</h2>
+      <p>
+        進化是新手最常錯過的 PokeSurvivor 玩法部分。招式升到 5 級。根據<a href="https://pokesurvivor.com/en/moves/" rel="noopener">官方招式頁面</a>,一旦招式到達最高等級,而且你在該局中也拿過它需要的升級卡片,就會出現金色進化卡片。拿下它。以下是六個初始招式的進化:
+      </p>
+      <div class="data-table">
+        <table>
+          <caption>PokeSurvivor 初始招式進化及各自需要的卡片</caption>
+          <thead>
+            <tr><th scope="col">初始招式</th><th scope="col">進化成</th><th scope="col">需要的卡片</th></tr>
+          </thead>
+          <tbody>
+            <tr><th scope="row">火花</th><td>大字爆炎</td><td>力量</td></tr>
+            <tr><th scope="row">水槍</th><td>熱水</td><td>力量</td></tr>
+            <tr><th scope="row">泡沫</th><td>衝浪</td><td>衝刺</td></tr>
+            <tr><th scope="row">藤鞭</th><td>強力鞭打</td><td>力量</td></tr>
+            <tr><th scope="row">飛葉快刀</th><td>飛葉風暴</td><td>反射神經</td></tr>
+            <tr><th scope="row">念力</th><td>精神衝擊</td><td>反射神經</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>
+        所以實際上:早期至少拿一次需要的屬性卡片,然後將你的起手招式推到 5 級。遊戲有 64 個招式總數,其中 59 個會進化(玩家測試統計);官方頁面列出了其餘的。
+      </p>
+    </section>
+
+    <section class="guide-section" id="enemies">
+      <h2>四種特性敵人</h2>
+      <p>
+        學習如何玩 PokeSurvivor 的一部分是知道要先射哪個敵人。自 2026-10-08 更新後,有些敵人會「治療、護盾、召喚或爆炸」。官方提示是優先擊殺治療者和護盾者。以下是我們如何處理每一種。
+      </p>
+      <ul>
+        <li><strong>治療者</strong>(吉利蛋、幸福蛋、差不多娃娃、皮皮等):每 3.5 秒治療附近盟友 15%。切換到單體目標或追蹤招式並專注它。</li>
+        <li><strong>護盾者</strong>(壺壺、青銅鐘、魔牆人偶、護城龍等):給 6 個盟友施加 35% HP 的護盾。在啃食一群敵人之前先殺了它。</li>
+        <li><strong>召喚者</strong>(尼多后、蜂女王、大嘴蝠、暴鯉龍等):召喚 2 隻同類。早點殺它,不然螢幕會擠滿。</li>
+        <li><strong>自爆</strong>(雷電球、頑皮雷彈、瓦斯彈、小拳石等):走近後會在 1 秒警告後爆炸。持續移動並在它閃爍時離開。</li>
+      </ul>
+      <h3>預告地面標記</h3>
+      <p>
+        有些敵人用光束、區域、扇形或跳躍攻擊。地面上填充的圓圈和線條是即將到來的攻擊,所以在它們填充完成之前離開。BOSS 使用相同的警告。
+      </p>
+    </section>
+
+    <section class="guide-section" id="bosses">
+      <h2>BOSS、攜帶道具與天氣</h2>
+      <h3>每 3 分鐘一個 BOSS</h3>
+      <p>
+        如何玩好 PokeSurvivor 的一大部分是尊重 3 分鐘的時鐘。第一個 BOSS 在第 3 分鐘到達,然後在第 6、9、12 和 15 分鐘還有更多。它們是強大的非傳說寶可夢,有 4 個預告攻擊,並在半血時狂暴。每個都可能掉落 ×10 扭蛋券(官方指南說「有時候」;在目前的程式碼中是三分之一的機率)。我們的建議:持續繞圈,並在剛好 3 分鐘標記之前保留你最好的傷害卡片選擇。傳說寶可夢是獨立的戰鬥:它們在裂縫內等待,我們的<a href="/zh/rifts/">傳說裂縫指南</a>解釋了 18 個競技場和你贏得的羈絆。
+      </p>
+      <div class="boss-timeline">
+        <div class="timeline-track">
+          <div class="timeline-marker" data-minute="3">
+            <div class="marker-dot"></div>
+            <div class="marker-label">3:00<span>BOSS</span></div>
+          </div>
+          <div class="timeline-marker" data-minute="6">
+            <div class="marker-dot"></div>
+            <div class="marker-label">6:00<span>BOSS</span></div>
+          </div>
+          <div class="timeline-marker" data-minute="9">
+            <div class="marker-dot"></div>
+            <div class="marker-label">9:00<span>BOSS</span></div>
+          </div>
+          <div class="timeline-marker" data-minute="12">
+            <div class="marker-dot"></div>
+            <div class="marker-label">12:00<span>BOSS</span></div>
+          </div>
+          <div class="timeline-marker" data-minute="15">
+            <div class="marker-dot"></div>
+            <div class="marker-label">15:00<span>BOSS</span></div>
+          </div>
+        </div>
+      </div>
+      <h3>攜帶道具:一次一個</h3>
+      <p>
+        攜帶道具比看起來簡單。你一次只能持有一個道具,而且它會持續整局。道具來自寶箱和 BOSS 掉落,詳見<a href="https://pokesurvivor.com/en/items/" rel="noopener">官方道具清單</a>。第一次跑我們喜歡吃剩的東西(每秒 1.5% HP)或氣息腰帶(每 60 秒以 1 HP 存活)。講究頭帶給 +40% 傷害但鎖定你的招式,與切換衝突,所以我們在你知道你的配置之前跳過它。
+      </p>
+      <h3>天氣</h3>
+      <p>
+        從第 2 分鐘開始每分鐘都有天氣的機率,持續約一分鐘。下雨強化水系並弱化火系;大晴天則相反。沙暴和下雪會對不是優勢屬性的寶可夢造成傷害,而且下雪也會減速它們。霧強化幽靈、妖精和超能力。雨中的火系初始夥伴在那一分鐘更弱,所以玩得更安全。
+      </p>
+    </section>
+
+    <section class="guide-section" id="first-10-minutes">
+      <h2>粉絲計劃:你的前 10 分鐘</h2>
+      <aside class="callout callout-info">
+        <p><strong>粉絲建議:</strong>這個逐分鐘計劃是我們的粉絲建議,不是官方指南。天氣、裂縫和 BOSS 的分鐘標記來自遊戲資料;決策是我們的。</p>
+      </aside>
+      <ol class="step-list">
+        <li class="step-card">
+          <div class="step-number">1</div>
+          <div class="step-content">
+            <h3>0:00–1:00:學習移動</h3>
+            <p>拿起手招式的升級和一張磁鐵(如果出現的話)。</p>
+          </div>
+        </li>
+        <li class="step-card">
+          <div class="step-number">2</div>
+          <div class="step-content">
+            <h3>1:15 之後:裂縫可能開啟</h3>
+            <p>早期的裂縫在你血量滿時最安全;如果你的招式還很弱就跳過,因為失敗會讓你以 30% HP 回來。我們的<a href="/zh/rifts/">裂縫指南</a>說明何時進入。</p>
+          </div>
+        </li>
+        <li class="step-card">
+          <div class="step-number">3</div>
+          <div class="step-content">
+            <h3>2:00:天氣可能開始</h3>
+            <p>注意天氣對你的屬性是有利還是不利。</p>
+          </div>
+        </li>
+        <li class="step-card">
+          <div class="step-number">4</div>
+          <div class="step-content">
+            <h3>2:00–3:00:準備進化</h3>
+            <p>確保你已經拿過進化需要的卡片一次。增加第二個不同攻擊範圍的招式。</p>
+          </div>
+        </li>
+        <li class="step-card">
+          <div class="step-number">5</div>
+          <div class="step-content">
+            <h3>3:00:第一個 BOSS</h3>
+            <p>注意地面標記,持續移動,並切換到你最強的單體傷害招式。</p>
+          </div>
+        </li>
+        <li class="step-card">
+          <div class="step-number">6</div>
+          <div class="step-content">
+            <h3>3:00–6:00:進化你的起手招式</h3>
+            <p>將起手招式推到 5 級並拿下金色進化卡片。優先擊殺治療者和護盾者。</p>
+          </div>
+        </li>
+        <li class="step-card">
+          <div class="step-number">7</div>
+          <div class="step-content">
+            <h3>6:00:第二個 BOSS</h3>
+            <p>裝備你找到的任何攜帶道具;一次一個。</p>
+          </div>
+        </li>
+        <li class="step-card">
+          <div class="step-number">8</div>
+          <div class="step-content">
+            <h3>6:00–9:00:增加防禦</h3>
+            <p>混入活力或護甲。讓第二個招式朝 5 級邁進。</p>
+          </div>
+        </li>
+        <li class="step-card">
+          <div class="step-number">9</div>
+          <div class="step-content">
+            <h3>9:00–10:00:第三個 BOSS</h3>
+            <p>第 9 分鐘的第三個 BOSS。第一次跑能到達這裡代表基礎已經理解了。</p>
+          </div>
+        </li>
+      </ol>
+      <p>
+        遵循該計劃,你就知道如何玩 PokeSurvivor 足以到達第 12 分鐘的第四個 BOSS。在這十分鐘之後,下一個問題通常是關於要刷哪個夥伴以及要優先使用哪些招式。我們的<a href="/zh/tier-list/">夥伴強度排行</a>為它們排名,而<a href="/zh/best-pokemon/">最強初始寶可夢推薦</a>解釋了最簡單的第一選擇。
+      </p>
+    </section>
+
+    <FAQ heading="新手問題" items={faq} locale="zh" />
+
+    <aside class="sources" aria-labelledby="sources-title">
+      <h2 id="sources-title">來源與方法</h2>
+      <p>
+        這份如何玩 PokeSurvivor 的逐步指南由粉絲撰寫,不是開發者,並對照<a href="https://pokesurvivor.com/en/moves/" rel="noopener">官方招式</a>、<a href="https://pokesurvivor.com/en/items/" rel="noopener">道具</a>和<a href="https://pokesurvivor.com/en/news/" rel="noopener">新聞</a>頁面、官方指南以及遊戲的公開原始碼進行檢查。數字來自這些來源;任何標記為「我們的」或「我們」的都是來自我們自己的跑的意見。如果遊戲和本頁不一致,以遊戲為準。更全面的內容,請回到<a href="/zh/">Poke Survivor 粉絲攻略首頁</a>。
+      </p>
+    </aside>
+  </article>
+</BaseLayout>
+
+<style>
+  .guide { max-width: var(--container-narrow); margin: 0 auto; }
+  .guide h2 { font-size: var(--font-size-2xl); color: var(--accent-primary); margin: var(--space-xl) 0 var(--space-md); }
+  .guide h3 { font-size: var(--font-size-lg); margin: var(--space-md) 0 var(--space-sm); }
+  .guide p { margin-bottom: var(--space-md); }
+  .guide ul, .guide ol { padding-left: 1.5rem; margin-bottom: var(--space-md); }
+  .guide li { margin-bottom: var(--space-sm); }
+
+  .guide-header { margin-bottom: var(--space-xl); }
+  .guide-header h1 { font-size: var(--font-size-4xl); line-height: var(--leading-tight); margin-bottom: var(--space-sm); }
+  .lead { font-size: var(--font-size-lg); color: var(--text-secondary); line-height: var(--leading-relaxed); }
+  .meta { color: var(--text-tertiary); font-size: var(--font-size-sm); margin-top: var(--space-2); }
+
+  figure { margin: var(--space-lg) 0; }
+  figure img { display: block; width: 100%; border-radius: var(--radius-md); }
+  figcaption { color: var(--text-tertiary); font-size: var(--font-size-sm); margin-top: var(--space-2); text-align: center; }
+
+  .toc {
+    background: var(--surface-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: var(--space-md) var(--space-lg);
+    margin: var(--space-lg) 0;
+  }
+  .toc-title {
+    font-weight: var(--font-bold);
+    color: var(--text-primary);
+    margin-bottom: var(--space-sm);
+  }
+  .toc ul { margin: 0; padding-left: var(--space-md); }
+  .toc li { margin-bottom: var(--space-2); }
+
+  .callout {
+    background: var(--surface-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: var(--space-md) var(--space-lg);
+    margin: var(--space-lg) 0;
+  }
+  .callout-info { border-left: 3px solid var(--accent-primary); }
+  .callout p:last-child { margin-bottom: 0; }
+
+  .data-table {
+    overflow-x: auto;
+    margin: var(--space-lg) 0;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+  }
+  .data-table table { width: 100%; border-collapse: collapse; font-size: var(--font-size-sm); }
+  .data-table caption { text-align: left; padding: var(--space-sm) var(--space-md); font-weight: var(--font-semibold); background: var(--surface-elevated); }
+  .data-table th, .data-table td { padding: var(--space-2) var(--space-md); text-align: left; border-bottom: 1px solid var(--border-subtle); }
+  .data-table thead th { background: var(--surface-elevated); color: var(--text-primary); font-weight: var(--font-semibold); }
+  .data-table tbody th { font-weight: var(--font-semibold); color: var(--text-primary); }
+  .data-table tbody td { color: var(--text-secondary); }
+  .data-table tbody tr:last-child th,
+  .data-table tbody tr:last-child td { border-bottom: none; }
+
+  .step-list {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: var(--space-md);
+    margin: var(--space-lg) 0;
+  }
+
+  .step-card {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: var(--space-md);
+    background: var(--surface-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: var(--space-md);
+    margin: 0;
+  }
+
+  .step-number {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    background: var(--accent-primary);
+    color: var(--surface-deep);
+    border-radius: var(--radius-pill);
+    font-weight: var(--font-bold);
+    font-size: var(--font-size-lg);
+    flex-shrink: 0;
+  }
+
+  .step-content h3 { margin: 0 0 var(--space-2); font-size: var(--font-size-base); }
+  .step-content p { margin: 0; font-size: var(--font-size-sm); color: var(--text-secondary); }
+
+  kbd {
+    display: inline-block;
+    padding: 0.125rem 0.375rem;
+    font-family: var(--font-mono);
+    font-size: 0.875em;
+    font-weight: var(--font-semibold);
+    line-height: 1;
+    color: var(--text-primary);
+    background: var(--surface-elevated);
+    border: 1px solid var(--border-subtle);
+    border-bottom-width: 2px;
+    border-radius: var(--radius-sm);
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.2);
+  }
+
+  .boss-timeline {
+    margin: var(--space-lg) 0;
+    padding: var(--space-lg);
+    background: var(--surface-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+  }
+
+  .timeline-track {
+    position: relative;
+    padding-left: var(--space-xl);
+  }
+
+  .timeline-track::before {
+    content: "";
+    position: absolute;
+    left: 1rem;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: linear-gradient(to bottom, var(--accent-primary) 0%, var(--accent-primary) 100%);
+    border-radius: var(--radius-pill);
+  }
+
+  .timeline-marker {
+    position: relative;
+    padding-bottom: var(--space-lg);
+  }
+
+  .timeline-marker:last-child {
+    padding-bottom: 0;
+  }
+
+  .marker-dot {
+    position: absolute;
+    left: -2.125rem;
+    top: 0.25rem;
+    width: 1.25rem;
+    height: 1.25rem;
+    background: var(--accent-primary);
+    border: 3px solid var(--surface-elevated);
+    border-radius: 50%;
+    box-shadow: 0 0 0 3px var(--border-subtle);
+  }
+
+  .marker-label {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-bold);
+    color: var(--text-primary);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+
+  .marker-label span {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-normal);
+    color: var(--text-secondary);
+  }
+
+  .sources {
+    margin-top: var(--space-xl);
+    padding: var(--space-md) var(--space-lg);
+    background: var(--surface-elevated);
+    border-radius: var(--radius-md);
+    border-left: 3px solid var(--accent-primary);
+  }
+  .sources h2 { margin-top: 0; font-size: var(--font-size-xl); }
+</style>

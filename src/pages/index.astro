@@ -1,0 +1,620 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import GameEmbed from '../components/GameEmbed.astro';
+import FAQ from '../components/FAQ.astro';
+import Sprite from '../components/Sprite.astro';
+
+const site = 'https://poke-survivors.org';
+const title = 'Poke Survivor: Play PokeSurvivor Online Free (Fan Guide)';
+const description = 'Poke Survivor is a free Pokémon fan game you play in the browser with no download. Pick from 29 starters, battle 966 Pokémon, and team up with friends in co-op.';
+const updated = '2026-10-16';
+const gameId = `${site}/#videogame`;
+
+const faq = [
+  {
+    q: 'Is Poke Survivor an official Pokémon game?',
+    a: 'No. It is a fan game by jpter78, not made or endorsed by Nintendo, GAME FREAK or The Pokémon Company.',
+  },
+  {
+    q: 'Can I play it on my phone?',
+    a: 'Yes, in the browser, in landscape. Drag anywhere to move and tap a move to switch. Our <a href="/zh/mobile/" lang="zh-Hant">mobile guide (Traditional Chinese)</a> covers touch play in detail.',
+  },
+  {
+    q: 'How many players can play together?',
+    a: 'Up to four in online co-op. Everyone shares XP, and a downed player can be revived by standing next to them for 3 seconds.',
+  },
+  {
+    q: 'Which languages does the game support?',
+    a: 'English and Spanish. The Spanish version lives at pokesurvivor.com without the /en/ path.',
+  },
+  {
+    q: 'Is "pokemon survivor" a different game?',
+    a: 'The phrase is generic, and other projects may use it. On this site it means PokéSurvivor at pokesurvivor.com, the only one our guides cover.',
+  },
+];
+
+// 8 starter sprites (matching pokesurvivor.org pattern)
+const starterSprites = [
+  { dex: 1, name: 'Bulbasaur' },
+  { dex: 4, name: 'Charmander' },
+  { dex: 7, name: 'Squirtle' },
+  { dex: 152, name: 'Chikorita' },
+  { dex: 255, name: 'Torchic' },
+  { dex: 393, name: 'Piplup' },
+  { dex: 54, name: 'Psyduck' },
+  { dex: 906, name: 'Sprigatito' },
+];
+
+// Quick links to the main guides (descriptions use only facts already on this page)
+const guideCards = [
+  { href: '/how-to-play/', title: 'How to play', text: 'Controls for PC and touch, the level-up card loop and move evolutions.' },
+  { href: '/best-pokemon/', title: 'Best starter Pokémon', text: 'Our picks among the 29 starters, and which ones make the first runs easy.' },
+  { href: '/tier-list/', title: 'Partner tier list', text: 'Starters and moves ranked, with the numbers behind each pick.' },
+  { href: '/rifts/', title: 'Legendary rifts', text: 'When rifts open from 1:15, the 18 type arenas and what you win.' },
+  { href: '/co-op/', title: 'Co-op with friends', text: 'Online runs for up to four players through your friends list.' },
+  { href: '/zh/', title: 'Traditional Chinese guide', text: 'A Traditional Chinese fan help page for the English-only game.', hreflang: 'zh-Hant' },
+];
+
+const jsonLd = [
+  {
+    '@type': 'WebPage',
+    '@id': `${site}/#webpage`,
+    name: title,
+    description,
+    url: `${site}/`,
+    inLanguage: 'en',
+    dateModified: updated,
+    primaryImageOfPage: `${site}/images/gameplay.webp`,
+    about: { '@id': gameId },
+  },
+  {
+    '@type': 'VideoGame',
+    '@id': gameId,
+    name: 'PokéSurvivor',
+    alternateName: ['Poke Survivor', 'PokeSurvivor'],
+    url: 'https://pokesurvivor.com/en/',
+    description: 'A free, non-profit fan-made Pokémon survivors-like played in the web browser: you move, and your partner Pokémon attacks automatically.',
+    genre: ['Survivors-like', 'Action'],
+    gamePlatform: 'Web browser',
+    applicationCategory: 'Game',
+    operatingSystem: 'Any (runs in a web browser)',
+    inLanguage: ['en', 'es'],
+    isAccessibleForFree: true,
+    playMode: ['SinglePlayer', 'CoOp'],
+    numberOfPlayers: { '@type': 'QuantitativeValue', minValue: 1, maxValue: 4 },
+    author: { '@type': 'Person', name: 'jpter78' },
+    image: `${site}/images/gameplay.webp`,
+    sameAs: ['https://jpter78.itch.io/pokesurvivor'],
+  },
+];
+---
+
+<BaseLayout
+  title={title}
+  alternates={[
+    { locale: 'en', href: '/' },
+    { locale: 'zh-Hant', href: '/zh/' }
+  ]}
+  description={description}
+  ogType="website"
+  ogImage="/og-default.jpg"
+  ogImageAlt="PokeSurvivor Fan Guide social preview image for the free browser game PokéSurvivor"
+  breadcrumbs={[{ name: 'Home', url: '/' }]}
+  preloadImage="/images/gameplay.webp"
+  jsonLd={jsonLd}
+>
+  <div class="page-wrapper">
+    <!-- Hero Section with Game Embed -->
+    <section class="hero-with-game">
+      <div class="hero-header">
+        <h1>Poke Survivor: play the free PokéSurvivor fan game online</h1>
+      </div>
+      <div class="game-embed-hero">
+        <GameEmbed eager title="PokéSurvivor official game (pokesurvivor.com)" />
+      </div>
+    </section>
+
+    <!-- Stat Strip -->
+    <section class="stat-strip">
+      <div class="stat-tiles">
+        <div class="stat-tile">
+          <div class="stat-tile-value">966</div>
+          <div class="stat-tile-label">Playable Pokémon</div>
+        </div>
+        <div class="stat-tile">
+          <div class="stat-tile-value">9</div>
+          <div class="stat-tile-label">Regions<br>Kanto to Paldea</div>
+        </div>
+        <div class="stat-tile">
+          <div class="stat-tile-value">29</div>
+          <div class="stat-tile-label">Starter Partners</div>
+        </div>
+        <div class="stat-tile">
+          <div class="stat-tile-value">18</div>
+          <div class="stat-tile-label">Type Arenas</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sprite Row -->
+    <section class="sprite-row">
+      <div class="sprite-row-inner">
+        {starterSprites.map(s => (
+          <Sprite dex={s.dex} name={s.name} size={64} />
+        ))}
+      </div>
+      <p class="sprite-row-credit">Sprites from <a href="https://github.com/PMDCollab/SpriteCollab" rel="noopener" target="_blank">PMD SpriteCollab</a> (CC BY-NC 4.0)</p>
+    </section>
+
+    <!-- Main Content -->
+    <article class="main-content">
+      <section class="section-intro">
+        <p class="section-label">Guide</p>
+        <h2>What is Poke Survivor?</h2>
+      <figure>
+        <img
+          src="/images/gameplay.webp"
+          alt="PokéSurvivor gameplay showing player character surrounded by enemies with auto-attacking partner Pokémon"
+          width="1280"
+          height="720"
+          loading="eager"
+          fetchpriority="high"
+          decoding="async"
+        />
+        <figcaption>In-game action: your partner fights automatically while you dodge hordes. Sprites: SpriteCollab (CC BY-NC 4.0).</figcaption>
+      </figure>
+      <p>
+        The window above loads the <a href="https://pokesurvivor.com/en/" rel="noopener">official game at pokesurvivor.com</a>,
+        so you can play PokeSurvivor online right here, free and with no download.
+      </p>
+      <p>
+        Poke Survivor is a survivors-like: hordes of wild Pokémon close in, you dodge, and your partner fights for
+        you. The <a href="https://jpter78.itch.io/pokesurvivor" rel="noopener">itch.io page</a> sums it up as
+        "You only move: your partner Pokémon attacks automatically." It is made by the developer jpter78 as a
+        non-profit fan project. It is not affiliated with Nintendo, GAME FREAK or The Pokémon Company, and the only
+        official site is pokesurvivor.com.
+      </p>
+      <p>
+        The creator writes the name with an accent, but most players type Poke Survivor or PokeSurvivor, and some
+        simply search for "pokemon survivor". Whatever the spelling, it is the same PokeSurvivor game in your browser. Each run is a mix of steering, picking level-up cards and
+        reading enemy attacks. Since the 2026-10-13 update, runs are endless: at minute 30 Arceus descends and the challenge continues, so the goal is simply to last as long
+        as you can.
+      </p>
+      <p>
+        If you have played Vampire Survivors, the shape will feel familiar, but one rule changes everything: you can
+        carry up to four moves, and only the active one fires. A Poke Survivor run is less about stacking weapons and
+        more about picking the right move for the moment and switching to it.
+      </p>
+    </section>
+
+    <section>
+      <h2>What makes Poke Survivor unique?</h2>
+      <div class="grid grid-2">
+        <div class="card">
+          <h3>966 Pokémon from 9 regions</h3>
+          <p>Kanto to Paldea, and every one can become your partner, per the official Pokédex. Browse them all in the <a href="https://pokesurvivor.com/en/pokedex/" rel="noopener">official Pokédex</a>.</p>
+        </div>
+        <div class="card">
+          <h3>29 starters</h3>
+          <p>The starters of all 9 generations plus Psyduck and Slowpoke. We compare them in <a href="/best-pokemon/">our starter rankings</a>.</p>
+        </div>
+        <div class="card">
+          <h3>Online co-op for up to 4 players</h3>
+          <p>Through your friends list (an account is needed).</p>
+        </div>
+        <div class="card">
+          <h3>No download</h3>
+          <p>It runs in the browser, and you can install it with "Add to Home Screen".</p>
+        </div>
+        <div class="card">
+          <h3>Free, with no ads or purchases</h3>
+          <p>Gacha tickets for new partners cannot be bought.</p>
+        </div>
+        <div class="card">
+          <h3>English and Spanish only</h3>
+          <p>There is no official Chinese version; our <a href="/zh/" lang="zh-Hant">Traditional Chinese guide</a> is a fan help page.</p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Play it in your browser</h2>
+      <p>
+        Getting a Poke Survivor run going takes about a minute. Use the window above, or the "Open in full window" link if you want a bigger
+        screen. On your first run an 8-question personality quiz suggests a starter, and you can turn it down and pick
+        another. Guests can play right away; sign in if you want cloud saves, leaderboards and co-op.
+      </p>
+      <p>
+        The controls fit in one sentence: move with WASD or the arrow keys on PC, or drag anywhere on a touch screen,
+        and switch the active move with 1–4 or Q/E (or tap it). Esc pauses. For the full controls table, the level-up
+        card loop and move evolutions, read our guide on <a href="/how-to-play/">how to play PokeSurvivor</a>.
+      </p>
+    </section>
+
+    <section>
+      <h2>How a run unfolds</h2>
+      <p>
+        Every Poke Survivor run follows the same rhythm, and each part of it has its own fan guide on this site:
+      </p>
+      <ul>
+        <li><strong>The opening minutes.</strong> Defeated enemies drop experience orbs, and each level-up offers 3 cards: a new move, an upgrade or a stat boost. Which starter you take matters less than you think, but our <a href="/best-pokemon/">best starter Pokémon picks</a> explain the easy ones.</li>
+        <li><strong>Bosses every 3 minutes.</strong> Strong non-legendary Pokémon arrive at minutes 3, 6, 9, 12 and 15, with telegraphed attacks you need to step out of.</li>
+        <li><strong>Legendary rifts.</strong> From 1:15, portals can open on the map. Walk in and you get 2 minutes to beat a legendary in one of 18 type arenas. Our <a href="/rifts/">legendary rifts guide</a> covers when they open and what you win.</li>
+        <li><strong>Minute 30 and beyond.</strong> Arceus descends and takes you to the Ruins of Judgment, where legendaries keep joining in. From here it is about how long you last.</li>
+        <li><strong>Friends.</strong> All of the above works in a group of up to four. See our <a href="/co-op/">co-op guide for playing with friends</a>.</li>
+      </ul>
+      <p>
+        Want to know which starters and moves hold up across all of this? Our <a href="/tier-list/">partner tier list</a>
+        ranks them with the numbers behind each pick.
+      </p>
+    </section>
+
+    <section>
+      <h2>Partners, gacha and achievements</h2>
+      <p>
+        Your first partner comes from the quiz. Everyone else joins through a ticket gacha with 9 region banners, one
+        for each region from Kanto to Paldea. You earn tickets by playing: regular Pokémon drop them now and then, and bosses and
+        rift legendaries sometimes drop a ×10 ticket, per the <a href="https://pokesurvivor.com/en/guide/" rel="noopener">official guide</a>.
+        Tickets can't be bought with real money, so it pays to know <a href="/tier-list/">which gacha partners are worth chasing</a>. Shiny Pokémon show up in the wild at 1 in 4096.
+      </p>
+      <p>
+        Between runs you spend PokéCoins on permanent upgrades for each Pokémon. One of them, called Repertoire, lets
+        that partner start a run with 2 moves instead of 1. There are also 127 achievements to chase, plus Solo and
+        Group leaderboards ranked by how long you survive. The sprites are in the Mystery Dungeon style, from the
+        community SpriteCollab project. That long-term progression is what keeps Poke Survivor going after the first
+        few runs: every session earns something, even a short one.
+      </p>
+    </section>
+
+    <section>
+      <h2>Recent updates</h2>
+      <p>
+        The game is updated often. A few recent changes from the
+        <a href="https://pokesurvivor.com/en/news/" rel="noopener">official news page</a>:
+      </p>
+      <ul>
+        <li><strong>2026-10-08:</strong> new enemy types that heal, shield, summon or explode.</li>
+        <li><strong>2026-10-12:</strong> runs became endless. At minute 30 Arceus descends and takes you to the Ruins of Judgment, where legendaries keep joining in.</li>
+        <li><strong>2026-10-14:</strong> touch updates: drag attacks, a pause button, a joystick that appears anywhere, and an optional fixed joystick.</li>
+      </ul>
+      <p>
+        Because Poke Survivor changes quickly, we date every guide and check it against the official pages. If a number
+        on our site disagrees with the game, trust the game.
+      </p>
+    </section>
+
+    <section>
+      <h2>Is it safe and free?</h2>
+      <p>
+        Yes, as far as money goes. The developer describes Poke Survivor as free and non-profit, with no ads or
+        purchases. You never need to download an installer, and there is no app-store app in any official source, so be
+        wary of anything claiming to be one. To put it on your phone, open pokesurvivor.com and use "Add to Home Screen";
+        the web manifest opens it full-screen in landscape.
+      </p>
+      <p>
+        For <a href="/co-op/">Poke Survivor co-op</a>, the official site notes that connections are browser-to-browser (like a video call), so teammates may
+        see your IP address. Play with people you know. There is also an offline HTML5 package on itch.io, but it is solo
+        only and saves in your browser; co-op, cloud saves and leaderboards are online at pokesurvivor.com only.
+      </p>
+    </section>
+
+    <section aria-labelledby="quick-links-title">
+      <p class="section-label">Guides</p>
+      <h2 id="quick-links-title">Pick your next PokeSurvivor guide</h2>
+      <div class="grid grid-2">
+        {guideCards.map((g) => (
+          <a href={g.href} hreflang={g.hreflang} class="card card-interactive quick-link">
+            <h3>{g.title}</h3>
+            <p>{g.text}</p>
+            <span class="quick-link-cta" aria-hidden="true">Read guide →</span>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <FAQ heading="Common questions about the game" items={faq} />
+
+    <aside class="sources" aria-labelledby="sources-title">
+      <h2 id="sources-title">How we wrote this</h2>
+      <p>
+        We are fans who play Poke Survivor, not the developer. Game facts on this page come from the official guide,
+        news, the <a href="https://pokesurvivor.com/en/pokedex/" rel="noopener">official Pokédex</a>, the itch.io page and
+        the game's public source code. Anything phrased as "our" or "we" is our opinion. Spotted a mistake? The official
+        site is the final word.
+      </p>
+    </aside>
+    </article>
+
+    <!-- Closing CTA -->
+    <section class="closing-cta" aria-labelledby="closing-cta-title">
+      <h2 id="closing-cta-title">Ready for a Poke Survivor run?</h2>
+      <p>It is free, it runs in your browser, and your first partner is one quiz away.</p>
+      <div class="hero-actions">
+        <a href="https://pokesurvivor.com/en/" target="_blank" rel="noopener" class="btn btn-primary btn-lg">Play free at pokesurvivor.com</a>
+        <a href="/how-to-play/" class="btn btn-secondary btn-lg">Read the beginner guide</a>
+      </div>
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  /* Homepage specific layout styles */
+  .page-wrapper {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  /* Hero Section with Game Embed */
+  /* H1 + game sit at the top of the first screen. --hero-chrome is the space taken by
+     the sticky header, the H1 and paddings; the frame takes the rest at 16:9. */
+  .hero-with-game {
+    --hero-chrome: 13rem;
+    max-width: var(--container-max);
+    margin: 0 auto var(--space-xl);
+    padding: var(--space-md) var(--container-padding) 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-md);
+  }
+
+  .hero-header {
+    text-align: center;
+  }
+
+  .hero-header h1 {
+    font-family: var(--font-display);
+    font-size: clamp(var(--font-size-2xl), 4vw, var(--font-size-4xl));
+    font-weight: var(--font-bold);
+    line-height: 1.1;
+    color: var(--text-primary);
+    letter-spacing: -0.02em;
+    margin: 0 auto;
+    max-width: 900px;
+  }
+
+  .game-embed-hero {
+    /* Widest 16:9 frame that still fits under the header and H1 (svh avoids mobile URL-bar jumps). */
+    width: min(100%, 1100px, calc((100vh - var(--hero-chrome)) * 16 / 9));
+    width: min(100%, 1100px, calc((100svh - var(--hero-chrome)) * 16 / 9));
+    min-width: min(100%, 280px);
+  }
+
+  @media (max-width: 640px) {
+    .hero-with-game {
+      --hero-chrome: 11rem;
+      padding-top: var(--space-sm);
+      gap: var(--space-sm);
+    }
+
+    .hero-header h1 {
+      font-size: var(--font-size-xl);
+    }
+  }
+
+  /* Phones in landscape: the game is landscape-only, so give it almost the whole screen. */
+  @media (max-height: 500px) and (orientation: landscape) {
+    .hero-with-game {
+      --hero-chrome: 6.5rem;
+      padding-top: var(--space-1);
+      gap: var(--space-1);
+    }
+
+    .hero-header h1 {
+      font-size: var(--font-size-base);
+    }
+  }
+
+  /* Stat Strip */
+  .stat-strip {
+    max-width: var(--container-max);
+    margin: 0 auto var(--space-2xl);
+    padding: 0 var(--container-padding);
+  }
+
+  /* Sprite Row */
+  .sprite-row {
+    max-width: var(--container-max);
+    margin: 0 auto var(--space-2xl);
+    padding: var(--space-lg) var(--container-padding);
+    background: var(--surface-elevated);
+    border-radius: var(--radius-lg);
+    text-align: center;
+  }
+
+  .sprite-row-inner {
+    display: flex;
+    gap: var(--space-4);
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: var(--space-3);
+  }
+
+  .sprite-row-credit {
+    font-size: var(--font-size-sm);
+    color: var(--text-tertiary);
+    margin: 0;
+  }
+
+  .sprite-row-credit a {
+    color: var(--accent-primary);
+  }
+
+  /* Main Content */
+  .main-content {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 var(--container-padding);
+  }
+
+  .main-content section {
+    margin-bottom: var(--space-2xl);
+  }
+
+  .section-intro {
+    margin-bottom: var(--space-2xl);
+  }
+
+  .section-label {
+    display: inline-block;
+    padding: var(--space-1) var(--space-3);
+    background: var(--accent-subtle);
+    border: 1px solid var(--accent-primary);
+    border-radius: var(--radius-pill);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-semibold);
+    color: var(--accent-primary);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: var(--space-md);
+  }
+
+  .main-content h2 {
+    font-family: var(--font-display);
+    font-size: var(--font-size-3xl);
+    font-weight: var(--font-bold);
+    color: var(--text-primary);
+    margin-bottom: var(--space-md);
+    line-height: 1.2;
+  }
+
+  .main-content h3 {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-semibold);
+    color: var(--text-primary);
+    margin-bottom: var(--space-2);
+  }
+
+  .main-content p {
+    font-size: var(--font-size-base);
+    line-height: var(--leading-relaxed);
+    color: var(--text-secondary);
+    margin-bottom: var(--space-md);
+  }
+
+  .main-content ul {
+    padding-left: 1.5rem;
+    margin-bottom: var(--space-md);
+  }
+
+  .main-content li {
+    margin-bottom: var(--space-2);
+    color: var(--text-secondary);
+  }
+
+  .main-content a {
+    color: var(--accent-primary);
+  }
+
+  .main-content a:hover {
+    color: var(--accent-hover);
+    text-decoration: underline;
+  }
+
+  figure {
+    margin: 0 0 var(--space-md);
+  }
+
+  figure img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-subtle);
+  }
+
+  figcaption {
+    font-size: var(--font-size-sm);
+    color: var(--text-tertiary);
+    margin-top: var(--space-2);
+    text-align: center;
+  }
+
+  /* Sources Section */
+  .sources {
+    margin-top: var(--space-2xl);
+    padding: var(--space-lg);
+    background: var(--surface-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+  }
+
+  .sources h2 {
+    font-size: var(--font-size-xl);
+    margin-top: 0;
+    margin-bottom: var(--space-md);
+    color: var(--text-primary);
+  }
+
+  .sources p {
+    margin: 0;
+  }
+
+  /* Quick Links */
+  .quick-link {
+    display: block;
+    text-decoration: none;
+    position: relative;
+  }
+
+  .quick-link h3 {
+    color: var(--text-primary);
+    margin-bottom: var(--space-2);
+  }
+
+  .quick-link p {
+    color: var(--text-secondary);
+    margin-bottom: var(--space-3);
+  }
+
+  .quick-link-cta {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-semibold);
+    color: var(--accent-primary);
+  }
+
+  .main-content a.quick-link:hover {
+    text-decoration: none;
+  }
+
+  .quick-link:hover .quick-link-cta {
+    color: var(--accent-hover);
+  }
+
+  /* Closing CTA */
+  .closing-cta {
+    max-width: 800px;
+    margin: var(--space-2xl) auto;
+    padding: var(--space-2xl) var(--container-padding);
+    text-align: center;
+    background: var(--surface-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+  }
+
+  .closing-cta h2 {
+    font-family: var(--font-display);
+    font-size: var(--font-size-3xl);
+    font-weight: var(--font-bold);
+    color: var(--text-primary);
+    margin-bottom: var(--space-md);
+  }
+
+  .closing-cta p {
+    font-size: var(--font-size-lg);
+    color: var(--text-secondary);
+    margin-bottom: var(--space-lg);
+  }
+
+  /* Responsive tweaks */
+  @media (max-width: 768px) {
+    .hero-actions {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    .sprite-row-inner {
+      gap: var(--space-3);
+    }
+  }
+</style>

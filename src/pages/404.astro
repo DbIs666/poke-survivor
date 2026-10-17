@@ -1,0 +1,161 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Sprite from '../components/Sprite.astro';
+
+const guides = [
+  { href: '/how-to-play/', title: 'How to play', text: 'Controls, level-up cards and move evolutions.' },
+  { href: '/tier-list/', title: 'Tier list', text: 'Starters and moves ranked.' },
+  { href: '/best-pokemon/', title: 'Best Pokémon', text: 'Which of the 29 starters to pick first.' },
+  { href: '/rifts/', title: 'Legendary rifts', text: 'Rift timing, the 18 arenas and rewards.' },
+  { href: '/co-op/', title: 'Co-op guide', text: 'Online runs for up to four players.' },
+  { href: '/zh/', title: '繁體中文攻略', text: 'Traditional Chinese fan guide.', lang: 'zh-Hant' },
+];
+---
+
+<BaseLayout
+  title="Page not found | PokeSurvivor Fan Guide"
+  description="This page does not exist. Browse the PokeSurvivor fan guide pages instead."
+  canonical={false}
+  noindex
+>
+  <section class="nf-hero">
+    <div class="nf-sprite">
+      <Sprite dex={54} name="Psyduck" size={160} />
+    </div>
+    <p class="nf-eyebrow">Error 404 · Game over</p>
+    <h1>The wild page fled!</h1>
+    <p class="nf-message">
+      The page you were looking for doesn't exist or has moved. Psyduck is just as confused as you are.
+      Head back to the start, or pick a guide below.
+    </p>
+    <div class="nf-actions">
+      <a href="/" class="btn btn-primary btn-lg">Back to the fan guide home</a>
+      <a href="https://pokesurvivor.com/en/" rel="noopener" class="btn btn-secondary btn-lg">Play PokéSurvivor at pokesurvivor.com</a>
+    </div>
+  </section>
+
+  <section class="nf-guides" aria-labelledby="nf-guides-title">
+    <h2 id="nf-guides-title">Try one of these guides</h2>
+    <div class="grid grid-3">
+      {guides.map((g) => (
+        <a href={g.href} lang={g.lang} class="card card-interactive nf-card">
+          <h3>{g.title}</h3>
+          <p>{g.text}</p>
+          <span class="nf-card-cta" aria-hidden="true">Read guide →</span>
+        </a>
+      ))}
+    </div>
+    <p class="nf-extra">
+      On a phone? See the <a href="/zh/mobile/" lang="zh-Hant">繁體中文：手機版</a> guide.
+    </p>
+  </section>
+</BaseLayout>
+
+<style>
+  .nf-hero {
+    max-width: 720px;
+    margin: 0 auto var(--space-2xl);
+    padding: var(--space-2xl) var(--container-padding) var(--space-lg);
+    text-align: center;
+  }
+
+  .nf-sprite {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 200px;
+    height: 200px;
+    margin-bottom: var(--space-md);
+    background: var(--surface-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-circle);
+  }
+
+  .nf-sprite :global(img) {
+    animation: nf-bob 2.4s ease-in-out infinite;
+  }
+
+  @keyframes nf-bob {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+
+  .nf-eyebrow {
+    display: inline-block;
+    padding: var(--space-1) var(--space-3);
+    margin-bottom: var(--space-md);
+    background: var(--surface-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-pill);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-semibold);
+    color: var(--text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .nf-hero h1 {
+    font-family: var(--font-display);
+    font-size: var(--font-size-4xl);
+    line-height: 1.1;
+    margin-bottom: var(--space-md);
+  }
+
+  .nf-message {
+    font-size: var(--font-size-lg);
+    color: var(--text-secondary);
+    margin-bottom: var(--space-lg);
+  }
+
+  .nf-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-3);
+  }
+
+  .nf-guides {
+    max-width: var(--container-max);
+    margin: 0 auto;
+    padding: 0 var(--container-padding);
+  }
+
+  .nf-guides h2 {
+    font-size: var(--font-size-2xl);
+    text-align: center;
+    margin-bottom: var(--space-lg);
+  }
+
+  .nf-card {
+    display: block;
+    text-decoration: none;
+  }
+
+  .nf-card h3 {
+    font-size: var(--font-size-lg);
+    color: var(--text-primary);
+    margin-bottom: var(--space-2);
+  }
+
+  .nf-card p {
+    color: var(--text-secondary);
+    margin-bottom: var(--space-3);
+  }
+
+  .nf-card-cta {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-semibold);
+    color: var(--accent-primary);
+  }
+
+  .nf-extra {
+    margin-top: var(--space-lg);
+    text-align: center;
+    color: var(--text-tertiary);
+  }
+
+  @media (max-width: 768px) {
+    .nf-hero h1 { font-size: var(--font-size-3xl); }
+    .nf-actions { flex-direction: column; align-items: stretch; }
+  }
+</style>

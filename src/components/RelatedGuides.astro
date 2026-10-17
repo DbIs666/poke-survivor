@@ -1,0 +1,81 @@
+---
+/** Locale-aware "related guides" block, rendered by BaseLayout outside <main>. Excludes the current page. */
+interface Props {
+  locale?: 'en' | 'zh';
+  /** Current pathname (trailing slash). Defaults to Astro.url.pathname. */
+  current?: string;
+}
+
+const { locale = 'en', current = Astro.url.pathname } = Astro.props;
+const isZh = locale === 'zh';
+
+type Guide = { href: string; label: string; lang?: string };
+const guidesEn: Guide[] = [
+  { href: '/', label: 'PokeSurvivor fan guide home' },
+  { href: '/how-to-play/', label: 'How to play PokeSurvivor' },
+  { href: '/mobile/', label: 'PokeSurvivor mobile guide' },
+  { href: '/tier-list/', label: 'PokeSurvivor tier list' },
+  { href: '/best-pokemon/', label: 'Best Pokémon to start with' },
+  { href: '/rifts/', label: 'PokeSurvivor rifts guide' },
+  { href: '/co-op/', label: 'PokeSurvivor co-op guide' },
+  { href: '/zh/', label: 'PokeSurvivor 中文攻略', lang: 'zh-Hant' },
+];
+const guidesZh: Guide[] = [
+  { href: '/zh/', label: 'PokeSurvivor 繁體中文攻略' },
+  { href: '/zh/mobile/', label: 'PokeSurvivor 手機版操作攻略' },
+  { href: '/how-to-play/', label: 'PokeSurvivor 玩法教學（英文）' },
+  { href: '/tier-list/', label: 'PokeSurvivor 初始夥伴強度排行（英文）' },
+  { href: '/best-pokemon/', label: '最佳初始寶可夢推薦（英文）' },
+  { href: '/rifts/', label: '傳說裂縫攻略（英文）' },
+  { href: '/co-op/', label: '多人連線合作攻略（英文）' },
+];
+const guides = (isZh ? guidesZh : guidesEn).filter((g) => g.href !== current);
+const headingId = 'related-guides-title';
+---
+
+{guides.length > 0 && (
+  <nav class="related-guides" aria-labelledby={headingId}>
+    <h2 id={headingId}>{isZh ? '更多 PokeSurvivor 攻略' : 'More PokeSurvivor guides'}</h2>
+    <ul>
+      {guides.map((g) => <li><a href={g.href} lang={g.lang}>{g.label}</a></li>)}
+    </ul>
+  </nav>
+)}
+
+<style>
+  .related-guides {
+    width: 100%;
+    max-width: var(--container-max);
+    margin: var(--space-xl) auto 0;
+    padding: 0 var(--container-padding);
+  }
+  .related-guides h2 {
+    font-size: var(--font-size-lg);
+    margin-bottom: var(--space-sm);
+  }
+  .related-guides ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-3);
+  }
+  .related-guides li { margin: 0; }
+  .related-guides a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 40px;
+    padding: var(--space-2) var(--space-4);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-pill);
+    background: var(--surface-card);
+    color: var(--text-secondary);
+    font-size: var(--font-size-sm);
+    transition: border-color var(--transition-fast), color var(--transition-fast);
+  }
+  .related-guides a:hover {
+    border-color: var(--accent-primary);
+    color: var(--accent-primary);
+  }
+</style>
