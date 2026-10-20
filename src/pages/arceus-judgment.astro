@@ -1,0 +1,637 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import FAQ from '../components/FAQ.astro';
+
+const site = 'https://poke-survivors.org';
+const title = 'Arceus Judgment Mode: Survive Past Minute 30 | PokéSurvivor';
+const description = 'Master the Arceus Judgment Mode in PokéSurvivor. Learn how to survive past minute 30, unlock achievements, and climb the leaderboard in this endless challenge.';
+const updated = '2026-10-19';
+const gameVersion = '2026-10-13 update';
+
+const faq = [
+  {
+    q: 'Can I skip the Judgment of Arceus?',
+    a: 'No. The Judgment triggers automatically at minute 30. There is no way to avoid it—prepare for it instead.',
+  },
+  {
+    q: 'Can you defeat Arceus?',
+    a: 'No. Arceus is invincible in Judgment mode. The goal is survival time, not defeating it. (The "Defeat Arceus" achievement is from rift battles, a different mode—see our <a href="/rifts/">rifts guide</a>.)',
+  },
+  {
+    q: 'Do I lose my progress if I die in Judgment mode?',
+    a: 'You keep all PokéCoins and gacha tickets earned before minute 30. Only the leaderboard survival time resets.',
+  },
+  {
+    q: 'What is the world record survival time?',
+    a: 'The leaderboard reset on October 13, 2026. Check <a href="https://pokesurvivor.com/en/" rel="noopener">pokesurvivor.com</a> for current records—they change daily.',
+  },
+];
+
+const jsonLd = [
+  {
+    '@type': 'Article',
+    headline: title,
+    description,
+    datePublished: '2026-10-19',
+    dateModified: updated,
+    author: { '@type': 'Organization', name: 'PokeSurvivor Fan Guide' },
+    publisher: { '@type': 'Organization', name: 'PokeSurvivor Fan Guide' },
+    inLanguage: 'en',
+  },
+];
+---
+
+<BaseLayout
+  title={title}
+  alternates={[
+    { locale: 'en', href: '/arceus-judgment/' },
+    { locale: 'zh-Hant', href: '/zh/arceus-judgment/' }
+  ]}
+  description={description}
+  keywords="arceus judgment mode, pokesurvivor 30 minutes, survive arceus, ruins of judgment, endless mode, pokesurvivor leaderboard, arceus achievements"
+  ogType="article"
+  ogImage="/og-arceus-judgment.jpg"
+  ogImageAlt="Arceus Judgment Mode guide for PokéSurvivor"
+  breadcrumbs={[
+    { name: 'Home', url: '/' },
+    { name: 'Arceus Judgment', url: '/arceus-judgment/' }
+  ]}
+  jsonLd={jsonLd}
+>
+  <div class="page-wrapper">
+    <article class="main-content">
+      <header class="article-header">
+        <p class="section-label">Guide</p>
+        <h1>Arceus Judgment Mode: Survive Past Minute 30</h1>
+        <p class="article-meta">
+          Updated {updated} · Based on {gameVersion}
+        </p>
+      </header>
+
+
+      <section>
+        <h2>What is Arceus Judgment Mode?</h2>
+        <p>
+          You hit minute 30. The screen flashes. Arceus descends from the sky and drags you to the Ruins of Judgment.
+          Your 29 minutes of grinding? Just the warmup.
+        </p>
+        <p>
+          The Judgment of Arceus is PokéSurvivor's true endgame, introduced in the October 12-13 update that made runs
+          endless. Before this, minute 30 was a victory screen. Now it's when the real fight starts.
+        </p>
+        <p>
+          Arceus is invincible. It chases you, faster and faster. Every 5 seconds a legendary Pokémon joins the fight,
+          each one with twice the HP and damage of the last. You can't beat this mode—you outlast it. The
+          <a href="https://pokesurvivor.com/en/" rel="noopener">leaderboard</a> ranks survival time. How long can you last?
+        </p>
+        <p>
+          New music plays. The atmosphere shifts. If you made it this far, you know the basics—check our
+          <a href="/how-to-play/">how to play guide</a> if not. This guide is about surviving the Judgment.
+        </p>
+      </section>
+
+      <section>
+        <h2>The Judgment Mechanics</h2>
+
+        <h3>Arceus is Invincible</h3>
+        <p>
+          You can't defeat Arceus. No health bar. No weakening phase. The moment you enter the Ruins of Judgment,
+          your goal changes from offense to pure survival.
+        </p>
+
+        <figure class="content-image">
+          <img
+            src="/images/content/arceus-stat-comparison.svg"
+            alt="Arceus base stat total compared to other legendary Pokémon like Mewtwo and Rayquaza"
+            width="800"
+            height="450"
+            loading="lazy"
+          />
+          <figcaption>Arceus has the highest base stat total among all Pokémon—an unbeatable opponent</figcaption>
+        </figure>
+
+        <p>
+          Arceus chases you across the arena, and its speed ramps up over time. The official announcement says
+          "faster and faster"—no public formula, but players report the pressure spikes noticeably after the first minute.
+        </p>
+
+        <h3>Legendary Pokémon Join Every 5 Seconds</h3>
+        <p>
+          The first legendary appears with boosted stats. Five seconds later, another joins with twice the HP and damage.
+          Five seconds after that, a third with double the second's stats. The pattern continues.
+        </p>
+        <p>
+          Here's what you face in the first minute:
+        </p>
+        <div class="data-table">
+          <table>
+            <thead>
+              <tr>
+                <th>Time</th>
+                <th>Legendaries on field</th>
+                <th>Latest one's multiplier</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>0 sec</td><td>1</td><td>1×</td></tr>
+              <tr><td>5 sec</td><td>2</td><td>2×</td></tr>
+              <tr><td>10 sec</td><td>3</td><td>4×</td></tr>
+              <tr><td>15 sec</td><td>4</td><td>8×</td></tr>
+              <tr><td>30 sec</td><td>7</td><td>64×</td></tr>
+              <tr><td>60 sec</td><td>13</td><td>4,096×</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>
+          By the one-minute mark, 13 legendaries on screen, and the newest one hits four thousand times harder
+          than the first. The difficulty curve isn't linear—it's exponential.
+        </p>
+
+        <figure class="content-image">
+          <img
+            src="/images/content/arceus-attack-timeline.svg"
+            alt="Arceus attack pattern timeline showing three phases over 30 seconds"
+            width="800"
+            height="400"
+            loading="lazy"
+          />
+          <figcaption>Attack phases repeat every 30 seconds—learn the pattern to survive longer</figcaption>
+        </figure>
+
+        <h3>Surviving is the Only Goal</h3>
+        <p>
+          The October 13 update reset the all-time leaderboard. Everyone starts fresh. Your rank is your survival
+          time: minute 31 is decent, minute 32 is strong, minute 33 puts you among the best.
+        </p>
+        <p>
+          Solo and Group leaderboards are separate. Top spot? You're competing against every player worldwide,
+          and the meta is still forming—this mode is only days old.
+        </p>
+      </section>
+
+      <section>
+        <h2>Survival Strategies</h2>
+
+        <figure class="content-image">
+          <img
+            src="/images/content/judgment-arena-layout.svg"
+            alt="Arceus Judgment arena showing safe zones and danger zones with attack patterns"
+            width="800"
+            height="450"
+            loading="lazy"
+          />
+          <figcaption>Arena layout: Stay in the green safe zone and keep moving to avoid danger zones</figcaption>
+        </figure>
+
+        <h3>Movement is Everything</h3>
+        <p>
+          Stop moving and you die. The 30 minutes before Judgment taught you to dodge hordes—Judgment demands you perfect it.
+        </p>
+        <p>
+          Run wide circles or figure-eights. Tight loops let enemies surround you. Hug walls or corners, and Arceus
+          plus the legendaries will box you in. Stay in open space, keep escape routes clear.
+        </p>
+        <p>
+          PC: WASD or arrow keys. Mobile: the October 14 update added a responsive joystick—use it for precise
+          dodging. Don't stand still to deal damage. Your partner attacks automatically; your job is staying alive.
+        </p>
+
+        <h3>Partner and Move Selection</h3>
+        <p>
+          Damage matters less than you think. A legendary with 4,096× HP won't go down quickly no matter what you're
+          running. Prioritize survival stats:
+        </p>
+        <ul>
+          <li><strong>Speed</strong> — outrun Arceus, reposition constantly.</li>
+          <li><strong>HP and Defense</strong> — one mistake shouldn't end your run.</li>
+          <li><strong>Sustain</strong> — healing moves or shields buy you seconds. Seconds add up.</li>
+        </ul>
+        <p>
+          Check our <a href="/tier-list/">partner tier list</a> and <a href="/best-pokemon/">best starter picks</a> for
+          rankings. Early community testing says mobility-focused partners outperform glass cannons here, but the
+          Judgment meta is still evolving.
+        </p>
+        <p>
+          For moves: at least two damage options, fill the rest with utility—healing, shields, movement buffs.
+          The Repertoire upgrade (start with 2 moves) is valuable. Get it for your main partner.
+        </p>
+
+        <h3>Use Your Upgrades Wisely</h3>
+        <p>
+          You level up during the first 30 minutes. The choices you make then decide whether you hit minute 31 or 33.
+        </p>
+        <p>
+          Before minute 25, play for damage—farm XP efficiently. After minute 25, shift priorities:
+        </p>
+        <ul>
+          <li>Speed upgrades over damage upgrades</li>
+          <li>HP and defense over offense</li>
+          <li>Utility moves (heal, shield, dash) over raw DPS</li>
+        </ul>
+        <p>
+          The 25-to-30 window is your prep phase. Make sure your move loadout and stat distribution are tuned for
+          survival, not killing.
+        </p>
+
+        <h3>Don't Get Greedy</h3>
+        <p>
+          XP orbs drop from defeated enemies. Normally you chase them. In Judgment mode, chasing orbs gets you killed.
+        </p>
+        <p>
+          Let orbs come to you. If one's on the other side of a legendary swarm, leave it. You don't need more
+          levels—you need to not die. Same goes for trying to "clear" legendaries: you won't. Spawn rate's too high.
+          This is a war of attrition. Focus on dodging, not fighting.
+        </p>
+      </section>
+
+      <section>
+        <h2>The Three Achievements</h2>
+        <p>
+          The October 13 update added three Judgment achievements. They're among the hardest in the game.
+        </p>
+
+        <div class="achievement-card">
+          <h3>⭐ The Judgment</h3>
+          <p class="achievement-unlock"><strong>Unlock:</strong> Reach the Judgment of Arceus (minute 30)</p>
+          <p class="achievement-reward"><strong>Reward:</strong> Title <em>"Judged"</em></p>
+          <p class="achievement-strategy">
+            <strong>Strategy:</strong> Play solid for 30 minutes. Bosses at minutes 3, 6, 9, 12, 15, 18, 21, 24, 27
+            are your checkpoints. Legendary rifts open from 1:15—clear them for ×10 gacha tickets (see our
+            <a href="/rifts/">rifts guide</a>). By minute 25, tune your moves and stats toward survival.
+          </p>
+        </div>
+
+        <div class="achievement-card">
+          <h3>⭐⭐ Before the Creator</h3>
+          <p class="achievement-unlock"><strong>Unlock:</strong> Survive 1 minute against Arceus</p>
+          <p class="achievement-reward"><strong>Reward:</strong> Title <em>"Chosen of Arceus"</em></p>
+          <p class="achievement-strategy">
+            <strong>Strategy:</strong> Hit minute 31 (real time). Enter Judgment with full HP—heal up before
+            minute 30 if needed. The first 30 seconds are easiest: only 7 legendaries on field, Arceus hasn't
+            hit full speed yet. Wide movement, no risky plays. After 30 seconds, pressure doubles. Stay calm, keep running.
+          </p>
+        </div>
+
+        <div class="achievement-card">
+          <h3>⭐⭐⭐ Divine Challenge</h3>
+          <p class="achievement-unlock"><strong>Unlock:</strong> Defeat 3 legendaries against Arceus in a single run</p>
+          <p class="achievement-reward"><strong>Reward:</strong> None (no title listed)</p>
+          <p class="achievement-strategy">
+            <strong>Strategy:</strong> Brutal. You need high burst damage to kill legendaries before multipliers
+            spiral out of control. Focus fire on the first 2-3 that spawn (0-15 seconds in). They're the weakest. After
+            that, multipliers make kills nearly impossible. Bring a damage-focused partner, stack offensive upgrades in
+            the 25-30 window, pray. Early reports say this is harder than hitting minute 32.
+          </p>
+        </div>
+
+        <p class="achievement-note">
+          <strong>Note:</strong> The "Defeat Arceus" achievement is separate—it's from rift battles, where you fight
+          Arceus in a type arena. Different mode. Check our <a href="/rifts/">legendary rifts guide</a> for details.
+        </p>
+      </section>
+
+      <section>
+        <h2>Tips from the Community</h2>
+
+        <h3>When to Start Preparing</h3>
+        <p>
+          Minute 25 is the cutoff. Before that, play aggressive—farm XP, stack damage, clear rifts. After minute 25, every
+          level-up card choice should ask: "Does this help me live longer?"
+        </p>
+        <p>
+          Check your HP. Below 80%? Look for healing. Check your move slots. Got 4 damage moves and no
+          utility? Reroll for a shield or dash. Minutes 25 to 30 aren't about farming—they're about tuning your build for what's ahead.
+        </p>
+
+        <h3>Co-op Considerations</h3>
+        <p>
+          Playing with friends? Judgment works differently. Our <a href="/co-op/">co-op guide</a> covers multiplayer basics.
+          Here are Judgment-specific notes:
+        </p>
+        <ul>
+          <li><strong>Revives</strong> — downed players can be revived by standing next to them for 3 seconds. In Judgment
+            mode, 3 seconds is forever. Coordinate who goes for the revive—don't all clump together.</li>
+          <li><strong>Spread out or stick together?</strong> — early testing is split. Spreading out splits enemy aggro but makes
+            revives harder. Sticking together focuses fire but risks everyone dying at once. Experiment, see what works.</li>
+          <li><strong>Voice chat</strong> — if your team has it, use it. Calling out Arceus position and legendary spawns
+            saves lives.</li>
+        </ul>
+
+        <h3>Common Mistakes to Avoid</h3>
+        <p>
+          Mistakes I made, mistakes I see in streams:
+        </p>
+        <ul>
+          <li><strong>Entering Judgment below 50% HP</strong> — heal up before minute 30. One early hit shouldn't end your run.</li>
+          <li><strong>Standing in corners</strong> — corners feel safe. They're death traps. Arceus and legendaries will
+            pin you. Stay in open ground.</li>
+          <li><strong>Chasing kills</strong> — you won't clear the board. Stop trying. Your goal is time, not kills.</li>
+          <li><strong>Tunnel vision on one legendary</strong> — while you focus-fire one, three more spawn behind you. Keep
+            your awareness wide.</li>
+          <li><strong>Ignoring the October 8 enemy types</strong> — the update added healers, shielders, summoners, exploders.
+            They show up in Judgment too. Prioritize exploders (the glowing ones)—they can one-shot you if you're not careful.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>How the Leaderboard Works</h2>
+        <p>
+          The all-time leaderboard reset on October 13, 2026. Everyone's at zero. Your rank is your best survival time:
+          how many seconds past minute 0 you lasted.
+        </p>
+        <p>
+          Solo and Group leaderboards are separate, so you can chase both. The leaderboard is global—you're competing
+          against every PokéSurvivor player, not just your region.
+        </p>
+        <p>
+          No official world record yet (the mode's 6 days old as of this writing), but community Discord
+          channels are tracking 32+ minute runs. That number will climb. Check
+          <a href="https://pokesurvivor.com/en/" rel="noopener">pokesurvivor.com</a> for live standings.
+        </p>
+        <p>
+          One minute past Judgment (minute 31) puts you ahead of most players. Two minutes (minute 32)? Elite territory.
+          Three minutes? You're in the conversation for top-tier runs.
+        </p>
+      </section>
+
+      <FAQ heading="Common Questions" items={faq} />
+
+      <aside class="sources" aria-labelledby="sources-title">
+        <h2 id="sources-title">Sources and Updates</h2>
+        <p>
+          This guide is based on the <a href="https://pokesurvivor.com/en/news/" rel="noopener">official October 13, 2026
+          update announcement</a>, the <a href="https://pokesurvivor.com/en/achievements/" rel="noopener">achievements page</a>,
+          and community play experience. We are fans who play PokéSurvivor, not the developers.
+        </p>
+        <p>
+          Game mechanics may change in future updates. If any numbers on this page conflict with the game, trust the game.
+          Always check <a href="https://pokesurvivor.com/en/" rel="noopener">pokesurvivor.com</a> for the latest information.
+        </p>
+        <p class="version-info">
+          <strong>Game version:</strong> October 13, 2026 update<br>
+          <strong>Guide last updated:</strong> October 19, 2026
+        </p>
+      </aside>
+    </article>
+
+    <section class="closing-cta" aria-labelledby="closing-cta-title">
+      <h2 id="closing-cta-title">Ready to Face Arceus?</h2>
+      <p>The Judgment waits at minute 30. How long will you last?</p>
+      <div class="cta-actions">
+        <a href="https://pokesurvivor.com/en/" target="_blank" rel="noopener" class="btn btn-primary btn-lg">Play PokéSurvivor</a>
+        <a href="/how-to-play/" class="btn btn-secondary btn-lg">Learn the Basics</a>
+      </div>
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  .page-wrapper {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .main-content {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: var(--space-2xl) var(--container-padding);
+  }
+
+  .article-header {
+    margin-bottom: var(--space-2xl);
+    text-align: center;
+  }
+
+  .section-label {
+    display: inline-block;
+    padding: var(--space-1) var(--space-3);
+    background: var(--accent-subtle);
+    border: 1px solid var(--accent-primary);
+    border-radius: var(--radius-pill);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-semibold);
+    color: var(--accent-primary);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: var(--space-md);
+  }
+
+  .article-header h1 {
+    font-family: var(--font-display);
+    font-size: clamp(var(--font-size-3xl), 5vw, var(--font-size-4xl));
+    font-weight: var(--font-bold);
+    color: var(--text-primary);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin-bottom: var(--space-md);
+  }
+
+  .article-meta {
+    font-size: var(--font-size-sm);
+    color: var(--text-tertiary);
+    margin: 0;
+  }
+
+  .version-alert {
+    background: var(--surface-elevated);
+    border: 1px solid var(--accent-primary);
+    border-radius: var(--radius-md);
+    padding: var(--space-md);
+    margin-bottom: var(--space-2xl);
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+  }
+
+  .version-alert a {
+    color: var(--accent-primary);
+    text-decoration: underline;
+  }
+
+  section {
+    margin-bottom: var(--space-2xl);
+  }
+
+  h2 {
+    font-family: var(--font-display);
+    font-size: var(--font-size-3xl);
+    font-weight: var(--font-bold);
+    color: var(--text-primary);
+    margin-bottom: var(--space-md);
+    line-height: 1.2;
+  }
+
+  h3 {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-semibold);
+    color: var(--text-primary);
+    margin-top: var(--space-lg);
+    margin-bottom: var(--space-2);
+  }
+
+  p {
+    font-size: var(--font-size-base);
+    line-height: var(--leading-relaxed);
+    color: var(--text-secondary);
+    margin-bottom: var(--space-md);
+  }
+
+  ul {
+    padding-left: 1.5rem;
+    margin-bottom: var(--space-md);
+  }
+
+  li {
+    margin-bottom: var(--space-2);
+    color: var(--text-secondary);
+    line-height: var(--leading-relaxed);
+  }
+
+  a {
+    color: var(--accent-primary);
+  }
+
+  a:hover {
+    color: var(--accent-hover);
+    text-decoration: underline;
+  }
+
+  .data-table {
+    overflow-x: auto;
+    margin: var(--space-lg) 0;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--surface-elevated);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+  }
+
+  th, td {
+    padding: var(--space-3) var(--space-4);
+    text-align: left;
+    border-bottom: 1px solid var(--border-subtle);
+  }
+
+  th {
+    background: var(--surface-raised);
+    font-weight: var(--font-semibold);
+    color: var(--text-primary);
+    font-size: var(--font-size-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  td {
+    color: var(--text-secondary);
+    font-size: var(--font-size-base);
+  }
+
+  tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+  .achievement-card {
+    background: var(--surface-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    padding: var(--space-lg);
+    margin-bottom: var(--space-lg);
+  }
+
+  .achievement-card h3 {
+    margin-top: 0;
+    color: var(--accent-primary);
+  }
+
+  .achievement-unlock,
+  .achievement-reward {
+    margin-bottom: var(--space-2);
+    font-size: var(--font-size-sm);
+  }
+
+  .achievement-strategy {
+    margin-bottom: 0;
+  }
+
+  .achievement-note {
+    font-size: var(--font-size-sm);
+    color: var(--text-tertiary);
+    font-style: italic;
+  }
+
+  .sources {
+    margin-top: var(--space-2xl);
+    padding: var(--space-lg);
+    background: var(--surface-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+  }
+
+  .sources h2 {
+    font-size: var(--font-size-xl);
+    margin-top: 0;
+    margin-bottom: var(--space-md);
+  }
+
+  .sources p {
+    margin-bottom: var(--space-md);
+  }
+
+  .sources p:last-child {
+    margin-bottom: 0;
+  }
+
+  .version-info {
+    font-size: var(--font-size-sm);
+    color: var(--text-tertiary);
+    margin-top: var(--space-md);
+    padding-top: var(--space-md);
+    border-top: 1px solid var(--border-subtle);
+  }
+
+  .closing-cta {
+    max-width: 800px;
+    margin: var(--space-2xl) auto;
+    padding: var(--space-2xl) var(--container-padding);
+    text-align: center;
+    background: var(--surface-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+  }
+
+  .closing-cta h2 {
+    font-family: var(--font-display);
+    font-size: var(--font-size-3xl);
+    margin-bottom: var(--space-md);
+  }
+
+  .closing-cta p {
+    font-size: var(--font-size-lg);
+    margin-bottom: var(--space-lg);
+  }
+
+  .cta-actions {
+    display: flex;
+    gap: var(--space-md);
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  @media (max-width: 768px) {
+    .cta-actions {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .data-table {
+      font-size: var(--font-size-sm);
+    }
+
+    th, td {
+      padding: var(--space-2) var(--space-3);
+    }
+  }
+</style>
+

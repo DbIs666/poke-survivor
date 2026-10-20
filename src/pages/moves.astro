@@ -1,0 +1,989 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import FAQ from '../components/FAQ.astro';
+
+const site = 'https://poke-survivors.org';
+const title = 'Complete Move Guide: Evolution & Attack Patterns | PokéSurvivor';
+const description = 'Master all moves in PokéSurvivor. Learn how move evolution works, discover 21 attack patterns, and optimize your build for victory.';
+const updated = '2026-10-19';
+const gameVersion = '2026-10-13 update';
+
+const faq = [
+  {
+    q: 'How many moves are in PokéSurvivor?',
+    a: 'The official moves page lists 103 moves as of October 2026, with 97 capable of evolving. The roster has expanded through updates—the October 10 update alone added 12 new moves.',
+  },
+  {
+    q: 'How do I evolve a move?',
+    a: 'Upgrade a move to level 5, obtain the required stat card (Power, Vigor, Reflexes, Sprint, Synthesis, Armor, or Magnet), then select the golden evolution card when it appears. Example: Ember becomes Fire Blast with Power.',
+  },
+  {
+    q: 'Can all moves evolve?',
+    a: 'No. Six buff moves don\'t evolve: Swords Dance, Nasty Plot, Agility, Harden, Dragon Dance, and Aqua Ring. The other 97 moves have evolution paths.',
+  },
+  {
+    q: 'What are the golden evolution cards?',
+    a: 'They\'re special upgrade cards that appear once you\'ve maxed out a move (level 5) and obtained its required stat card. Selecting the golden card evolves the move into its stronger form.',
+  },
+  {
+    q: 'Can I hold more than 4 moves?',
+    a: 'Yes, through the Fusion Bonds system introduced October 11, 2026. Defeat legendaries in rifts to earn Bonds, which let you fuse up to 5 moves into a single slot. See our <a href="/fusion-bonds/">Fusion Bonds guide</a>.',
+  },
+  {
+    q: 'Do evolved moves work with Fusion Bonds?',
+    a: 'The system doesn\'t restrict move types, so evolved moves should work—though this isn\'t officially documented. Evolve your moves first, then fuse them for maximum power in your fusion slot.',
+  },
+  {
+    q: 'Which stat card does my move need?',
+    a: 'Check the <a href="https://pokesurvivor.com/en/moves/" rel="noopener">official moves page</a> for specific requirements. Power is the most common (used by most offensive moves), followed by Reflexes and Sprint.',
+  },
+  {
+    q: 'Can I reset a move\'s upgrades?',
+    a: 'No. Move upgrades and levels are per-run only. Each new run starts fresh—you\'ll level up and evolve moves again from scratch.',
+  },
+];
+
+const jsonLd = [
+  {
+    '@type': 'Article',
+    headline: title,
+    description,
+    datePublished: '2026-10-19',
+    dateModified: updated,
+    author: { '@type': 'Organization', name: 'PokeSurvivor Fan Guide' },
+    publisher: { '@type': 'Organization', name: 'PokeSurvivor Fan Guide' },
+    inLanguage: 'en',
+  },
+  {
+    '@type': 'HowTo',
+    name: 'How to Evolve Moves in PokéSurvivor',
+    description: 'Step-by-step guide to evolving moves from base forms to powerful versions',
+    step: [
+      {
+        '@type': 'HowToStep',
+        name: 'Max Out Your Move',
+        text: 'Upgrade a move to level 5 by selecting its upgrade cards when leveling up.',
+      },
+      {
+        '@type': 'HowToStep',
+        name: 'Obtain the Required Stat Card',
+        text: 'Draw the specific stat card the move requires: Power, Vigor, Reflexes, Sprint, Synthesis, Armor, or Magnet.',
+      },
+      {
+        '@type': 'HowToStep',
+        name: 'Select the Golden Evolution Card',
+        text: 'A golden evolution card appears once requirements are met—choose it to evolve the move.',
+      },
+    ],
+  },
+];
+---
+
+<BaseLayout
+  title={title}
+  alternates={[
+    { locale: 'en', href: '/moves/' },
+    { locale: 'zh-Hant', href: '/zh/moves/' }
+  ]}
+  description={description}
+  keywords="pokesurvivor moves, move evolution, pokesurvivor move list, best moves, ember evolution, move upgrade guide, attack patterns, move types, buff moves, fusion bonds"
+  ogType="article"
+  ogImage="/og-moves.jpg"
+  ogImageAlt="Complete Move Guide for PokéSurvivor"
+  breadcrumbs={[
+    { name: 'Home', url: '/' },
+    { name: 'Moves', url: '/moves/' }
+  ]}
+  jsonLd={jsonLd}
+>
+  <div class="page-wrapper">
+    <article class="main-content">
+      <header class="article-header">
+        <p class="section-label">Guide</p>
+        <h1>Complete Move Guide: Evolution & Attack Patterns</h1>
+        <p class="article-meta">
+          Updated {updated} · Based on {gameVersion}
+        </p>
+      </header>
+
+
+      <section>
+        <h2>What are Moves in PokéSurvivor?</h2>
+        <p>
+          Moves are your attacks. Your Pokémon fires them automatically while you focus on movement.
+          The game has grown significantly since launch. The official moves page lists
+          <strong>103 moves as of October 2026</strong>, with <strong>97 capable of evolving</strong>
+          into stronger versions. Earlier community counts cited 64 moves—the roster expanded through
+          updates like the <a href="https://pokesurvivor.com/en/news/" rel="noopener">October 10, 2026
+          addition</a> of 12 new moves.
+        </p>
+        <p>
+          You start each run with one move. As you level up, you pick from three cards: learn a new
+          move, upgrade an existing one, or boost your stats. You can hold <strong>4 moves at once</strong>,
+          but only one fires at a time. Switch between them using 1–4, Q/E (PC) or by tapping the move
+          icon (mobile).
+        </p>
+        <p>
+          Your strategy: match moves to the situation. Switch to the move that's super effective against
+          what's in front of you. <a href="/how-to-play/">Our how to play guide</a> covers the basics;
+          this page covers evolution paths, attack patterns, and when to choose which moves.
+        </p>
+      </section>
+
+      <section>
+        <h2>How Move Evolution Works</h2>
+
+        <figure class="content-image">
+          <img
+            src="/images/content/moves-evolution-hero.svg"
+            alt="Move evolution system showing Ember evolving into Fire Blast with Power stat card requirement"
+            width="1200"
+            height="675"
+            loading="lazy"
+          />
+          <figcaption>Move evolution process: Max out a move, get the required stat card, then evolve it</figcaption>
+        </figure>
+
+        <p>
+          Move evolution transforms base moves into more powerful versions. Ember becomes Fire Blast.
+          Bubble becomes Surf. The process has three steps, and missing any one of them delays your evolution.
+        </p>
+
+        <h3>The 3-Step Evolution Process</h3>
+
+        <figure class="content-image">
+          <img
+            src="/images/content/move-evolution-detailed.svg"
+            alt="Detailed move evolution path from Thunder Wave to Discharge showing XP requirements"
+            width="800"
+            height="500"
+            loading="lazy"
+          />
+          <figcaption>Example evolution: Thunder Wave branches into multiple paths based on usage pattern</figcaption>
+        </figure>
+
+        <div class="evolution-flow">
+          <div class="flow-step">
+            <div class="step-number">1</div>
+            <div class="step-content">
+              <h4>Max Out Your Move</h4>
+              <p>Upgrade a move to <strong>level 5</strong> by selecting its upgrade cards when leveling up.</p>
+            </div>
+          </div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-step">
+            <div class="step-number">2</div>
+            <div class="step-content">
+              <h4>Obtain the Required Stat Card</h4>
+              <p>Draw the specific stat card the move requires: Power, Vigor, Reflexes, Sprint, Synthesis, Armor, or Magnet.</p>
+            </div>
+          </div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-step">
+            <div class="step-number">3</div>
+            <div class="step-content">
+              <h4>Select the Golden Evolution Card</h4>
+              <p>A golden evolution card appears once requirements are met—choose it to evolve the move.</p>
+            </div>
+          </div>
+        </div>
+
+        <p>
+          Example: you're running Ember. You upgrade it to level 5. At some point during the run, you
+          pick a Power card (Ember's requirement). Next time you level up, a golden "Fire Blast" card
+          appears. Take it. Ember evolves into Fire Blast—same slot, stronger attack.
+        </p>
+
+        <h3>The 7 Stat Card Requirements</h3>
+        <p>
+          Every move that can evolve requires one of seven stat cards. These are the same cards you draw
+          to boost your Pokémon's base stats. Taking them once during a run unlocks evolutions for any
+          maxed-out moves that need them.
+        </p>
+
+        <div class="stat-cards-grid">
+          <div class="stat-card">
+            <h4>⚔️ Power</h4>
+            <p>Most common requirement for offensive moves. Unlocks high-damage evolutions.</p>
+          </div>
+          <div class="stat-card">
+            <h4>❤️ Vigor</h4>
+            <p>Health and stamina-related evolutions. Sustain-focused moves.</p>
+          </div>
+          <div class="stat-card">
+            <h4>⚡ Reflexes</h4>
+            <p>Speed and multi-hit upgrades. Fast-attacking moves.</p>
+          </div>
+          <div class="stat-card">
+            <h4>🏃 Sprint</h4>
+            <p>Movement and cooldown improvements. Dash and mobility moves.</p>
+          </div>
+          <div class="stat-card">
+            <h4>🌿 Synthesis</h4>
+            <p>Healing, duration, and area enhancements. Support moves.</p>
+          </div>
+          <div class="stat-card">
+            <h4>🛡️ Armor</h4>
+            <p>Defensive quantity upgrades. Barrier and protective moves.</p>
+          </div>
+          <div class="stat-card">
+            <h4>🧲 Magnet</h4>
+            <p>Attraction and chain effects. Chain and bounce moves like Hex → Poltergeist.</p>
+          </div>
+        </div>
+
+        <p>
+          Check the <a href="https://pokesurvivor.com/en/moves/" rel="noopener">official moves page</a>
+          for which card each move requires. Power is by far the most common—most offensive moves evolve
+          with Power.
+        </p>
+
+        <h3>What Evolution Grants</h3>
+        <p>
+          Evolution isn't just a name change. Evolved moves gain significant combat advantages. Based on
+          the official moves page, typical evolution benefits include:
+        </p>
+        <ul>
+          <li><strong>Damage multipliers</strong> — ×1.6 to ×1.9 damage increases</li>
+          <li><strong>Additional projectiles</strong> — +1 to +6 extra shots</li>
+          <li><strong>Increased pierce</strong> — +1 to +2 enemies hit per projectile</li>
+          <li><strong>Larger area/radius</strong> — 35% to 50% coverage increases</li>
+          <li><strong>Extra spins, bounces, or chain jumps</strong> — more targets hit</li>
+          <li><strong>Faster firing/charging</strong> — shorter cooldowns</li>
+          <li><strong>Full 360° coverage</strong> — melee moves hit all around you</li>
+        </ul>
+        <p>
+          The exact bonuses vary by move. Fire Blast doesn't just hit harder than Ember—it fires more
+          projectiles and pierces more enemies. Surf doesn't just damage more than Bubble—it covers a
+          wider area and knocks back hordes. Evolution is always worth it.
+        </p>
+      </section>
+
+      <section>
+        <h2>Move Types and Attack Patterns</h2>
+
+        <figure class="content-image">
+          <img
+            src="/images/content/type-effectiveness-chart.svg"
+            alt="Type effectiveness chart showing super effective matchups for top offensive types"
+            width="800"
+            height="450"
+            loading="lazy"
+          />
+          <figcaption>Quick reference: Fighting and Ground types are super effective against the most types</figcaption>
+        </figure>
+
+        <p>
+          The October 10, 2026 update added 8 new attack patterns, bringing the total to 21 distinct
+          types. Understanding these patterns helps you build balanced loadouts—you want variety, not
+          four projectiles that all do the same thing.
+        </p>
+        <p>
+          Below are all 21 attack patterns, organized by behavior. Specific move names come from the
+          official moves page; the grouping is ours.
+        </p>
+
+        <div class="pattern-groups">
+          <div class="pattern-group">
+            <h3>Basic Attack Patterns</h3>
+            <div class="pattern-list">
+              <div class="pattern-item">
+                <h4>Melee</h4>
+                <p>Close-range attacks in arcs. You swing or bite at enemies near you.</p>
+                <p class="pattern-examples"><em>Examples:</em> Tackle, Karate Chop, Bite</p>
+              </div>
+              <div class="pattern-item">
+                <h4>Projectile</h4>
+                <p>Ranged attacks fired at enemies. Classic shooter-style moves.</p>
+                <p class="pattern-examples"><em>Examples:</em> Ember, Water Gun, Thunder Shock</p>
+              </div>
+              <div class="pattern-item">
+                <h4>Beam</h4>
+                <p>Piercing linear attacks that cut through multiple enemies.</p>
+                <p class="pattern-examples"><em>Examples:</em> Hyper Beam, Ice Beam, Psybeam</p>
+              </div>
+              <div class="pattern-item">
+                <h4>Burst</h4>
+                <p>Radial attacks spreading in all directions from the player.</p>
+                <p class="pattern-examples"><em>Examples:</em> Hyper Voice, Heat Wave, Mud Shot</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="pattern-group">
+            <h3>Area Control</h3>
+            <div class="pattern-list">
+              <div class="pattern-item">
+                <h4>Aura</h4>
+                <p>Constant damage fields around the player. Passive damage zones.</p>
+                <p class="pattern-examples"><em>Examples:</em> Grass Knot, Discharge, Bug Buzz</p>
+              </div>
+              <div class="pattern-item">
+                <h4>Orbit</h4>
+                <p>Projectiles circling the player, hitting enemies that get close.</p>
+                <p class="pattern-examples"><em>Examples:</em> Fire Spin, Petal Blizzard, Gust</p>
+              </div>
+              <div class="pattern-item">
+                <h4>Vortex</h4>
+                <p>Pull enemies toward center, grouping them for follow-up attacks.</p>
+                <p class="pattern-examples"><em>Examples:</em> Whirlpool, Sand Tomb, Ominous Wind</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="pattern-group">
+            <h3>Movement-Based</h3>
+            <div class="pattern-list">
+              <div class="pattern-item">
+                <h4>Dash</h4>
+                <p>Movement-based attacks. You dash through enemies, dealing damage.</p>
+                <p class="pattern-examples"><em>Examples:</em> Quick Attack, Flame Charge, Aerial Ace</p>
+              </div>
+              <div class="pattern-item">
+                <h4>Trail</h4>
+                <p>Leave damaging zones while moving. Enemies walking into the trail take damage.</p>
+                <p class="pattern-examples"><em>Examples:</em> Flame Wheel, Toxic</p>
+              </div>
+              <div class="pattern-item">
+                <h4>Spin</h4>
+                <p>Rotating area attacks. You spin, hitting everything around you.</p>
+                <p class="pattern-examples"><em>Examples:</em> Rapid Spin, Rolling Kick, Outrage</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="pattern-group">
+            <h3>Tactical Deployment</h3>
+            <div class="pattern-list">
+              <div class="pattern-item">
+                <h4>Turret</h4>
+                <p>Stationary entities that fire independently. Place them, they attack for you.</p>
+                <p class="pattern-examples"><em>Examples:</em> Substitute, Will-O-Wisp</p>
+              </div>
+              <div class="pattern-item">
+                <h4>Mines</h4>
+                <p>Place traps that detonate when enemies walk over them.</p>
+                <p class="pattern-examples"><em>Examples:</em> Toxic Spikes, Spikes, String Shot</p>
+              </div>
+              <div class="pattern-item">
+                <h4>Meteors</h4>
+                <p>Falling projectiles from above, raining down on enemies.</p>
+                <p class="pattern-examples"><em>Examples:</em> Hail, Rock Slide, Meteor Mash</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="pattern-group">
+            <h3>Target Tracking</h3>
+            <div class="pattern-list">
+              <div class="pattern-item">
+                <h4>Homing</h4>
+                <p>Auto-tracking projectiles that follow enemies. Fire and forget.</p>
+                <p class="pattern-examples"><em>Examples:</em> Energy Ball, Ice Shard, Shadow Sneak</p>
+              </div>
+              <div class="pattern-item">
+                <h4>Chain</h4>
+                <p>Attacks jumping between targets, spreading damage across hordes.</p>
+                <p class="pattern-examples"><em>Examples:</em> Thunderbolt, Hex</p>
+              </div>
+              <div class="pattern-item">
+                <h4>Bounce</h4>
+                <p>Projectiles bouncing between enemies before expiring.</p>
+                <p class="pattern-examples"><em>Examples:</em> Seed Bomb, Electro Ball, Signal Beam</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="pattern-group">
+            <h3>Control Effects</h3>
+            <div class="pattern-list">
+              <div class="pattern-item">
+                <h4>Stun</h4>
+                <p>Ground-marked attacks that paralyze or freeze enemies in place.</p>
+                <p class="pattern-examples"><em>Examples:</em> Thunder Wave, Freeze-Dry, Rock Tomb</p>
+              </div>
+              <div class="pattern-item">
+                <h4>Shove</h4>
+                <p>Push enemies away, creating space and controlling positioning.</p>
+                <p class="pattern-examples"><em>Examples:</em> Vacuum Wave, Whirlwind, Extrasensory</p>
+              </div>
+              <div class="pattern-item">
+                <h4>Quake</h4>
+                <p>Sequential wave attacks spreading outward from the player.</p>
+                <p class="pattern-examples"><em>Examples:</em> Magnitude</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="pattern-group">
+            <h3>Special Mechanics</h3>
+            <div class="pattern-list">
+              <div class="pattern-item">
+                <h4>Charge</h4>
+                <p>Delayed powerful attacks. Charge up, then release massive damage.</p>
+                <p class="pattern-examples"><em>Examples:</em> Hyper Beam, Solar Beam</p>
+              </div>
+              <div class="pattern-item">
+                <h4>Buff</h4>
+                <p>No damage; permanently build stats while active. Six buff moves don't evolve.</p>
+                <p class="pattern-examples"><em>Examples:</em> Swords Dance, Nasty Plot, Agility, Harden, Dragon Dance, Aqua Ring</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <p>
+          Pattern variety matters. If you run four Projectile moves, you're vulnerable to fast-moving
+          enemies that dodge shots. Mix in a Melee or Aura move to cover close range. If you run four
+          slow Charge moves, you'll deal huge burst damage but struggle against swarms. Add a fast
+          Projectile or Chain move to clear hordes.
+        </p>
+      </section>
+
+      <section>
+        <h2>Move Categories by Type Effectiveness</h2>
+        <p>
+          PokéSurvivor follows the same type effectiveness system as the main Pokémon games. Each move
+          belongs to one of 18 types (Fire, Water, Grass, Electric, etc.), and type matchups affect
+          damage: super effective moves deal more damage, resisted moves deal less.
+        </p>
+
+        <h3>Key Examples</h3>
+        <ul>
+          <li><strong>Fire</strong> moves are super effective against Grass, Ice, Bug, Steel</li>
+          <li><strong>Water</strong> moves are super effective against Fire, Ground, Rock</li>
+          <li><strong>Electric</strong> moves are super effective against Water, Flying (but ineffective against Ground)</li>
+          <li><strong>Grass</strong> moves are super effective against Water, Ground, Rock</li>
+        </ul>
+
+        <h3>Strategy: Switch for Advantage</h3>
+        <p>
+          Your Pokémon attacks with one move at a time, so switch to the move that's super effective
+          against what's in front of you. PC: press 1–4, Q/E. Mobile: tap a move icon.
+        </p>
+        <p>
+          For the full type chart, check the
+          <a href="https://pokesurvivor.com/en/guide/" rel="noopener">official guide</a>
+          or any Pokémon type chart—the rules are the same.
+        </p>
+      </section>
+
+      <section>
+        <h2>Special Move Mechanics</h2>
+
+        <h3>Buff Moves: The 6 That Don't Evolve</h3>
+        <p>
+          Six moves in PokéSurvivor deal no damage. Instead, they permanently build your stats while
+          active. These are the buff moves:
+        </p>
+        <ul>
+          <li><strong>Swords Dance</strong> — builds physical attack</li>
+          <li><strong>Nasty Plot</strong> — builds special attack</li>
+          <li><strong>Dragon Dance</strong> — builds physical attack (faster than Swords Dance)</li>
+          <li><strong>Aqua Ring</strong> — regenerates health over time</li>
+          <li><strong>Agility</strong> — builds speed</li>
+          <li><strong>Harden</strong> — builds defense</li>
+        </ul>
+        <p>
+          <strong>Important:</strong> Buff moves don't evolve. They're among the six moves out of 103
+          that have no evolution path. Once you hold two buff moves, the game stops offering more—you
+          can't fill all four slots with buffs.
+        </p>
+        <p>
+          The exact stat increases aren't publicly documented—buff moves build stats gradually while
+          active, but percentages vary by move. They're most useful in long runs where you have time
+          to stack stats before pressure spikes.
+        </p>
+
+        <h3>Conditional Damage: Hex</h3>
+        <p>
+          <strong>Hex</strong> (Ghost Chain) has unique conditional damage: it deals "much more damage
+          if they are burned, poisoned or slowed," according to the official moves page. Hex evolves
+          into Poltergeist with Magnet. If you're running status-effect moves like Toxic or Will-O-Wisp,
+          Hex synergizes—apply the status, then chain Hex through the debuffed horde.
+        </p>
+
+        <h3>Fusion Bonds: Combining Moves</h3>
+        <p>
+          The October 11, 2026 update introduced Fusion Bonds—a system that lets you fuse multiple
+          moves into a single slot. Defeat legendaries in <a href="/rifts/">rifts</a> to earn Bonds.
+          Each Bond links one more move to your fusion slot. Up to 4 Bonds = 5 moves firing simultaneously
+          from one slot.
+        </p>
+
+        <div class="disclaimer-box">
+          💡 <strong>Fusion & Evolution Interaction:</strong> Evolved moves should work with Fusion
+          Bonds—the system doesn't restrict move types—but this isn't officially documented. Evolve
+          your moves first, then fuse them for maximum power in your fusion slot.
+        </div>
+
+        <p>
+          Our <a href="/fusion-bonds/">Fusion Bonds guide</a> covers the full system: how to earn
+          Bonds, which moves to fuse, and fusion strategies.
+        </p>
+      </section>
+
+      <section>
+        <h2>Best Moves by Situation</h2>
+        <p>
+          Move selection shifts as the run progresses. What works at minute 5 doesn't work at minute 25.
+          Here's how to adapt.
+        </p>
+
+        <h3>Early Game (Minutes 0-10)</h3>
+        <p>
+          <strong>Priority:</strong> Evolve your starting move. Focus upgrade cards on it. Add one
+          second move with a different attack pattern—if your starter is Projectile, grab a Melee or
+          Burst move to cover close range.
+        </p>
+        <p>
+          <strong>Stat cards:</strong> Take the evolution requirement for your starting move at least
+          once (usually Power). After that, prioritize damage upgrades. Defense can wait.
+        </p>
+        <p>
+          <strong>Avoid:</strong> Learning four new moves before evolving your first one. Upgrade depth
+          beats breadth early.
+        </p>
+
+        <h3>Mid Game (Minutes 10-20)</h3>
+        <p>
+          <strong>Priority:</strong> Your starting move should be evolved by now. Add 2-3 more moves
+          with type variety—cover Water, Fire, Grass, Electric so you're not walled by a single type.
+        </p>
+        <p>
+          <strong>Stat cards:</strong> Mix offense and defense. If a rift spawns and you're confident,
+          take it—earning Bonds now sets you up for late-game power. See our <a href="/rifts/">rifts
+          guide</a> for arena strategies.
+        </p>
+        <p>
+          <strong>Attack patterns:</strong> Aim for variety—one Chain or Homing move for hordes, one
+          Beam or Projectile for single targets, one Aura or Orbit for passive damage while you dodge.
+        </p>
+
+        <h3>Late Game / Judgment Prep (Minutes 20-30+)</h3>
+        <p>
+          <strong>Priority:</strong> Shift from offense to survival. At minute 25, start favoring utility
+          moves—healing, shields, dash moves. By minute 30, you enter
+          <a href="/arceus-judgment/">Arceus Judgment mode</a>, where staying alive matters more than
+          killing fast.
+        </p>
+        <p>
+          <strong>Recommended loadout for Judgment:</strong> At least two damage moves, fill the rest
+          with utility—healing, shields, movement buffs. If you've collected Bonds, fuse your damage
+          moves into one slot to free space for more utility.
+        </p>
+        <p>
+          <strong>Stat cards:</strong> HP (Vigor), Speed (Sprint), Defense (Armor) over raw damage.
+          One mistake shouldn't end your run.
+        </p>
+
+        <h3>Boss Fights</h3>
+        <p>
+          Bosses spawn every 3 minutes (minutes 3, 6, 9, 12, 15, etc.). They're tanky, they telegraph
+          four attack patterns, and they enrage at half HP.
+        </p>
+        <p>
+          <strong>Best move types for bosses:</strong> Beam, Projectile, Homing—single-target, high
+          uptime moves. Avoid Melee (too risky to stay close) and slow Charge moves (you need consistent
+          DPS, not burst).
+        </p>
+        <p>
+          <strong>Strategy:</strong> Keep circling. Watch the ground markers. Switch to your highest-DPS
+          single-target move. After the boss dies, switch back to horde-clearing moves.
+        </p>
+
+        <h3>Co-op Mode</h3>
+        <p>
+          Playing with friends? Move selection shifts slightly. See our <a href="/co-op/">co-op guide</a>
+          for full multiplayer strategies. Key points:
+        </p>
+        <ul>
+          <li><strong>Type coverage:</strong> Coordinate with your team. If someone's running Fire moves,
+            you cover Water or Electric.</li>
+          <li><strong>Support moves:</strong> One player running Aqua Ring or healing moves helps the
+            team sustain.</li>
+          <li><strong>Buff moves:</strong> Swords Dance and Nasty Plot benefit the whole team's damage
+            if you're stacking stats together.</li>
+        </ul>
+      </section>
+
+      <FAQ heading="Common Questions" items={faq} />
+
+      <aside class="sources" aria-labelledby="sources-title">
+        <h2 id="sources-title">Sources and Updates</h2>
+        <p>
+          This guide is based on the <a href="https://pokesurvivor.com/en/moves/" rel="noopener">
+          official moves page</a>, the <a href="https://pokesurvivor.com/en/guide/" rel="noopener">
+          game guide</a>, and the <a href="https://pokesurvivor.com/en/news/" rel="noopener">
+          October 2026 update announcements</a>. We are fans who play PokéSurvivor, not the developers.
+        </p>
+        <p>
+          Move mechanics and evolution requirements are accurate as of October 19, 2026, but may
+          change in future updates. If any information on this page conflicts with the game,
+          trust the game. Always check <a href="https://pokesurvivor.com/en/" rel="noopener">
+          pokesurvivor.com</a> for the latest information.
+        </p>
+        <p class="version-info">
+          <strong>Game version:</strong> October 13, 2026 update<br>
+          <strong>Move roster:</strong> 103 moves (as of October 19, 2026)<br>
+          <strong>Guide last updated:</strong> October 19, 2026
+        </p>
+      </aside>
+    </article>
+
+    <section class="closing-cta" aria-labelledby="closing-cta-title">
+      <h2 id="closing-cta-title">Ready to Master Your Moves?</h2>
+      <p>Evolve your moves, master the patterns, and dominate the battlefield.</p>
+      <div class="cta-actions">
+        <a href="https://pokesurvivor.com/en/" target="_blank" rel="noopener" class="btn btn-primary btn-lg">Play PokéSurvivor</a>
+        <a href="/how-to-play/" class="btn btn-secondary btn-lg">Learn the Basics</a>
+      </div>
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  .page-wrapper {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .main-content {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: var(--space-2xl) var(--container-padding);
+  }
+
+  .article-header {
+    margin-bottom: var(--space-2xl);
+    text-align: center;
+  }
+
+  .section-label {
+    display: inline-block;
+    padding: var(--space-1) var(--space-3);
+    background: var(--accent-subtle);
+    border: 1px solid var(--accent-primary);
+    border-radius: var(--radius-pill);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-semibold);
+    color: var(--accent-primary);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: var(--space-md);
+  }
+
+  .article-header h1 {
+    font-family: var(--font-display);
+    font-size: clamp(var(--font-size-3xl), 5vw, var(--font-size-4xl));
+    font-weight: var(--font-bold);
+    color: var(--text-primary);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin-bottom: var(--space-md);
+  }
+
+  .article-meta {
+    font-size: var(--font-size-sm);
+    color: var(--text-tertiary);
+    margin: 0;
+  }
+
+  .version-alert {
+    background: var(--surface-elevated);
+    border: 1px solid var(--accent-primary);
+    border-radius: var(--radius-md);
+    padding: var(--space-md);
+    margin-bottom: var(--space-2xl);
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+  }
+
+  .version-alert a {
+    color: var(--accent-primary);
+    text-decoration: underline;
+  }
+
+  .disclaimer-box {
+    background: var(--surface-elevated);
+    border-left: 4px solid var(--accent-primary);
+    border-radius: var(--radius-md);
+    padding: var(--space-md);
+    margin: var(--space-lg) 0;
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+  }
+
+  .disclaimer-box strong {
+    color: var(--text-primary);
+  }
+
+  .evolution-flow {
+    background: var(--surface-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    padding: var(--space-lg);
+    margin: var(--space-lg) 0;
+  }
+
+  .flow-step {
+    display: flex;
+    gap: var(--space-md);
+    padding: var(--space-md);
+    background: var(--surface-base);
+    border-radius: var(--radius-md);
+    align-items: flex-start;
+  }
+
+  .step-number {
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--accent-primary);
+    color: var(--surface-base);
+    border-radius: 50%;
+    font-weight: var(--font-bold);
+    font-size: var(--font-size-lg);
+  }
+
+  .step-content h4 {
+    margin-top: 0;
+    margin-bottom: var(--space-1);
+    color: var(--text-primary);
+    font-size: var(--font-size-base);
+    font-weight: var(--font-semibold);
+  }
+
+  .step-content p {
+    margin: 0;
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+  }
+
+  .flow-arrow {
+    text-align: center;
+    font-size: var(--font-size-2xl);
+    color: var(--accent-primary);
+    margin: var(--space-2) 0;
+  }
+
+  .stat-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--space-md);
+    margin: var(--space-lg) 0;
+  }
+
+  .stat-card {
+    background: var(--surface-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: var(--space-md);
+  }
+
+  .stat-card h4 {
+    margin-top: 0;
+    margin-bottom: var(--space-2);
+    color: var(--accent-primary);
+    font-size: var(--font-size-base);
+  }
+
+  .stat-card p {
+    margin: 0;
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+  }
+
+  .pattern-groups {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xl);
+    margin: var(--space-lg) 0;
+  }
+
+  .pattern-group {
+    background: var(--surface-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    padding: var(--space-lg);
+  }
+
+  .pattern-group h3 {
+    margin-top: 0;
+    margin-bottom: var(--space-md);
+    color: var(--text-primary);
+    font-size: var(--font-size-xl);
+  }
+
+  .pattern-list {
+    display: grid;
+    gap: var(--space-md);
+  }
+
+  .pattern-item {
+    background: var(--surface-base);
+    border-radius: var(--radius-md);
+    padding: var(--space-md);
+  }
+
+  .pattern-item h4 {
+    margin-top: 0;
+    margin-bottom: var(--space-1);
+    color: var(--accent-primary);
+    font-size: var(--font-size-base);
+    font-weight: var(--font-semibold);
+  }
+
+  .pattern-item p {
+    margin: 0 0 var(--space-1) 0;
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+  }
+
+  .pattern-item p:last-child {
+    margin-bottom: 0;
+  }
+
+  .pattern-examples {
+    font-style: italic;
+    color: var(--text-tertiary);
+  }
+
+  section {
+    margin-bottom: var(--space-2xl);
+  }
+
+  h2 {
+    font-family: var(--font-display);
+    font-size: var(--font-size-3xl);
+    font-weight: var(--font-bold);
+    color: var(--text-primary);
+    margin-bottom: var(--space-md);
+    line-height: 1.2;
+  }
+
+  h3 {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-semibold);
+    color: var(--text-primary);
+    margin-top: var(--space-lg);
+    margin-bottom: var(--space-2);
+  }
+
+  p {
+    font-size: var(--font-size-base);
+    line-height: var(--leading-relaxed);
+    color: var(--text-secondary);
+    margin-bottom: var(--space-md);
+  }
+
+  ul {
+    padding-left: 1.5rem;
+    margin-bottom: var(--space-md);
+  }
+
+  li {
+    margin-bottom: var(--space-2);
+    color: var(--text-secondary);
+    line-height: var(--leading-relaxed);
+  }
+
+  a {
+    color: var(--accent-primary);
+  }
+
+  a:hover {
+    color: var(--accent-hover);
+    text-decoration: underline;
+  }
+
+  .sources {
+    margin-top: var(--space-2xl);
+    padding: var(--space-lg);
+    background: var(--surface-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+  }
+
+  .sources h2 {
+    font-size: var(--font-size-xl);
+    margin-top: 0;
+    margin-bottom: var(--space-md);
+  }
+
+  .sources p {
+    margin-bottom: var(--space-md);
+  }
+
+  .sources p:last-child {
+    margin-bottom: 0;
+  }
+
+  .version-info {
+    font-size: var(--font-size-sm);
+    color: var(--text-tertiary);
+    margin-top: var(--space-md);
+    padding-top: var(--space-md);
+    border-top: 1px solid var(--border-subtle);
+  }
+
+  .closing-cta {
+    max-width: 800px;
+    margin: var(--space-2xl) auto;
+    padding: var(--space-2xl) var(--container-padding);
+    text-align: center;
+    background: var(--surface-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+  }
+
+  .closing-cta h2 {
+    font-family: var(--font-display);
+    font-size: var(--font-size-3xl);
+    margin-bottom: var(--space-md);
+  }
+
+  .closing-cta p {
+    font-size: var(--font-size-lg);
+    margin-bottom: var(--space-lg);
+  }
+
+  .cta-actions {
+    display: flex;
+    gap: var(--space-md);
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  @media (max-width: 768px) {
+    .cta-actions {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .stat-cards-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .evolution-flow {
+      padding: var(--space-md);
+    }
+
+    .flow-step {
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .pattern-groups {
+      gap: var(--space-lg);
+    }
+
+    .pattern-group {
+      padding: var(--space-md);
+    }
+  }
+</style>

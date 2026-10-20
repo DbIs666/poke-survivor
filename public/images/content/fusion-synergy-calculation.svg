@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" role="img" aria-label="Fusion Bond Synergy Bonus Calculation">
+  <title>How Fusion Synergy Bonuses Work</title>
+
+  <!-- Background -->
+  <rect width="800" height="450" fill="#05070C"/>
+
+  <!-- Title -->
+  <text x="400" y="35" font-family="Arial, sans-serif" font-size="22" font-weight="bold" fill="#F8FAFC" text-anchor="middle">Fusion Synergy Bonus Formula</text>
+
+  <!-- Step 1: Base Moves -->
+  <g transform="translate(50, 80)">
+    <rect width="300" height="100" fill="#161D2B" stroke="#38BDF8" stroke-width="2" rx="8"/>
+    <text x="150" y="30" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#38BDF8" text-anchor="middle">Step 1: Base Moves</text>
+    <rect x="30" y="45" width="115" height="40" fill="#E9A568" rx="6"/>
+    <text x="87" y="70" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#0A0D12" text-anchor="middle">Thunder Wave</text>
+    <text x="150" y="70" font-family="Arial, sans-serif" font-size="20" fill="#F8FAFC" text-anchor="middle">+</text>
+    <rect x="175" y="45" width="95" height="40" fill="#E9A568" rx="6"/>
+    <text x="222" y="70" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#0A0D12" text-anchor="middle">Discharge</text>
+  </g>
+
+  <!-- Arrow down -->
+  <path d="M 200 190 L 200 220 L 190 210 M 200 220 L 210 210" stroke="#38BDF8" stroke-width="3" fill="none"/>
+
+  <!-- Step 2: Type Match -->
+  <g transform="translate(50, 230)">
+    <rect width="300" height="100" fill="#161D2B" stroke="#6EE7B7" stroke-width="2" rx="8"/>
+    <text x="150" y="30" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#6EE7B7" text-anchor="middle">Step 2: Check Type Match</text>
+    <text x="150" y="55" font-family="Arial, sans-serif" font-size="14" fill="#CBD5E1" text-anchor="middle">Both Electric-type</text>
+    <text x="150" y="75" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#6EE7B7" text-anchor="middle">✓ Same Type Bonus: +25%</text>
+  </g>
+
+  <!-- Plus sign -->
+  <text x="400" y="285" font-family="Arial, sans-serif" font-size="32" fill="#F8FAFC" text-anchor="middle">+</text>
+
+  <!-- Step 3: Effect Synergy -->
+  <g transform="translate(450, 230)">
+    <rect width="300" height="100" fill="#161D2B" stroke="#F97316" stroke-width="2" rx="8"/>
+    <text x="150" y="30" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#F97316" text-anchor="middle">Step 3: Effect Synergy</text>
+    <text x="150" y="55" font-family="Arial, sans-serif" font-size="14" fill="#CBD5E1" text-anchor="middle">Paralyze → AOE Damage</text>
+    <text x="150" y="75" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#F97316" text-anchor="middle">✓ Combo Bonus: +40%</text>
+  </g>
+
+  <!-- Arrow down to result -->
+  <path d="M 400 340 L 400 360 L 390 350 M 400 360 L 410 350" stroke="#F97316" stroke-width="3" fill="none"/>
+
+  <!-- Result -->
+  <g transform="translate(200, 370)">
+    <rect width="400" height="60" fill="#F97316" rx="8"/>
+    <text x="200" y="25" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#0A0D12" text-anchor="middle">Final Synergy Bonus</text>
+    <text x="200" y="48" font-family="Arial, sans-serif" font-size="22" font-weight="bold" fill="#0A0D12" text-anchor="middle">+65% Damage & Utility</text>
+  </g>
+
+  <!-- Side panel: Key factors -->
+  <g transform="translate(420, 80)">
+    <rect width="330" height="130" fill="#0F131C" stroke="#1E2636" stroke-width="2" rx="8"/>
+    <text x="165" y="25" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#F8FAFC" text-anchor="middle">Synergy Factors</text>
+    <text x="20" y="50" font-family="Arial, sans-serif" font-size="13" fill="#CBD5E1">✓ Same type: +15% to +35%</text>
+    <text x="20" y="70" font-family="Arial, sans-serif" font-size="13" fill="#CBD5E1">✓ Complementary effects: +20% to +50%</text>
+    <text x="20" y="90" font-family="Arial, sans-serif" font-size="13" fill="#CBD5E1">✓ Move rarity: +5% to +15%</text>
+    <text x="20" y="110" font-family="Arial, sans-serif" font-size="13" fill="#CBD5E1">✗ Type clash: -10% to -25%</text>
+  </g>
+</svg>

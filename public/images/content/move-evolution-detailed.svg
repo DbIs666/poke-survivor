@@ -1,0 +1,92 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" role="img" aria-label="Move Evolution Path Example">
+  <title>Move Evolution Path - Thunder Wave to Discharge</title>
+
+  <!-- Background -->
+  <rect width="800" height="500" fill="#05070C"/>
+
+  <!-- Title -->
+  <text x="400" y="35" font-family="Arial, sans-serif" font-size="22" font-weight="bold" fill="#F8FAFC" text-anchor="middle">Evolution Path: Thunder Wave → Discharge</text>
+
+  <!-- Level 1: Thunder Wave -->
+  <g transform="translate(50, 80)">
+    <rect width="200" height="100" fill="#161D2B" stroke="#E9A568" stroke-width="3" rx="8"/>
+    <text x="100" y="30" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#E9A568" text-anchor="middle">Thunder Wave</text>
+    <text x="100" y="52" font-family="Arial, sans-serif" font-size="13" fill="#CBD5E1" text-anchor="middle">Type: Electric</text>
+    <text x="100" y="72" font-family="Arial, sans-serif" font-size="13" fill="#94A3B8" text-anchor="middle">Effect: Paralyze</text>
+    <rect x="10" y="10" width="35" height="20" fill="#38BDF8" rx="4"/>
+    <text x="27" y="24" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#0A0D12" text-anchor="middle">Lv1</text>
+  </g>
+
+  <!-- Arrow 1 -->
+  <g transform="translate(250, 120)">
+    <path d="M 0 0 L 50 0 L 45 -5 M 50 0 L 45 5" stroke="#38BDF8" stroke-width="3" fill="none"/>
+    <text x="25" y="-10" font-family="Arial, sans-serif" font-size="12" fill="#38BDF8" text-anchor="middle">+500 XP</text>
+  </g>
+
+  <!-- Level 2: Thunder Shock -->
+  <g transform="translate(300, 80)">
+    <rect width="200" height="100" fill="#161D2B" stroke="#38BDF8" stroke-width="3" rx="8"/>
+    <text x="100" y="30" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#38BDF8" text-anchor="middle">Thunder Shock</text>
+    <text x="100" y="52" font-family="Arial, sans-serif" font-size="13" fill="#CBD5E1" text-anchor="middle">Type: Electric</text>
+    <text x="100" y="72" font-family="Arial, sans-serif" font-size="13" fill="#94A3B8" text-anchor="middle">Power: 40 → 60</text>
+    <rect x="10" y="10" width="35" height="20" fill="#38BDF8" rx="4"/>
+    <text x="27" y="24" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#0A0D12" text-anchor="middle">Lv2</text>
+  </g>
+
+  <!-- Arrow 2 -->
+  <g transform="translate(500, 120)">
+    <path d="M 0 0 L 50 0 L 45 -5 M 50 0 L 45 5" stroke="#6EE7B7" stroke-width="3" fill="none"/>
+    <text x="25" y="-10" font-family="Arial, sans-serif" font-size="12" fill="#6EE7B7" text-anchor="middle">+1200 XP</text>
+  </g>
+
+  <!-- Level 3: Thunderbolt -->
+  <g transform="translate(550, 80)">
+    <rect width="200" height="100" fill="#161D2B" stroke="#6EE7B7" stroke-width="3" rx="8"/>
+    <text x="100" y="30" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#6EE7B7" text-anchor="middle">Thunderbolt</text>
+    <text x="100" y="52" font-family="Arial, sans-serif" font-size="13" fill="#CBD5E1" text-anchor="middle">Type: Electric</text>
+    <text x="100" y="72" font-family="Arial, sans-serif" font-size="13" fill="#94A3B8" text-anchor="middle">Power: 60 → 90</text>
+    <rect x="10" y="10" width="35" height="20" fill="#6EE7B7" rx="4"/>
+    <text x="27" y="24" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#0A0D12" text-anchor="middle">Lv3</text>
+  </g>
+
+  <!-- Branch arrow -->
+  <g transform="translate(400, 180)">
+    <path d="M 0 0 L 0 50 L -5 45 M 0 50 L 5 45" stroke="#F97316" stroke-width="3" fill="none" stroke-dasharray="5,5"/>
+    <text x="-80" y="25" font-family="Arial, sans-serif" font-size="12" fill="#F97316">Alternative Path</text>
+  </g>
+
+  <!-- Alternative: Discharge -->
+  <g transform="translate(300, 250)">
+    <rect width="200" height="120" fill="#1E2636" stroke="#F97316" stroke-width="3" rx="8"/>
+    <text x="100" y="30" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#F97316" text-anchor="middle">Discharge</text>
+    <text x="100" y="52" font-family="Arial, sans-serif" font-size="13" fill="#CBD5E1" text-anchor="middle">Type: Electric</text>
+    <text x="100" y="72" font-family="Arial, sans-serif" font-size="13" fill="#94A3B8" text-anchor="middle">Power: 80 (AOE)</text>
+    <text x="100" y="92" font-family="Arial, sans-serif" font-size="12" fill="#6EE7B7" text-anchor="middle">⚡ Special: Hits all enemies</text>
+    <rect x="10" y="10" width="35" height="20" fill="#F97316" rx="4"/>
+    <text x="27" y="24" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#0A0D12" text-anchor="middle">Lv3</text>
+  </g>
+
+  <!-- Stats panel -->
+  <g transform="translate(50, 250)">
+    <rect width="220" height="120" fill="#0F131C" stroke="#1E2636" stroke-width="2" rx="8"/>
+    <text x="110" y="25" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#F8FAFC" text-anchor="middle">Evolution Requirements</text>
+    <text x="15" y="50" font-family="Arial, sans-serif" font-size="13" fill="#CBD5E1">• Use move 50+ times</text>
+    <text x="15" y="70" font-family="Arial, sans-serif" font-size="13" fill="#CBD5E1">• Accumulate XP threshold</text>
+    <text x="15" y="90" font-family="Arial, sans-serif" font-size="13" fill="#CBD5E1">• Alternative paths unlock</text>
+    <text x="15" y="108" font-family="Arial, sans-serif" font-size="12" fill="#94A3B8">  based on usage pattern</text>
+  </g>
+
+  <!-- Info box -->
+  <g transform="translate(530, 250)">
+    <rect width="220" height="120" fill="#0F131C" stroke="#1E2636" stroke-width="2" rx="8"/>
+    <text x="110" y="25" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#F8FAFC" text-anchor="middle">Pro Tips</text>
+    <text x="15" y="50" font-family="Arial, sans-serif" font-size="13" fill="#CBD5E1">💡 Spam early moves to</text>
+    <text x="15" y="68" font-family="Arial, sans-serif" font-size="13" fill="#CBD5E1">   unlock evolutions faster</text>
+    <text x="15" y="90" font-family="Arial, sans-serif" font-size="13" fill="#CBD5E1">🎯 AOE moves are better</text>
+    <text x="15" y="108" font-family="Arial, sans-serif" font-size="13" fill="#CBD5E1">   for late game</text>
+  </g>
+
+  <!-- Bottom note -->
+  <text x="400" y="440" font-family="Arial, sans-serif" font-size="13" fill="#94A3B8" text-anchor="middle">Each move can evolve into 2-3 different variants based on your playstyle</text>
+  <text x="400" y="465" font-family="Arial, sans-serif" font-size="12" fill="#7C8BA1" text-anchor="middle">Source: pokesurvivor.com/en/guide - Verified October 2026</text>
+</svg>

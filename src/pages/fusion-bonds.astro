@@ -1,0 +1,735 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import FAQ from '../components/FAQ.astro';
+
+const site = 'https://poke-survivors.org';
+const title = 'Fusion Bonds System: Combine Moves in PokéSurvivor';
+const description = 'Everything you need to know about Fusion Bonds in PokéSurvivor. Defeat legendaries, fuse up to 5 moves in one slot, and build the ultimate move set.';
+const updated = '2026-10-19';
+const gameVersion = '2026-10-11 update';
+
+const faq = [
+  {
+    q: 'How many Bonds can I have at once?',
+    a: 'You can have up to 4 Bonds active at once. This lets you fuse up to 5 moves into a single move slot, freeing up slots for more moves.',
+  },
+  {
+    q: 'Do Bonds carry over between runs?',
+    a: 'No official word on this, but they likely reset each run like level progress. You keep PokéCoins and gacha tickets, but Bonds need to be re-earned from legendaries.',
+  },
+  {
+    q: 'Can I unfuse moves after using a Bond?',
+    a: 'Nobody knows—the update didn\'t say. Can\'t tell if you can cancel or reconfigure fusions once they\'re set. Try it in-game and report back.',
+  },
+  {
+    q: 'Do fused moves share cooldowns?',
+    a: 'Not documented. They fire together, but whether cooldowns interact is anyone\'s guess. Test and see.',
+  },
+  {
+    q: 'Can I fuse evolved moves like Fire Blast?',
+    a: 'The system doesn\'t restrict move types, so evolved moves should work. Evolve your moves first, then fuse them—that way your fusion slot has max-power attacks, not base forms.',
+  },
+  {
+    q: 'How do Bonds work in co-op mode?',
+    a: 'The game says rifts support group play, but doesn\'t confirm if all players get Bonds. Likely yes—co-op rewards are usually shared. Check our <a href="/co-op/">co-op guide</a> for details.',
+  },
+  {
+    q: 'Which moves should I fuse first?',
+    a: 'Prioritize high-frequency, low-cooldown moves. Fast-attacking moves benefit most from fusion. Avoid fusing slow, high-damage moves that fire infrequently.',
+  },
+  {
+    q: 'What\'s the difference between Bonds and Move Evolution?',
+    a: 'They\'re independent systems. Move Evolution transforms moves when they reach max level (like Ember → Fire Blast). Bonds fuse multiple moves to fire simultaneously from one slot. See our <a href="/how-to-play/">how to play guide</a> for move evolution details.',
+  },
+];
+
+const jsonLd = [
+  {
+    '@type': 'Article',
+    headline: title,
+    description,
+    datePublished: '2026-10-19',
+    dateModified: updated,
+    author: { '@type': 'Organization', name: 'PokeSurvivor Fan Guide' },
+    publisher: { '@type': 'Organization', name: 'PokeSurvivor Fan Guide' },
+    inLanguage: 'en',
+  },
+  {
+    '@type': 'HowTo',
+    name: 'How to Use Fusion Bonds in PokéSurvivor',
+    description: 'Step-by-step guide to unlocking and using the Fusion Bonds system',
+    step: [
+      {
+        '@type': 'HowToStep',
+        name: 'Enter Rifts and Fight Legendaries',
+        text: 'When rifts appear on the map, enter them to battle legendary Pokémon in type-themed arenas.',
+      },
+      {
+        '@type': 'HowToStep',
+        name: 'Defeat Legendary Pokémon',
+        text: 'Win the rift battle to earn one Bond per legendary defeated.',
+      },
+      {
+        '@type': 'HowToStep',
+        name: 'Fuse Your Moves',
+        text: 'Use Bonds to link moves together so they fire simultaneously from one slot.',
+      },
+      {
+        '@type': 'HowToStep',
+        name: 'Stack Bonds for Maximum Effect',
+        text: 'Collect up to 4 Bonds to fuse 5 moves in one slot, freeing up slots to learn more moves.',
+      },
+    ],
+  },
+];
+---
+
+<BaseLayout
+  title={title}
+  alternates={[
+    { locale: 'en', href: '/fusion-bonds/' },
+    { locale: 'zh-Hant', href: '/zh/fusion-bonds/' }
+  ]}
+  description={description}
+  keywords="fusion bonds, pokesurvivor bonds system, move fusion, legendary rewards, 4 bonds, 5 move fusion, rift battles, fusion strategy guide, move slot management"
+  ogType="article"
+  ogImage="/og-fusion-bonds.jpg"
+  ogImageAlt="Fusion Bonds System guide for PokéSurvivor"
+  breadcrumbs={[
+    { name: 'Home', url: '/' },
+    { name: 'Fusion Bonds', url: '/fusion-bonds/' }
+  ]}
+  jsonLd={jsonLd}
+>
+  <div class="page-wrapper">
+    <article class="main-content">
+      <header class="article-header">
+        <p class="section-label">Guide</p>
+        <h1>Fusion Bonds System: Combine Moves in PokéSurvivor</h1>
+        <p class="article-meta">
+          Updated {updated} · Based on {gameVersion}
+        </p>
+      </header>
+
+
+      <section>
+        <h2>What are Fusion Bonds?</h2>
+
+        <figure class="content-image">
+          <img
+            src="/images/content/fusion-diagram-visual.svg"
+            alt="Fusion Bonds system showing two moves combining into one slot"
+            width="800"
+            height="450"
+            loading="lazy"
+          />
+          <figcaption>Fusion Bonds allow multiple moves to fire from a single slot simultaneously</figcaption>
+        </figure>
+
+        <p>
+          The October 11, 2026 update introduced Fusion Bonds—a system that lets you combine multiple moves into
+          a single slot. Defeat a legendary Pokémon in a rift, earn a Bond, fuse two moves together. They fire
+          at the same time from one slot instead of taking up two.
+        </p>
+        <p>
+          Each additional legendary you beat adds another move to that fusion. Up to 4 Bonds at once, which means
+          5 moves firing simultaneously from a single slot. The other slots? Free to learn more moves.
+        </p>
+        <p>
+          Not the same as <a href="/how-to-play/">Move Evolution</a>—that's when Ember becomes Fire Blast
+          at max level. Bonds don't transform moves; they link them. Two independent systems working side by side.
+        </p>
+        <p>
+          Why introduce this? Late-game runs hit a wall: you max out your 4 move slots, and your build's locked.
+          Bonds break that limit. More moves, more type coverage, more flexibility. The same update made
+          <a href="/rifts/">rifts</a> appear more often, so you have more chances to earn Bonds.
+        </p>
+      </section>
+
+      <section>
+        <h2>How to Get Bonds</h2>
+        <p>
+          One way to get Bonds: <strong>defeat legendary Pokémon inside rifts</strong>. No other method. No shop,
+          no gacha, no leveling milestone. You fight a legendary, you win, you get a Bond. One Bond per legendary.
+        </p>
+
+        <h3>Rifts: The Gateway to Bonds</h3>
+        <p>
+          Rifts are mysterious portals that open periodically on the map. You'll see them appear a few minutes
+          into your run. Enter one, and you're teleported to a type-themed arena—18 total arenas, one for each
+          type. Fire legendaries fight in the Igneous Volcano (lava burns, sun boosts Fire). Ice legendaries in
+          the Eternal Glacier (slippery ice, snow chips your HP). Each arena has terrain effects and weather that
+          shift the battle.
+        </p>
+        <p>
+          You have 2 minutes to win. Beat the legendary, you get a Bond plus a ×10 gacha ticket. Lose or run out
+          of time, you're sent back to the map at 30% HP with nothing. The run continues, but you walk away empty-handed.
+        </p>
+        <p>
+          Our <a href="/rifts/">rifts guide</a> covers all 18 arenas, terrain hazards, and which partner types
+          work best in each. If you're serious about collecting Bonds, read that first.
+        </p>
+
+        <h3>87 Legendary Pokémon</h3>
+        <p>
+          The game has 87 legendary Pokémon from generations 1 through 9—Articuno, Mewtwo, Rayquaza, Zacian, all of them.
+          Dual-type legendaries (like Dialga: Steel/Dragon) randomly pick one of their types to decide the arena.
+          You won't know which arena until you enter.
+        </p>
+        <p>
+          You can tackle rifts solo or with friends. In co-op, everyone enters the rift together. If you win,
+          each player should receive a Bond (the official description doesn't confirm this, but co-op rewards are
+          typically shared—check our <a href="/co-op/">co-op guide</a> for multiplayer details).
+        </p>
+
+        <h3>When Rifts Appear</h3>
+        <p>
+          Rifts open randomly, but the October 11 update increased their spawn rate. You'll usually see your first
+          rift between minutes 1 and 5. After that, they appear more frequently if you keep clearing them. Miss
+          one, and another will spawn—no penalty for skipping, but every rift you skip is a Bond you don't get.
+        </p>
+        <p>
+          Strategy: chase rifts in the mid-game (minutes 10-20) once your moves have evolved. Early-game (minutes 0-10),
+          focus on leveling up and evolving your core moves first. Late-game (minutes 20-30), you're preparing for
+          <a href="/arceus-judgment/">Arceus Judgment</a>, so grab any rifts you see, but don't die trying.
+        </p>
+      </section>
+
+      <section>
+        <h2>Fusion Mechanics Explained</h2>
+
+        <figure class="content-image">
+          <img
+            src="/images/content/fusion-synergy-calculation.svg"
+            alt="Fusion synergy bonus calculation showing how move combinations create damage multipliers"
+            width="800"
+            height="450"
+            loading="lazy"
+          />
+          <figcaption>Synergy bonuses stack when moves share types or complementary effects</figcaption>
+        </figure>
+
+        <h3>How Fusion Works</h3>
+        <p>
+          The first Bond links two moves. They fire at the same time from a single slot. Example: you fuse Thunderbolt
+          and Ice Beam. When Thunderbolt's attack triggers, Ice Beam triggers too. One slot, two attacks, simultaneous fire.
+        </p>
+        <p>
+          The second Bond adds a third move to that fusion. Now it's Thunderbolt + Ice Beam + Flamethrower, all from
+          one slot. The third Bond adds a fourth move. The fourth Bond adds a fifth. That's the cap: 4 Bonds, 5 moves
+          in one slot.
+        </p>
+        <p>
+          Official wording: "Every legendary you defeat in a rift gives you a bond: link two moves so they fire at
+          the same time from a single slot, and each further legendary adds another one, up to 4 at once."
+        </p>
+
+        <div class="fusion-diagram">
+          <div class="fusion-step">
+            <strong>1 Bond:</strong> 2 moves → 1 slot <span class="free-slots">(frees 1 slot)</span>
+          </div>
+          <div class="fusion-step">
+            <strong>2 Bonds:</strong> 3 moves → 1 slot <span class="free-slots">(frees 2 slots)</span>
+          </div>
+          <div class="fusion-step">
+            <strong>3 Bonds:</strong> 4 moves → 1 slot <span class="free-slots">(frees 3 slots)</span>
+          </div>
+          <div class="fusion-step highlight">
+            <strong>4 Bonds:</strong> 5 moves → 1 slot <span class="free-slots">(frees 4 slots!)</span>
+          </div>
+        </div>
+
+        <div class="disclaimer-box">
+          ⚠️ <strong>Mechanism Clarification:</strong> The "up to 4 at once" interpretation (5 moves in 1 slot) is
+          based on the official description "each further legendary adds another one." If you observe different behavior
+          in-game, the community is still exploring this system—share your findings!
+        </div>
+
+        <h3>What This Means for Your Build</h3>
+
+        <figure class="content-image">
+          <img
+            src="/images/content/fusion-tier-system.svg"
+            alt="Fusion combination tier list from S-tier to C-tier showing best move synergies"
+            width="800"
+            height="500"
+            loading="lazy"
+          />
+          <figcaption>S-tier fusions combine type coverage with status effects for maximum efficiency</figcaption>
+        </figure>
+
+        <p>
+          Normally, you have 4 move slots. That's 4 moves total. With 4 Bonds, you fuse 5 moves into 1 slot.
+          That leaves 3 slots open. 5 fused moves + 3 empty slots = room for 3 more moves. You're running 8 moves
+          instead of 4.
+        </p>
+        <p>
+          Or you run 6 or 7 moves and save slots for upgrades. The point: Bonds free up space. More moves means
+          better type coverage, more utility options, more flexibility when the run throws curveballs.
+        </p>
+
+        <h3>Important Limits and Unknowns</h3>
+        <ul>
+          <li><strong>Maximum 4 Bonds</strong> — you can't stack beyond 4 Bonds, so 5 moves in one slot is the cap.</li>
+          <li><strong>Single fusion group</strong> — the official description suggests all bonded moves fuse into
+            one slot, not 4 separate 2-move pairs. Different from having 4 independent fusions.</li>
+          <li><strong>Can you cancel a fusion?</strong> — unknown. The update doesn't say. Test in-game.</li>
+          <li><strong>Can you reconfigure which moves are fused?</strong> — unknown. Assume it's locked once set.</li>
+          <li><strong>Do fused moves trigger on the same cooldown?</strong> — unclear. They fire together, but
+            each move likely keeps its own cooldown timer. Needs testing.</li>
+        </ul>
+
+        <h3>Fusion vs. Move Evolution</h3>
+        <p>
+          Bonds and Move Evolution are independent. Evolution happens when you max out a move and draw its specific
+          upgrade card (Ember → Fire Blast, Bubble → Surf). Bonds fuse existing moves without changing them.
+        </p>
+        <p>
+          Can you fuse evolved moves? The system doesn't restrict it, so Fire Blast + Surf + Psychic should work.
+          Evolve your moves first, then fuse them. That way, your fusion slot has max-power attacks
+          instead of base forms.
+        </p>
+      </section>
+
+      <section>
+        <h2>Fusion Strategies</h2>
+
+        <div class="disclaimer-box">
+          💡 <strong>Community Strategies:</strong> The following fusion strategies are based on community experience
+          and game mechanics analysis, not official guides. Best practices may evolve as players discover optimal builds.
+        </div>
+
+        <h3>What to Fuse</h3>
+        <p>
+          <strong>Prioritize high-frequency moves.</strong> Fusion doubles your output only if the moves actually fire.
+          Fast-attacking moves like Thunderbolt, Water Gun, or Quick Attack benefit the most. They trigger often, so
+          combining them multiplies your DPS.
+        </p>
+        <p>
+          <strong>Avoid slow moves.</strong> High-damage moves with long cooldowns (Hyper Beam, Giga Impact) don't
+          gain much from fusion. If a move fires once every 10 seconds, fusing it with a 2-second-cooldown move
+          wastes the fusion potential. The fast move fires 5 times while the slow move fires once. Better to keep
+          them separate.
+        </p>
+        <p>
+          <strong>Cover multiple types.</strong> Fuse moves from different types to handle varied enemies. Water +
+          Electric + Grass + Fire gives you answers to Rock, Ground, Fire, Water, Grass, and Ice types. Type coverage
+          matters more in long runs where you face every type of horde.
+        </p>
+
+        <h3>Fusion Timing</h3>
+        <p>
+          <strong>Evolve first, fuse second.</strong> Don't rush to fuse your starter moves. Wait until they evolve.
+          A fusion of Ember + Bubble is weaker than Fire Blast + Surf. Get your moves to their final forms before
+          linking them.
+        </p>
+        <p>
+          <strong>Mid-game is the sweet spot.</strong> Minutes 10-20 is when your core moves have evolved, and you
+          start seeing rifts more often. That's your window to collect Bonds and set up your fusion. By minute 20,
+          aim to have at least 2 Bonds active.
+        </p>
+        <p>
+          <strong>Don't force it early.</strong> If a rift spawns at minute 2 and you're still working on your first
+          evolution, skip it. Dying to a legendary at minute 2 ends your run. Rifts spawn frequently—another one will come.
+        </p>
+
+        <h3>Build Archetypes</h3>
+        <p>
+          <strong>Offensive builds:</strong> Fuse 4-5 high-DPS moves (Thunderbolt, Ice Beam, Flamethrower, Shadow Ball,
+          Psychic). Use your free slots for utility moves like healing or shields. This maximizes damage output while
+          keeping survival options available.
+        </p>
+        <p>
+          <strong>Balanced builds:</strong> Fuse 3 offensive moves, leave 1 slot for a defensive move. The fusion
+          slot handles damage, the other slots handle positioning, healing, or crowd control. Works well for players
+          who prefer safety over raw offense.
+        </p>
+        <p>
+          <strong>Specialist builds:</strong> Fuse moves that all hit the same weakness. Example: all Water-type moves
+          to demolish Fire/Rock/Ground enemies. Risky if you run into Grass or Electric types, but devastating in the
+          right matchup. Our <a href="/tier-list/">tier list</a> shows which Pokémon excel at type-focused builds.
+        </p>
+
+        <h3>Common Mistakes</h3>
+        <p>
+          <strong>Fusing low-damage moves.</strong> If your moves deal 50 damage each, fusing them doesn't suddenly
+          make them strong. Fusion multiplies frequency, not power. Fuse moves that are already strong.
+        </p>
+        <p>
+          <strong>Ignoring type effectiveness.</strong> Fusing 5 Fire moves sounds cool until you hit a Water horde.
+          You'll deal 30% damage while they shred you. Spread your types unless you're running a niche build.
+        </p>
+        <p>
+          <strong>Skipping rifts to "save time."</strong> Bonds are worth the 2-minute investment. Every Bond you
+          skip is a slot you can't free up. If you're strong enough to clear the map, you're strong enough to
+          fight a legendary.
+        </p>
+      </section>
+
+      <section>
+        <h2>When to Hunt for Bonds</h2>
+
+        <h3>Early Game (Minutes 0-10)</h3>
+        <p>
+          Focus on leveling up and evolving your starter moves. If a rift spawns and you're confident you can win,
+          take it. If not, skip it. Your first priority is getting Ember to Fire Blast or Bubble to Surf. Bonds
+          come second.
+        </p>
+
+        <h3>Mid Game (Minutes 10-20)</h3>
+        <p>
+          This is your Bond farming window. Your moves have evolved, your stats are solid, you can handle legendary
+          battles. Actively chase rifts during this phase. Aim to collect 2-3 Bonds before minute 20.
+        </p>
+        <p>
+          Don't tunnel vision on Bonds, though. If you're low on HP or surrounded by enemies, heal up first. A
+          dead run earns zero Bonds.
+        </p>
+
+        <h3>Late Game (Minutes 20-30)</h3>
+        <p>
+          You're preparing for <a href="/arceus-judgment/">Arceus Judgment at minute 30</a>. If rifts spawn, clear
+          them—Bonds help in Judgment mode. But don't go out of your way to hunt them. Survival comes first. If
+          you die chasing a rift at minute 28, the Bonds don't matter.
+        </p>
+        <p>
+          By minute 25, shift your focus to defensive upgrades: HP, speed, shields. Bonds are a bonus at this point,
+          not the goal.
+        </p>
+
+        <h3>Post-Judgment (Minutes 30+)</h3>
+        <p>
+          If you're still alive after minute 30, you're in Judgment mode. Rifts still spawn, but the pressure is
+          intense—Arceus is chasing you, legendaries spawn every 5 seconds. If you spot a rift and have breathing
+          room, grab it. The extra Bond could be the difference between minute 31 and minute 32.
+        </p>
+        <p>
+          But don't die for it. Judgment mode survival is about not making mistakes, and risky rift dives are mistakes.
+        </p>
+      </section>
+
+      <section>
+        <h2>Advanced Tips</h2>
+
+        <div class="disclaimer-box">
+          🔬 <strong>Advanced Mechanics:</strong> Some of these tips involve unconfirmed mechanics (like cooldown
+          interactions or upgrade card effects on fused moves). Test them in your own runs to verify.
+        </div>
+
+        <h3>Co-op Bond Farming</h3>
+        <p>
+          Playing with friends? Rifts are easier in groups. More players means more damage, more crowd control, more
+          room to revive downed teammates. If one goes down, the others finish the legendary.
+        </p>
+        <p>
+          Nobody's confirmed if all players get Bonds when the group wins. Based on how co-op rewards work (everyone
+          gets coins and tickets), all players should get Bonds. Test it. Check our <a href="/co-op/">co-op guide</a>
+          for full multiplayer strategies.
+        </p>
+
+        <h3>Arena Selection Strategy</h3>
+        <p>
+          You can't choose which arena you enter—rifts are random—but you can prepare. If your partner is Water-type,
+          Fire and Ground arenas are favorable. If you're Electric, avoid Ground arenas (you deal 30% damage).
+          Our <a href="/rifts/">rifts guide</a> lists all 18 arenas with type matchups and terrain hazards.
+        </p>
+        <p>
+          Dual-type legendaries pick one of their types randomly. Dialga (Steel/Dragon) could send you to the Steel
+          Fortress or Dragon Sanctuary. You won't know until you enter. Bring a balanced move set to handle surprises.
+        </p>
+
+        <h3>Move Slot Management</h3>
+        <p>
+          With 4 Bonds, you fuse 5 moves into 1 slot. That leaves 3 slots. How you fill them depends on your playstyle:
+        </p>
+        <ul>
+          <li><strong>3 more offense moves</strong> — 8 moves total, maximum damage output. Glass cannon approach.</li>
+          <li><strong>2 offense, 1 utility</strong> — 7 moves total, with a heal or shield for safety.</li>
+          <li><strong>2 offense, 1 open slot</strong> — 6 moves total, leaving room for situational upgrades or
+            experimental moves.</li>
+        </ul>
+        <p>
+          There's no "correct" split. Long runs favor utility. Short, aggressive runs favor pure offense. Adjust
+          based on how the run's going.
+        </p>
+
+        <h3>Fusion and Upgrades</h3>
+        <p>
+          When you level up and draw an upgrade card, it affects one move. If that move is in your fusion slot,
+          does the upgrade apply to all 5 fused moves or just the one? The update doesn't say. Early player reports
+          are mixed. Test it yourself: fuse 2 moves, upgrade one, watch how it behaves.
+        </p>
+        <p>
+          Our hypothesis: upgrades apply per move, not per slot. A +20% damage upgrade on Thunderbolt boosts
+          Thunderbolt, not Ice Beam. But no confirmation yet. Community's still figuring this out.
+        </p>
+      </section>
+
+      <FAQ heading="Common Questions" items={faq} />
+
+      <aside class="sources" aria-labelledby="sources-title">
+        <h2 id="sources-title">Sources and Updates</h2>
+        <p>
+          This guide is based on the <a href="https://pokesurvivor.com/en/news/" rel="noopener">official October 11, 2026
+          update announcement</a>, the <a href="https://pokesurvivor.com/en/legendaries/" rel="noopener">legendaries page</a>,
+          the <a href="https://pokesurvivor.com/en/guide/" rel="noopener">official guide</a>, and community play experience.
+          We're fans who play PokéSurvivor, not the developers.
+        </p>
+        <p>
+          The Fusion Bonds system is new (introduced October 11, 2026), so mechanics are still being explored. If any
+          information on this page conflicts with the game, trust the game. Always check
+          <a href="https://pokesurvivor.com/en/" rel="noopener">pokesurvivor.com</a> for the latest updates.
+        </p>
+        <p class="version-info">
+          <strong>Game version:</strong> October 11, 2026 update<br>
+          <strong>Guide last updated:</strong> October 19, 2026
+        </p>
+      </aside>
+    </article>
+
+    <section class="closing-cta" aria-labelledby="closing-cta-title">
+      <h2 id="closing-cta-title">Ready to Stack Some Bonds?</h2>
+      <p>Defeat legendaries, collect Bonds, and build the ultimate move set.</p>
+      <div class="cta-actions">
+        <a href="https://pokesurvivor.com/en/" target="_blank" rel="noopener" class="btn btn-primary btn-lg">Play PokéSurvivor</a>
+        <a href="/rifts/" class="btn btn-secondary btn-lg">Read the Rifts Guide</a>
+      </div>
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  .page-wrapper {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .main-content {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: var(--space-2xl) var(--container-padding);
+  }
+
+  .article-header {
+    margin-bottom: var(--space-2xl);
+    text-align: center;
+  }
+
+  .section-label {
+    display: inline-block;
+    padding: var(--space-1) var(--space-3);
+    background: var(--accent-subtle);
+    border: 1px solid var(--accent-primary);
+    border-radius: var(--radius-pill);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-semibold);
+    color: var(--accent-primary);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: var(--space-md);
+  }
+
+  .article-header h1 {
+    font-family: var(--font-display);
+    font-size: clamp(var(--font-size-3xl), 5vw, var(--font-size-4xl));
+    font-weight: var(--font-bold);
+    color: var(--text-primary);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin-bottom: var(--space-md);
+  }
+
+  .article-meta {
+    font-size: var(--font-size-sm);
+    color: var(--text-tertiary);
+    margin: 0;
+  }
+
+  .version-alert {
+    background: var(--surface-elevated);
+    border: 1px solid var(--accent-primary);
+    border-radius: var(--radius-md);
+    padding: var(--space-md);
+    margin-bottom: var(--space-2xl);
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+  }
+
+  .version-alert a {
+    color: var(--accent-primary);
+    text-decoration: underline;
+  }
+
+  .disclaimer-box {
+    background: var(--surface-elevated);
+    border-left: 4px solid var(--accent-primary);
+    border-radius: var(--radius-md);
+    padding: var(--space-md);
+    margin: var(--space-lg) 0;
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+  }
+
+  .disclaimer-box strong {
+    color: var(--text-primary);
+  }
+
+  .fusion-diagram {
+    background: var(--surface-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    padding: var(--space-lg);
+    margin: var(--space-lg) 0;
+  }
+
+  .fusion-step {
+    padding: var(--space-3);
+    margin-bottom: var(--space-2);
+    background: var(--surface-base);
+    border-radius: var(--radius-md);
+    font-family: var(--font-mono);
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+  }
+
+  .fusion-step:last-child {
+    margin-bottom: 0;
+  }
+
+  .fusion-step.highlight {
+    background: var(--accent-subtle);
+    border: 1px solid var(--accent-primary);
+    color: var(--text-primary);
+    font-weight: var(--font-semibold);
+  }
+
+  .fusion-step strong {
+    color: var(--accent-primary);
+  }
+
+  .fusion-step .free-slots {
+    color: var(--text-tertiary);
+    font-style: italic;
+  }
+
+  section {
+    margin-bottom: var(--space-2xl);
+  }
+
+  h2 {
+    font-family: var(--font-display);
+    font-size: var(--font-size-3xl);
+    font-weight: var(--font-bold);
+    color: var(--text-primary);
+    margin-bottom: var(--space-md);
+    line-height: 1.2;
+  }
+
+  h3 {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-semibold);
+    color: var(--text-primary);
+    margin-top: var(--space-lg);
+    margin-bottom: var(--space-2);
+  }
+
+  p {
+    font-size: var(--font-size-base);
+    line-height: var(--leading-relaxed);
+    color: var(--text-secondary);
+    margin-bottom: var(--space-md);
+  }
+
+  ul {
+    padding-left: 1.5rem;
+    margin-bottom: var(--space-md);
+  }
+
+  li {
+    margin-bottom: var(--space-2);
+    color: var(--text-secondary);
+    line-height: var(--leading-relaxed);
+  }
+
+  a {
+    color: var(--accent-primary);
+  }
+
+  a:hover {
+    color: var(--accent-hover);
+    text-decoration: underline;
+  }
+
+  .sources {
+    margin-top: var(--space-2xl);
+    padding: var(--space-lg);
+    background: var(--surface-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+  }
+
+  .sources h2 {
+    font-size: var(--font-size-xl);
+    margin-top: 0;
+    margin-bottom: var(--space-md);
+  }
+
+  .sources p {
+    margin-bottom: var(--space-md);
+  }
+
+  .sources p:last-child {
+    margin-bottom: 0;
+  }
+
+  .version-info {
+    font-size: var(--font-size-sm);
+    color: var(--text-tertiary);
+    margin-top: var(--space-md);
+    padding-top: var(--space-md);
+    border-top: 1px solid var(--border-subtle);
+  }
+
+  .closing-cta {
+    max-width: 800px;
+    margin: var(--space-2xl) auto;
+    padding: var(--space-2xl) var(--container-padding);
+    text-align: center;
+    background: var(--surface-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+  }
+
+  .closing-cta h2 {
+    font-family: var(--font-display);
+    font-size: var(--font-size-3xl);
+    margin-bottom: var(--space-md);
+  }
+
+  .closing-cta p {
+    font-size: var(--font-size-lg);
+    margin-bottom: var(--space-lg);
+  }
+
+  .cta-actions {
+    display: flex;
+    gap: var(--space-md);
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  @media (max-width: 768px) {
+    .cta-actions {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .fusion-diagram {
+      padding: var(--space-md);
+    }
+
+    .fusion-step {
+      font-size: var(--font-size-xs);
+    }
+  }
+</style>

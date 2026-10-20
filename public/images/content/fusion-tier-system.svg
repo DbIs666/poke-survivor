@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" role="img" aria-label="Fusion Bond Tier System">
+  <title>Fusion Bond Tier System - Quality Rankings</title>
+
+  <!-- Background -->
+  <rect width="800" height="500" fill="#05070C"/>
+
+  <!-- Title -->
+  <text x="400" y="35" font-family="Arial, sans-serif" font-size="22" font-weight="bold" fill="#F8FAFC" text-anchor="middle">Fusion Bond Quality Tiers</text>
+
+  <!-- S Tier -->
+  <g transform="translate(50, 70)">
+    <rect width="700" height="85" fill="#161D2B" stroke="#EF4444" stroke-width="3" rx="8"/>
+    <rect x="10" y="10" width="60" height="65" fill="#EF4444" rx="6"/>
+    <text x="40" y="50" font-family="Arial, sans-serif" font-size="32" font-weight="bold" fill="#0A0D12" text-anchor="middle">S</text>
+
+    <text x="90" y="30" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#EF4444">Meta-Defining</text>
+    <text x="90" y="52" font-family="Arial, sans-serif" font-size="13" fill="#CBD5E1">Examples: Thunder Wave + Discharge, Protect + King's Shield</text>
+    <text x="90" y="70" font-family="Arial, sans-serif" font-size="12" fill="#94A3B8">⚡ Game-changing combos, must-have for endgame</text>
+  </g>
+
+  <!-- A Tier -->
+  <g transform="translate(50, 170)">
+    <rect width="700" height="85" fill="#161D2B" stroke="#F97316" stroke-width="3" rx="8"/>
+    <rect x="10" y="10" width="60" height="65" fill="#F97316" rx="6"/>
+    <text x="40" y="50" font-family="Arial, sans-serif" font-size="32" font-weight="bold" fill="#0A0D12" text-anchor="middle">A</text>
+
+    <text x="90" y="30" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#F97316">Highly Effective</text>
+    <text x="90" y="52" font-family="Arial, sans-serif" font-size="13" fill="#CBD5E1">Examples: Flamethrower + Fire Blast, Psychic + Psybeam</text>
+    <text x="90" y="70" font-family="Arial, sans-serif" font-size="12" fill="#94A3B8">🔥 Strong synergy, viable for most builds</text>
+  </g>
+
+  <!-- B Tier -->
+  <g transform="translate(50, 270)">
+    <rect width="700" height="85" fill="#161D2B" stroke="#F59E0B" stroke-width="3" rx="8"/>
+    <rect x="10" y="10" width="60" height="65" fill="#F59E0B" rx="6"/>
+    <text x="40" y="50" font-family="Arial, sans-serif" font-size="32" font-weight="bold" fill="#0A0D12" text-anchor="middle">B</text>
+
+    <text x="90" y="30" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#F59E0B">Situational</text>
+    <text x="90" y="52" font-family="Arial, sans-serif" font-size="13" fill="#CBD5E1">Examples: Water Gun + Bubble Beam, Quick Attack + Tackle</text>
+    <text x="90" y="70" font-family="Arial, sans-serif" font-size="12" fill="#94A3B8">💧 Decent bonus, works in specific scenarios</text>
+  </g>
+
+  <!-- C Tier -->
+  <g transform="translate(50, 370)">
+    <rect width="700" height="85" fill="#161D2B" stroke="#6EE7B7" stroke-width="3" rx="8"/>
+    <rect x="10" y="10" width="60" height="65" fill="#6EE7B7" rx="6"/>
+    <text x="40" y="50" font-family="Arial, sans-serif" font-size="32" font-weight="bold" fill="#0A0D12" text-anchor="middle">C</text>
+
+    <text x="90" y="30" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#6EE7B7">Experimental</text>
+    <text x="90" y="52" font-family="Arial, sans-serif" font-size="13" fill="#CBD5E1">Examples: Mismatched types, weak move combinations</text>
+    <text x="90" y="70" font-family="Arial, sans-serif" font-size="12" fill="#94A3B8">🧪 Minimal benefit, not recommended for competitive</text>
+  </g>
+</svg>

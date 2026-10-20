@@ -1398,3 +1398,36 @@ main:focus {
     --container-max: 1440px;
   }
 }
+
+/* ============================================== */
+/* CONTENT IMAGES */
+/* ============================================== */
+
+.content-image {
+  margin: var(--space-xl) 0;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: var(--surface-elevated);
+}
+
+.content-image img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: var(--radius-md);
+}
+
+.content-image figcaption {
+  padding: var(--space-sm) var(--space-md);
+  font-size: var(--font-size-sm);
+  color: var(--text-tertiary);
+  text-align: center;
+  font-style: italic;
+}
+
+@media (max-width: 768px) {
+  .content-image {
+    margin: var(--space-lg) 0;
+  }
+}
+}

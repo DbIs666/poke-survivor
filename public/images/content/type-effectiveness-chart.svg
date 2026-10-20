@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" role="img" aria-label="Move Type Effectiveness Chart">
+  <title>Move Type Effectiveness Quick Reference</title>
+
+  <!-- Background -->
+  <rect width="800" height="450" fill="#05070C"/>
+
+  <!-- Title -->
+  <text x="400" y="35" font-family="Arial, sans-serif" font-size="22" font-weight="bold" fill="#F8FAFC" text-anchor="middle">Type Effectiveness: Top Offensive Types</text>
+
+  <!-- Fighting type -->
+  <g transform="translate(50, 70)">
+    <rect width="340" height="70" fill="#161D2B" stroke="#C22E28" stroke-width="2" rx="8"/>
+    <rect x="10" y="12" width="80" height="46" fill="#C22E28" rx="6"/>
+    <text x="50" y="40" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#F8FAFC" text-anchor="middle">Fighting</text>
+    <text x="110" y="28" font-family="Arial, sans-serif" font-size="13" fill="#6EE7B7" text-anchor="start">Super Effective: 5 types</text>
+    <text x="110" y="48" font-family="Arial, sans-serif" font-size="12" fill="#CBD5E1" text-anchor="start">Normal, Ice, Rock, Dark, Steel</text>
+  </g>
+
+  <!-- Ground type -->
+  <g transform="translate(410, 70)">
+    <rect width="340" height="70" fill="#161D2B" stroke="#E0C068" stroke-width="2" rx="8"/>
+    <rect x="10" y="12" width="80" height="46" fill="#E0C068" rx="6"/>
+    <text x="50" y="40" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#0A0D12" text-anchor="middle">Ground</text>
+    <text x="110" y="28" font-family="Arial, sans-serif" font-size="13" fill="#6EE7B7" text-anchor="start">Super Effective: 5 types</text>
+    <text x="110" y="48" font-family="Arial, sans-serif" font-size="12" fill="#CBD5E1" text-anchor="start">Fire, Electric, Poison, Rock, Steel</text>
+  </g>
+
+  <!-- Psychic type -->
+  <g transform="translate(50, 155)">
+    <rect width="340" height="70" fill="#161D2B" stroke="#F85888" stroke-width="2" rx="8"/>
+    <rect x="10" y="12" width="80" height="46" fill="#F85888" rx="6"/>
+    <text x="50" y="40" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#0A0D12" text-anchor="middle">Psychic</text>
+    <text x="110" y="28" font-family="Arial, sans-serif" font-size="13" fill="#6EE7B7" text-anchor="start">Super Effective: 2 types</text>
+    <text x="110" y="48" font-family="Arial, sans-serif" font-size="12" fill="#CBD5E1" text-anchor="start">Fighting, Poison</text>
+  </g>
+
+  <!-- Ice type -->
+  <g transform="translate(410, 155)">
+    <rect width="340" height="70" fill="#161D2B" stroke="#98D8D8" stroke-width="2" rx="8"/>
+    <rect x="10" y="12" width="80" height="46" fill="#98D8D8" rx="6"/>
+    <text x="50" y="40" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#0A0D12" text-anchor="middle">Ice</text>
+    <text x="110" y="28" font-family="Arial, sans-serif" font-size="13" fill="#6EE7B7" text-anchor="start">Super Effective: 4 types</text>
+    <text x="110" y="48" font-family="Arial, sans-serif" font-size="12" fill="#CBD5E1" text-anchor="start">Grass, Ground, Flying, Dragon</text>
+  </g>
+
+  <!-- Fire type -->
+  <g transform="translate(50, 240)">
+    <rect width="340" height="70" fill="#161D2B" stroke="#F08030" stroke-width="2" rx="8"/>
+    <rect x="10" y="12" width="80" height="46" fill="#F08030" rx="6"/>
+    <text x="50" y="40" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#0A0D12" text-anchor="middle">Fire</text>
+    <text x="110" y="28" font-family="Arial, sans-serif" font-size="13" fill="#6EE7B7" text-anchor="start">Super Effective: 4 types</text>
+    <text x="110" y="48" font-family="Arial, sans-serif" font-size="12" fill="#CBD5E1" text-anchor="start">Grass, Ice, Bug, Steel</text>
+  </g>
+
+  <!-- Water type -->
+  <g transform="translate(410, 240)">
+    <rect width="340" height="70" fill="#161D2B" stroke="#6890F0" stroke-width="2" rx="8"/>
+    <rect x="10" y="12" width="80" height="46" fill="#6890F0" rx="6"/>
+    <text x="50" y="40" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#F8FAFC" text-anchor="middle">Water</text>
+    <text x="110" y="28" font-family="Arial, sans-serif" font-size="13" fill="#6EE7B7" text-anchor="start">Super Effective: 3 types</text>
+    <text x="110" y="48" font-family="Arial, sans-serif" font-size="12" fill="#CBD5E1" text-anchor="start">Fire, Ground, Rock</text>
+  </g>
+
+  <!-- Legend section -->
+  <g transform="translate(50, 335)">
+    <rect width="700" height="90" fill="#0F131C" stroke="#1E2636" stroke-width="2" rx="8"/>
+    <text x="350" y="25" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#F8FAFC" text-anchor="middle">Quick Reference</text>
+
+    <g transform="translate(20, 40)">
+      <rect width="20" height="20" fill="#6EE7B7" rx="4"/>
+      <text x="30" y="16" font-family="Arial, sans-serif" font-size="13" fill="#CBD5E1">Super Effective (2x damage)</text>
+    </g>
+
+    <g transform="translate(250, 40)">
+      <rect width="20" height="20" fill="#F97316" rx="4"/>
+      <text x="30" y="16" font-family="Arial, sans-serif" font-size="13" fill="#CBD5E1">Not Very Effective (0.5x)</text>
+    </g>
+
+    <g transform="translate(490, 40)">
+      <rect width="20" height="20" fill="#94A3B8" rx="4"/>
+      <text x="30" y="16" font-family="Arial, sans-serif" font-size="13" fill="#CBD5E1">No Effect (0x)</text>
+    </g>
+
+    <text x="350" y="75" font-family="Arial, sans-serif" font-size="12" fill="#94A3B8" text-anchor="middle">💡 Dual-type moves inherit both type advantages and weaknesses</text>
+  </g>
+</svg>

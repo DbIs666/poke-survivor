@@ -1,0 +1,716 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import FAQ from '../../components/FAQ.astro';
+
+const site = 'https://poke-survivors.org';
+const title = 'PokéSurvivor 羁絆融合系統：招式組合完全指南';
+const description = '掌握 PokéSurvivor 羁絆融合系統。學習如何擊敗傳說寶可夢、將5個招式融合到1個槽位，最大化構築潛力。';
+const updated = '2026-10-19';
+const gameVersion = '2026-10-11 更新';
+
+const faq = [
+  {
+    q: '最多可以同時擁有幾個 Bonds？',
+    a: '你可以同時擁有最多 4 個 Bonds。這讓你可以將最多 5 個招式融合到一個招式槽位，釋放槽位來學習更多招式。',
+  },
+  {
+    q: 'Bonds 會在遊戲之間保留嗎？',
+    a: '官方沒說，但可能每局重置（就像等級一樣）。你保留寶可夢幣和扭蛋券，但Bonds需要重新打傳說寶可夢獲得。',
+  },
+  {
+    q: '使用 Bond 後可以取消融合嗎？',
+    a: '沒人知道——官方沒說。不清楚能不能取消或重新配置已設置的融合。自己試試，然後回報。',
+  },
+  {
+    q: '融合的招式會共享冷卻時間嗎？',
+    a: '沒記錄。它們一起觸發，但冷卻時間怎麼互動沒人知道。自己試試看。',
+  },
+  {
+    q: '可以融合已進化的招式嗎（如 Fire Blast）？',
+    a: '系統沒有限制招式類型，所以已進化的招式應該可以。先進化招式，再融合它們——這樣融合槽位裡都是滿威力攻擊，而不是基礎形態。',
+  },
+  {
+    q: 'Bonds 在組隊模式中如何運作？',
+    a: '遊戲說裂隙支援組隊，但沒確認是不是所有玩家都拿Bonds。應該是——組隊獎勵通常共享。查看我們的<a href="/zh/co-op/">組隊指南</a>了解細節。',
+  },
+  {
+    q: '應該優先融合哪些招式？',
+    a: '優先考慮高頻率、低冷卻的招式。快速攻擊型招式從融合中獲益最多。避免融合觸發頻率低的慢速高傷招式。',
+  },
+  {
+    q: 'Bonds 和招式進化有什麼區別？',
+    a: '它們是獨立的系統。招式進化是當招式達到滿級時轉變（如 Ember → Fire Blast）。Bonds 是將多個招式融合，使它們從一個槽位同時觸發。查看我們的<a href="/zh/how-to-play/">玩法指南</a>了解招式進化細節。',
+  },
+];
+
+const jsonLd = [
+  {
+    '@type': 'Article',
+    headline: title,
+    description,
+    datePublished: '2026-10-19',
+    dateModified: updated,
+    author: { '@type': 'Organization', name: 'PokeSurvivor Fan Guide' },
+    publisher: { '@type': 'Organization', name: 'PokeSurvivor Fan Guide' },
+    inLanguage: 'zh-Hant',
+  },
+  {
+    '@type': 'HowTo',
+    name: '如何使用 PokéSurvivor 羁絆融合系統',
+    description: '解鎖和使用羁絆融合系統的分步指南',
+    step: [
+      {
+        '@type': 'HowToStep',
+        name: '進入裂隙並戰鬥傳說寶可夢',
+        text: '當裂隙出現在地圖上時，進入它們在屬性主題競技場中戰鬥傳說寶可夢。',
+      },
+      {
+        '@type': 'HowToStep',
+        name: '擊敗傳說寶可夢',
+        text: '贏得裂隙戰鬥，每擊敗一個傳說獲得一個 Bond。',
+      },
+      {
+        '@type': 'HowToStep',
+        name: '融合你的招式',
+        text: '使用 Bonds 將招式連結在一起，使它們從一個槽位同時觸發。',
+      },
+      {
+        '@type': 'HowToStep',
+        name: '堆疊 Bonds 以獲得最大效果',
+        text: '收集最多 4 個 Bonds，將 5 個招式融合到一個槽位，釋放槽位來學習更多招式。',
+      },
+    ],
+  },
+];
+---
+
+<BaseLayout
+  title={title}
+  alternates={[
+    { locale: 'en', href: '/fusion-bonds/' },
+    { locale: 'zh-Hant', href: '/zh/fusion-bonds/' }
+  ]}
+  description={description}
+  keywords="羁絆融合, pokesurvivor 融合系統, 招式融合, 傳說寶可夢獎勵, 裂隙戰鬥, 融合策略, 招式槽管理"
+  ogType="article"
+  ogImage="/og-fusion-bonds.jpg"
+  ogImageAlt="PokéSurvivor 羁絆融合系統指南"
+  breadcrumbs={[
+    { name: '首頁', url: '/zh/' },
+    { name: '羁絆融合', url: '/zh/fusion-bonds/' }
+  ]}
+  jsonLd={jsonLd}
+>
+  <div class="page-wrapper">
+    <article class="main-content">
+      <header class="article-header">
+        <p class="section-label">指南</p>
+        <h1>羁絆融合系統：招式組合完全指南</h1>
+        <p class="article-meta">
+          更新於 {updated} · 基於 {gameVersion}
+        </p>
+      </header>
+
+
+      <section>
+        <h2>什麼是羁絆融合系統？</h2>
+
+        <figure class="content-image">
+          <img
+            src="/images/content/fusion-diagram-visual.svg"
+            alt="羁絆融合系統示意圖，展示兩個招式合併到一個槽位"
+            width="800"
+            height="450"
+            loading="lazy"
+          />
+          <figcaption>羁絆融合允許多個招式從單個槽位同時觸發</figcaption>
+        </figure>
+
+        <p>
+          2026年10月11日更新引入了羁絆融合系統（Fusion Bonds）——一個讓你將多個招式組合到單個槽位的系統。
+          擊敗裂隙中的傳說寶可夢，獲得一個 Bond，將兩個招式融合在一起。它們會同時從一個槽位觸發，而不是佔用兩個槽位。
+        </p>
+        <p>
+          每多擊敗一個傳說，就會向該融合槽位再添加一個招式。最多可以同時擁有 4 個 Bonds，這意味著 5 個招式
+          從單個槽位同時觸發。其他槽位？釋放出來學習更多招式。
+        </p>
+        <p>
+          這與<a href="/zh/how-to-play/">招式進化</a>不同——那是當 Ember 在滿級時變成 Fire Blast。
+          Bonds 不轉變招式；它們連結招式。兩個獨立的系統並行運作。
+        </p>
+        <p>
+          為什麼引入這個系統？後期遊戲會遇到瓶頸：你的 4 個招式槽位用滿，構築就鎖定了。Bonds 打破了這個限制。
+          更多招式，更好的屬性覆蓋，更多靈活性。同一次更新讓<a href="/zh/rifts/">裂隙</a>出現頻率更高，
+          所以你有更多機會獲得 Bonds。
+        </p>
+      </section>
+
+      <section>
+        <h2>如何獲得 Bonds</h2>
+        <p>
+          獲得 Bonds 的唯一方法：<strong>擊敗裂隙中的傳說寶可夢</strong>。沒有其他方法。沒有商店，沒有扭蛋，
+          沒有等級里程碑。你戰鬥傳說，你贏了，你獲得一個 Bond。每個傳說一個 Bond。
+        </p>
+
+        <h3>裂隙：通往 Bonds 的門戶</h3>
+        <p>
+          裂隙是地圖上定期出現的神秘傳送門。你會在遊戲開始幾分鐘後看到它們出現。進入一個，你會被傳送到
+          屬性主題競技場——總共 18 個競技場，每種屬性一個。火系傳說在熔岩火山戰鬥（岩漿灼燒，陽光增強火系）。
+          冰系傳說在永恆冰川（滑溜的冰面，冰雪削減你的 HP）。每個競技場都有影響戰鬥的地形效果和天氣。
+        </p>
+        <p>
+          你有 2 分鐘時間獲勝。擊敗傳說，你獲得一個 Bond 加一張 ×10 扭蛋券。輸了或超時，你會被送回地圖，
+          HP 降至 30%，什麼都沒得到。遊戲繼續，但你空手而歸。
+        </p>
+        <p>
+          我們的<a href="/zh/rifts/">裂隙指南</a>涵蓋所有 18 個競技場、地形危害，以及哪些夥伴屬性在每個
+          競技場中效果最好。如果你認真想要收集 Bonds，先讀那個。
+        </p>
+
+        <h3>87 隻傳說寶可夢</h3>
+        <p>
+          遊戲有 87 隻來自第 1 到第 9 世代的傳說寶可夢——急凍鳥、超夢、烈空坐、蒼響，全部都有。
+          雙屬性傳說（如帝牙盧卡：鋼/龍）會隨機選擇其中一個屬性來決定競技場。你在進入之前不會知道是哪個競技場。
+        </p>
+        <p>
+          你可以單人挑戰裂隙或與朋友組隊。在組隊模式中，所有人一起進入裂隙。如果你們贏了，每個玩家應該都會
+          獲得一個 Bond（官方沒確認這一點，但組隊獎勵通常是共享的——查看我們的
+          <a href="/zh/co-op/">組隊指南</a>了解多人遊戲細節）。
+        </p>
+
+        <h3>裂隙何時出現</h3>
+        <p>
+          裂隙隨機開啟，但 10 月 11 日更新提高了它們的生成率。你通常會在第 1 到 5 分鐘之間看到第一個裂隙。
+          之後，如果你持續清理它們，它們會更頻繁地出現。錯過一個，另一個會生成——跳過沒有懲罰，但每個你
+          跳過的裂隙就是一個你沒得到的 Bond。
+        </p>
+        <p>
+          策略：在中期（第 10-20 分鐘）追逐裂隙，一旦你的招式已經進化。早期（第 0-10 分鐘），專注於升級
+          和進化你的核心招式。後期（第 20-30 分鐘），你在為<a href="/zh/arceus-judgment/">阿爾宙斯審判</a>
+          做準備，所以看到裂隙就進，但別為此送命。
+        </p>
+      </section>
+
+      <section>
+        <h2>融合機制詳解</h2>
+
+        <figure class="content-image">
+          <img
+            src="/images/content/fusion-synergy-calculation.svg"
+            alt="融合協同加成計算顯示招式組合如何創造傷害倍增"
+            width="800"
+            height="450"
+            loading="lazy"
+          />
+          <figcaption>協同加成在招式共享屬性或互補效果時疊加</figcaption>
+        </figure>
+
+        <h3>融合如何運作</h3>
+        <p>
+          第一個 Bond 連結兩個招式。它們同時從單個槽位觸發。例如：你融合 Thunderbolt 和 Ice Beam。
+          當 Thunderbolt 的攻擊觸發時，Ice Beam 也觸發。一個槽位，兩次攻擊，同時觸發。
+        </p>
+        <p>
+          第二個 Bond 向該融合添加第三個招式。現在是 Thunderbolt + Ice Beam + Flamethrower，全部來自
+          一個槽位。第三個 Bond 添加第四個招式。第四個 Bond 添加第五個招式。這就是上限：4 個 Bonds，
+          5 個招式在一個槽位。
+        </p>
+        <p>
+          官方措辭："每個你在裂隙中擊敗的傳說都會給你一個 Bond：連結兩個招式，使它們從單個槽位同時觸發，
+          每多擊敗一個傳說就再添加一個，最多同時 4 個。"
+        </p>
+
+        <div class="fusion-diagram">
+          <div class="fusion-step">
+            <strong>1 個 Bond：</strong> 2 個招式 → 1 個槽位 <span class="free-slots">（釋放 1 個槽位）</span>
+          </div>
+          <div class="fusion-step">
+            <strong>2 個 Bonds：</strong> 3 個招式 → 1 個槽位 <span class="free-slots">（釋放 2 個槽位）</span>
+          </div>
+          <div class="fusion-step">
+            <strong>3 個 Bonds：</strong> 4 個招式 → 1 個槽位 <span class="free-slots">（釋放 3 個槽位）</span>
+          </div>
+          <div class="fusion-step highlight">
+            <strong>4 個 Bonds：</strong> 5 個招式 → 1 個槽位 <span class="free-slots">（釋放 4 個槽位！）</span>
+          </div>
+        </div>
+
+        <div class="disclaimer-box">
+          ⚠️ <strong>機制澄清：</strong> "最多同時 4 個"的解釋（5 個招式在 1 個槽位）基於官方描述
+          "每多擊敗一個傳說就再添加一個"。如果你在遊戲中觀察到不同的行為，社群仍在探索這個系統——分享你的發現！
+        </div>
+
+        <h3>這對你的構築意味著什麼</h3>
+
+        <figure class="content-image">
+          <img
+            src="/images/content/fusion-tier-system.svg"
+            alt="融合組合強度排行從S級到C級顯示最佳招式協同"
+            width="800"
+            height="500"
+            loading="lazy"
+          />
+          <figcaption>S級融合結合屬性覆蓋與狀態效果以達到最大效率</figcaption>
+        </figure>
+
+        <p>
+          通常，你有 4 個招式槽位。這就是總共 4 個招式。擁有 4 個 Bonds，你將 5 個招式融合到 1 個槽位。
+          這留下 3 個槽位是空的。5 個融合招式 + 3 個空槽位 = 還有 3 個招式的空間。你運行 8 個招式而不是 4 個。
+        </p>
+        <p>
+          或者你運行 6 或 7 個招式，保留槽位給升級。重點是：Bonds 釋放空間。更多招式意味著更好的屬性覆蓋，
+          更多實用選項，當遊戲拋出曲線球時更多靈活性。
+        </p>
+
+        <h3>重要限制和未知數</h3>
+        <ul>
+          <li><strong>最多 4 個 Bonds</strong> — 你不能堆疊超過 4 個 Bonds，所以 5 個招式在一個槽位是上限。</li>
+          <li><strong>單一融合組</strong> — 官方描述表明所有綁定的招式融合到一個槽位，而不是 4 個獨立的
+            2 招式對。這與擁有 4 個獨立融合不同。</li>
+          <li><strong>可以取消融合嗎？</strong> — 未知。官方更新沒有說明。在遊戲中測試。</li>
+          <li><strong>可以重新配置哪些招式融合嗎？</strong> — 未知。假設一旦設置就鎖定了。</li>
+          <li><strong>融合的招式在同一冷卻時間觸發嗎？</strong> — 不清楚。它們一起觸發，但每個招式可能
+            保持自己的冷卻計時器。需要測試。</li>
+        </ul>
+
+        <h3>融合 vs. 招式進化</h3>
+        <p>
+          Bonds 和招式進化是獨立的。進化發生在你將招式升到滿級並抽到其特定升級卡時（Ember → Fire Blast，
+          Bubble → Surf）。Bonds 融合現有招式而不改變它們。
+        </p>
+        <p>
+          可以融合已進化的招式嗎？系統沒有限制，所以 Fire Blast + Surf + Psychic 應該可以。先進化你的招式，
+          然後融合它們。這樣，你的融合槽位有最大威力的攻擊而不是基礎形態。
+        </p>
+      </section>
+
+      <section>
+        <h2>融合策略</h2>
+
+        <div class="disclaimer-box">
+          💡 <strong>社群策略：</strong> 以下融合策略基於社群經驗和遊戲機制分析，而非官方指南。
+          隨著玩家發現最佳構築，最佳實踐可能會演變。
+        </div>
+
+        <h3>該融合什麼</h3>
+        <p>
+          <strong>優先考慮高頻率招式。</strong> 只有當招式實際觸發時，融合才會使你的輸出翻倍。
+          快速攻擊型招式如 Thunderbolt、Water Gun 或 Quick Attack 獲益最多。它們經常觸發，所以組合它們會
+          倍增你的 DPS。
+        </p>
+        <p>
+          <strong>避免慢速招式。</strong> 冷卻時間長的高傷害招式（Hyper Beam、Giga Impact）從融合中獲益不多。
+          如果一個招式每 10 秒觸發一次，將它與 2 秒冷卻的招式融合會浪費融合潛力。快速招式觸發 5 次而慢速招式
+          觸發一次。最好分開保留。
+        </p>
+        <p>
+          <strong>覆蓋多種屬性。</strong> 融合來自不同屬性的招式以應對各種敵人。水 + 電 + 草 + 火為你提供
+          對抗岩石、地面、火、水、草和冰屬性的答案。在面對每種屬性群體的長時間遊戲中，屬性覆蓋更重要。
+        </p>
+
+        <h3>融合時機</h3>
+        <p>
+          <strong>先進化，後融合。</strong> 不要急於融合你的起始招式。等到它們進化。Ember + Bubble 的融合
+          比 Fire Blast + Surf 弱。在連結它們之前，讓你的招式達到最終形態。
+        </p>
+        <p>
+          <strong>中期是最佳時機。</strong> 第 10-20 分鐘是你的核心招式已經進化，你開始更頻繁地看到裂隙的時候。
+          這是你收集 Bonds 並設置融合的窗口。到第 20 分鐘，目標是至少有 2 個 Bonds 激活。
+        </p>
+        <p>
+          <strong>不要在早期強求。</strong> 如果裂隙在第 2 分鐘生成，而你還在進行第一次進化，跳過它。
+          在第 2 分鐘死於傳說會結束你的遊戲。裂隙頻繁生成——另一個會來。
+        </p>
+
+        <h3>構築原型</h3>
+        <p>
+          <strong>進攻型構築：</strong> 融合 4-5 個高 DPS 招式（Thunderbolt、Ice Beam、Flamethrower、
+          Shadow Ball、Psychic）。使用你的空閒槽位放置實用招式如治療或護盾。這最大化傷害輸出，同時保留
+          生存選項。
+        </p>
+        <p>
+          <strong>平衡型構築：</strong> 融合 3 個進攻招式，留 1 個槽位給防禦招式。融合槽位處理傷害，
+          其他槽位處理定位、治療或群體控制。適合偏好安全而非純進攻的玩家。
+        </p>
+        <p>
+          <strong>專家型構築：</strong> 融合所有打擊相同弱點的招式。例如：所有水系招式以摧毀火/岩石/地面敵人。
+          如果遇到草系或電系類型會有風險，但在正確的匹配中具有毀滅性。我們的<a href="/zh/tier-list/">評級列表</a>
+          顯示哪些寶可夢擅長屬性專注構築。
+        </p>
+
+        <h3>常見錯誤</h3>
+        <p>
+          <strong>融合低傷害招式。</strong> 如果你的招式各自造成 50 點傷害，融合它們不會突然讓它們變強。
+          融合倍增頻率，而非威力。融合已經強大的招式。
+        </p>
+        <p>
+          <strong>忽視屬性克制。</strong> 融合 5 個火系招式聽起來很酷，直到你遇到水系群體。你造成 30% 傷害
+          而它們粉碎你。分散你的屬性，除非你在運行小眾構築。
+        </p>
+        <p>
+          <strong>跳過裂隙以"節省時間"。</strong> Bonds 值得 2 分鐘的投資。每個你跳過的 Bond 就是一個
+          你無法釋放的槽位。如果你強大到可以清理地圖，你就強大到可以戰鬥傳說。
+        </p>
+      </section>
+
+      <section>
+        <h2>何時狩獵 Bonds</h2>
+
+        <h3>早期（第 0-10 分鐘）</h3>
+        <p>
+          專注於升級和進化你的起始招式。如果裂隙生成且你有信心可以贏，挑戰它。如果沒有，跳過它。
+          你的首要任務是讓 Ember 變成 Fire Blast 或 Bubble 變成 Surf。Bonds 排第二。
+        </p>
+
+        <h3>中期（第 10-20 分鐘）</h3>
+        <p>
+          這是你的 Bond 刷取窗口。你的招式已經進化，你的屬性很穩定，你可以處理傳說戰鬥。在這個階段
+          積極追逐裂隙。目標是在第 20 分鐘之前收集 2-3 個 Bonds。
+        </p>
+        <p>
+          但不要只盯著 Bonds。如果你 HP 低或被敵人包圍，先治療。死了的遊戲賺不到任何 Bonds。
+        </p>
+
+        <h3>後期（第 20-30 分鐘）</h3>
+        <p>
+          你在為<a href="/zh/arceus-judgment/">第 30 分鐘的阿爾宙斯審判</a>做準備。如果裂隙生成，清理它們
+          ——Bonds 在審判模式中有幫助。但不要特意去狩獵它們。生存第一。如果你在第 28 分鐘追逐裂隙而死，
+          Bonds 就無關緊要了。
+        </p>
+        <p>
+          到第 25 分鐘，將你的重點轉移到防禦升級：HP、速度、護盾。Bonds 在這時是獎勵，而非目標。
+        </p>
+
+        <h3>審判後（第 30 分鐘以上）</h3>
+        <p>
+          如果你在第 30 分鐘後還活著，你在審判模式中。裂隙仍然生成，但壓力很大——阿爾宙斯在追你，傳說
+          每 5 秒生成一次。如果你看到裂隙並且有喘息空間，抓住它。額外的 Bond 可能是第 31 分鐘和第 32 分鐘
+          之間的區別。
+        </p>
+        <p>
+          但別為此送命。審判模式生存就是不犯錯誤，而冒險的裂隙潛入就是錯誤。
+        </p>
+      </section>
+
+      <section>
+        <h2>進階技巧</h2>
+
+        <div class="disclaimer-box">
+          🔬 <strong>進階機制：</strong> 這些技巧中的一些涉及未經證實的機制（如冷卻互動或升級卡對融合招式的影響）。
+          在你自己的遊戲中測試它們以驗證。
+        </div>
+
+        <h3>組隊 Bond 刷取</h3>
+        <p>
+          和朋友一起玩？裂隙在組隊時更容易。更多玩家意味著更多傷害、更多群體控制、更多復活倒下隊友的空間。
+          如果一個玩家倒下，其他人可以完成傳說。
+        </p>
+        <p>
+          官方描述沒有確認當組隊獲勝時是否所有玩家都會獲得 Bonds。根據組隊獎勵的運作方式（每個人都獲得
+          金幣和券），所有玩家應該都會獲得 Bonds。測試確認。查看我們的<a href="/zh/co-op/">組隊指南</a>
+          了解完整的多人遊戲策略。
+        </p>
+
+        <h3>競技場選擇策略</h3>
+        <p>
+          你無法選擇進入哪個競技場——裂隙是隨機的——但你可以準備。如果你的夥伴是水系，火系和地面系競技場有利。
+          如果你是電系，避開地面系競技場（你造成 30% 傷害）。我們的<a href="/zh/rifts/">裂隙指南</a>列出
+          所有 18 個競技場的屬性匹配和地形危害。
+        </p>
+        <p>
+          雙屬性傳說隨機選擇其中一個屬性。帝牙盧卡（鋼/龍）可能送你到鋼鐵要塞或龍之聖域。你在進入之前不會知道。
+          帶一個平衡的招式設置以應對驚喜。
+        </p>
+
+        <h3>招式槽位管理</h3>
+        <p>
+          擁有 4 個 Bonds，你將 5 個招式融合到 1 個槽位。這留下 3 個槽位。你如何填充它們取決於你的遊戲風格：
+        </p>
+        <ul>
+          <li><strong>3 個更多進攻招式</strong> — 總共 8 個招式，最大傷害輸出。玻璃大炮方法。</li>
+          <li><strong>2 個進攻，1 個實用</strong> — 總共 7 個招式，帶一個治療或護盾以確保安全。</li>
+          <li><strong>2 個進攻，1 個開放槽位</strong> — 總共 6 個招式，留出空間給情境升級或實驗招式。</li>
+        </ul>
+        <p>
+          沒有"正確"的分配。長遊戲偏好實用。短而激進的遊戲偏好純進攻。根據遊戲進展調整。
+        </p>
+
+        <h3>融合和升級</h3>
+        <p>
+          當你升級並抽到升級卡時，它影響一個招式。如果該招式在你的融合槽位中，升級是應用於所有 5 個融合招式
+          還是只有那一個？官方更新沒有說明。早期玩家報告不一。自己測試：融合 2 個招式，升級一個，觀察它如何表現。
+        </p>
+        <p>
+          我們的假設：升級按招式應用，而非按槽位。對 Thunderbolt 的 +20% 傷害升級提升 Thunderbolt，而非 Ice Beam。
+          但我們沒有確認。這是社群仍在探索的一個領域。
+        </p>
+      </section>
+
+      <FAQ heading="常見問題" items={faq} />
+
+      <aside class="sources" aria-labelledby="sources-title">
+        <h2 id="sources-title">來源和更新</h2>
+        <p>
+          本指南基於<a href="https://pokesurvivor.com/en/news/" rel="noopener">官方 2026年10月11日更新公告</a>、
+          <a href="https://pokesurvivor.com/en/legendaries/" rel="noopener">傳說寶可夢頁面</a>、
+          <a href="https://pokesurvivor.com/en/guide/" rel="noopener">官方指南</a>和社群遊戲經驗。
+          我們是玩 PokéSurvivor 的粉絲，不是開發者。
+        </p>
+        <p>
+          羁絆融合系統是新的（2026年10月11日引入），所以機制仍在探索中。如果本頁面上的任何資訊與遊戲衝突，
+          請相信遊戲。始終查看<a href="https://pokesurvivor.com/en/" rel="noopener">pokesurvivor.com</a>
+          了解最新更新。
+        </p>
+        <p class="version-info">
+          <strong>遊戲版本：</strong> 2026年10月11日更新<br>
+          <strong>指南最後更新：</strong> 2026年10月19日
+        </p>
+      </aside>
+    </article>
+
+    <section class="closing-cta" aria-labelledby="closing-cta-title">
+      <h2 id="closing-cta-title">準備好堆疊 Bonds 了嗎？</h2>
+      <p>擊敗傳說，收集 Bonds，打造終極招式組合。</p>
+      <div class="cta-actions">
+        <a href="https://pokesurvivor.com/en/" target="_blank" rel="noopener" class="btn btn-primary btn-lg">遊玩 PokéSurvivor</a>
+        <a href="/zh/rifts/" class="btn btn-secondary btn-lg">閱讀裂隙指南</a>
+      </div>
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  .page-wrapper {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .main-content {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: var(--space-2xl) var(--container-padding);
+  }
+
+  .article-header {
+    margin-bottom: var(--space-2xl);
+    text-align: center;
+  }
+
+  .section-label {
+    display: inline-block;
+    padding: var(--space-1) var(--space-3);
+    background: var(--accent-subtle);
+    border: 1px solid var(--accent-primary);
+    border-radius: var(--radius-pill);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-semibold);
+    color: var(--accent-primary);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: var(--space-md);
+  }
+
+  .article-header h1 {
+    font-family: var(--font-display);
+    font-size: clamp(var(--font-size-3xl), 5vw, var(--font-size-4xl));
+    font-weight: var(--font-bold);
+    color: var(--text-primary);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin-bottom: var(--space-md);
+  }
+
+  .article-meta {
+    font-size: var(--font-size-sm);
+    color: var(--text-tertiary);
+    margin: 0;
+  }
+
+  .version-alert {
+    background: var(--surface-elevated);
+    border: 1px solid var(--accent-primary);
+    border-radius: var(--radius-md);
+    padding: var(--space-md);
+    margin-bottom: var(--space-2xl);
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+  }
+
+  .version-alert a {
+    color: var(--accent-primary);
+    text-decoration: underline;
+  }
+
+  .disclaimer-box {
+    background: var(--surface-elevated);
+    border-left: 4px solid var(--accent-primary);
+    border-radius: var(--radius-md);
+    padding: var(--space-md);
+    margin: var(--space-lg) 0;
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+  }
+
+  .disclaimer-box strong {
+    color: var(--text-primary);
+  }
+
+  .fusion-diagram {
+    background: var(--surface-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    padding: var(--space-lg);
+    margin: var(--space-lg) 0;
+  }
+
+  .fusion-step {
+    padding: var(--space-3);
+    margin-bottom: var(--space-2);
+    background: var(--surface-base);
+    border-radius: var(--radius-md);
+    font-family: var(--font-mono);
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+  }
+
+  .fusion-step:last-child {
+    margin-bottom: 0;
+  }
+
+  .fusion-step.highlight {
+    background: var(--accent-subtle);
+    border: 1px solid var(--accent-primary);
+    color: var(--text-primary);
+    font-weight: var(--font-semibold);
+  }
+
+  .fusion-step strong {
+    color: var(--accent-primary);
+  }
+
+  .fusion-step .free-slots {
+    color: var(--text-tertiary);
+    font-style: italic;
+  }
+
+  section {
+    margin-bottom: var(--space-2xl);
+  }
+
+  h2 {
+    font-family: var(--font-display);
+    font-size: var(--font-size-3xl);
+    font-weight: var(--font-bold);
+    color: var(--text-primary);
+    margin-bottom: var(--space-md);
+    line-height: 1.2;
+  }
+
+  h3 {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-semibold);
+    color: var(--text-primary);
+    margin-top: var(--space-lg);
+    margin-bottom: var(--space-2);
+  }
+
+  p {
+    font-size: var(--font-size-base);
+    line-height: var(--leading-relaxed);
+    color: var(--text-secondary);
+    margin-bottom: var(--space-md);
+  }
+
+  ul {
+    padding-left: 1.5rem;
+    margin-bottom: var(--space-md);
+  }
+
+  li {
+    margin-bottom: var(--space-2);
+    color: var(--text-secondary);
+    line-height: var(--leading-relaxed);
+  }
+
+  a {
+    color: var(--accent-primary);
+  }
+
+  a:hover {
+    color: var(--accent-hover);
+    text-decoration: underline;
+  }
+
+  .sources {
+    margin-top: var(--space-2xl);
+    padding: var(--space-lg);
+    background: var(--surface-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+  }
+
+  .sources h2 {
+    font-size: var(--font-size-xl);
+    margin-top: 0;
+    margin-bottom: var(--space-md);
+  }
+
+  .sources p {
+    margin-bottom: var(--space-md);
+  }
+
+  .sources p:last-child {
+    margin-bottom: 0;
+  }
+
+  .version-info {
+    font-size: var(--font-size-sm);
+    color: var(--text-tertiary);
+    margin-top: var(--space-md);
+    padding-top: var(--space-md);
+    border-top: 1px solid var(--border-subtle);
+  }
+
+  .closing-cta {
+    max-width: 800px;
+    margin: var(--space-2xl) auto;
+    padding: var(--space-2xl) var(--container-padding);
+    text-align: center;
+    background: var(--surface-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+  }
+
+  .closing-cta h2 {
+    font-family: var(--font-display);
+    font-size: var(--font-size-3xl);
+    margin-bottom: var(--space-md);
+  }
+
+  .closing-cta p {
+    font-size: var(--font-size-lg);
+    margin-bottom: var(--space-lg);
+  }
+
+  .cta-actions {
+    display: flex;
+    gap: var(--space-md);
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  @media (max-width: 768px) {
+    .cta-actions {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .fusion-diagram {
+      padding: var(--space-md);
+    }
+
+    .fusion-step {
+      font-size: var(--font-size-xs);
+    }
+  }
+</style>

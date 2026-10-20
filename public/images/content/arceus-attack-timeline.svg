@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" role="img" aria-label="Arceus Judgment Attack Pattern Timeline">
+  <title>Arceus Judgment Attack Pattern Timeline</title>
+
+  <!-- Background -->
+  <rect width="800" height="400" fill="#05070C"/>
+
+  <!-- Title -->
+  <text x="400" y="35" font-family="Arial, sans-serif" font-size="22" font-weight="bold" fill="#F8FAFC" text-anchor="middle">Attack Pattern Timeline (30 seconds)</text>
+
+  <!-- Timeline base -->
+  <line x1="50" y1="200" x2="750" y2="200" stroke="#1E2636" stroke-width="4"/>
+
+  <!-- Phase 1: Judgment Beams (0-10s) -->
+  <rect x="50" y="100" width="233" height="80" fill="#E9A568" rx="8"/>
+  <text x="166" y="135" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#0A0D12" text-anchor="middle">Phase 1</text>
+  <text x="166" y="158" font-family="Arial, sans-serif" font-size="14" fill="#0A0D12" text-anchor="middle">Judgment Beams</text>
+  <circle cx="166" cy="200" r="8" fill="#E9A568"/>
+  <text x="166" y="230" font-family="Arial, sans-serif" font-size="13" fill="#CBD5E1" text-anchor="middle">0-10s</text>
+  <text x="166" y="250" font-family="Arial, sans-serif" font-size="12" fill="#94A3B8" text-anchor="middle">Vertical rays</text>
+
+  <!-- Phase 2: Plate Rotation (10-20s) -->
+  <rect x="283" y="100" width="234" height="80" fill="#38BDF8" rx="8"/>
+  <text x="400" y="135" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#0A0D12" text-anchor="middle">Phase 2</text>
+  <text x="400" y="158" font-family="Arial, sans-serif" font-size="14" fill="#0A0D12" text-anchor="middle">Plate Rotation</text>
+  <circle cx="400" cy="200" r="8" fill="#38BDF8"/>
+  <text x="400" y="230" font-family="Arial, sans-serif" font-size="13" fill="#CBD5E1" text-anchor="middle">10-20s</text>
+  <text x="400" y="250" font-family="Arial, sans-serif" font-size="12" fill="#94A3B8" text-anchor="middle">Spinning hazards</text>
+
+  <!-- Phase 3: Hyper Beam (20-30s) -->
+  <rect x="517" y="100" width="233" height="80" fill="#F97316" rx="8"/>
+  <text x="633" y="135" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#0A0D12" text-anchor="middle">Phase 3</text>
+  <text x="633" y="158" font-family="Arial, sans-serif" font-size="14" fill="#0A0D12" text-anchor="middle">Hyper Beam</text>
+  <circle cx="633" cy="200" r="8" fill="#F97316"/>
+  <text x="633" y="230" font-family="Arial, sans-serif" font-size="13" fill="#CBD5E1" text-anchor="middle">20-30s</text>
+  <text x="633" y="250" font-family="Arial, sans-serif" font-size="12" fill="#94A3B8" text-anchor="middle">Sweeping laser</text>
+
+  <!-- Danger indicators -->
+  <path d="M 166 270 L 156 290 L 176 290 Z" fill="#EF4444"/>
+  <text x="166" y="310" font-family="Arial, sans-serif" font-size="11" fill="#EF4444" text-anchor="middle">High Damage</text>
+
+  <path d="M 400 270 L 390 290 L 410 290 Z" fill="#F59E0B"/>
+  <text x="400" y="310" font-family="Arial, sans-serif" font-size="11" fill="#F59E0B" text-anchor="middle">Medium</text>
+
+  <path d="M 633 270 L 623 290 L 643 290 Z" fill="#EF4444"/>
+  <text x="633" y="310" font-family="Arial, sans-serif" font-size="11" fill="#EF4444" text-anchor="middle">Instant KO</text>
+
+  <!-- Legend -->
+  <text x="50" y="360" font-family="Arial, sans-serif" font-size="13" fill="#94A3B8">💡 Tip: Use Phase 1 to position safely before the deadly Phase 3</text>
+</svg>

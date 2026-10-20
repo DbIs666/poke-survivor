@@ -1,0 +1,87 @@
+<svg width="800" height="450" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="800" height="450" fill="#0F131C"/>
+
+  <!-- Title -->
+  <text x="400" y="50" font-family="system-ui, sans-serif" font-size="32" font-weight="bold" fill="#6EE7B7" text-anchor="middle">
+    Fusion Bonds System
+  </text>
+
+  <!-- Original Slots (Top) -->
+  <text x="400" y="100" font-family="system-ui, sans-serif" font-size="18" fill="#9CA3AF" text-anchor="middle">
+    Before Fusion: 4 Move Slots
+  </text>
+
+  <g transform="translate(100, 110)">
+    <rect width="140" height="80" rx="8" fill="#1E2636" stroke="#38BDF8" stroke-width="2" stroke-dasharray="5,5"/>
+    <text x="70" y="45" font-family="system-ui, sans-serif" font-size="16" fill="#E5E7EB" text-anchor="middle">Slot 1</text>
+  </g>
+  <g transform="translate(260, 110)">
+    <rect width="140" height="80" rx="8" fill="#1E2636" stroke="#38BDF8" stroke-width="2" stroke-dasharray="5,5"/>
+    <text x="70" y="45" font-family="system-ui, sans-serif" font-size="16" fill="#E5E7EB" text-anchor="middle">Slot 2</text>
+  </g>
+  <g transform="translate(420, 110)">
+    <rect width="140" height="80" rx="8" fill="#1E2636" stroke="#38BDF8" stroke-width="2" stroke-dasharray="5,5"/>
+    <text x="70" y="45" font-family="system-ui, sans-serif" font-size="16" fill="#E5E7EB" text-anchor="middle">Slot 3</text>
+  </g>
+  <g transform="translate(580, 110)">
+    <rect width="140" height="80" rx="8" fill="#1E2636" stroke="#38BDF8" stroke-width="2" stroke-dasharray="5,5"/>
+    <text x="70" y="45" font-family="system-ui, sans-serif" font-size="16" fill="#E5E7EB" text-anchor="middle">Slot 4</text>
+  </g>
+
+  <!-- Arrow Down -->
+  <path d="M 400 210 L 400 250" stroke="#6EE7B7" stroke-width="4" marker-end="url(#arrow)"/>
+  <text x="440" y="235" font-family="system-ui, sans-serif" font-size="16" font-weight="bold" fill="#6EE7B7">
+    + 4 Bonds
+  </text>
+
+  <!-- After Fusion (Bottom) -->
+  <text x="400" y="280" font-family="system-ui, sans-serif" font-size="18" fill="#9CA3AF" text-anchor="middle">
+    After Fusion: 5 Total Moves
+  </text>
+
+  <g transform="translate(80, 290)">
+    <rect width="160" height="100" rx="8" fill="#064E3B" stroke="#6EE7B7" stroke-width="3"/>
+    <text x="80" y="40" font-family="system-ui, sans-serif" font-size="18" font-weight="bold" fill="#6EE7B7" text-anchor="middle">
+      ⚡ Thunderbolt
+    </text>
+    <text x="80" y="65" font-family="system-ui, sans-serif" font-size="14" fill="#E5E7EB" text-anchor="middle">
+      +
+    </text>
+    <text x="80" y="85" font-family="system-ui, sans-serif" font-size="18" font-weight="bold" fill="#6EE7B7" text-anchor="middle">
+      🔥 Flamethrower
+    </text>
+  </g>
+
+  <g transform="translate(260, 290)">
+    <rect width="120" height="100" rx="8" fill="#1E2636" stroke="#38BDF8" stroke-width="2"/>
+    <text x="60" y="55" font-family="system-ui, sans-serif" font-size="16" fill="#E5E7EB" text-anchor="middle">
+      Slot 2
+    </text>
+  </g>
+
+  <g transform="translate(400, 290)">
+    <rect width="120" height="100" rx="8" fill="#1E2636" stroke="#38BDF8" stroke-width="2"/>
+    <text x="60" y="55" font-family="system-ui, sans-serif" font-size="16" fill="#E5E7EB" text-anchor="middle">
+      Slot 3
+    </text>
+  </g>
+
+  <g transform="translate(540, 290)">
+    <rect width="120" height="100" rx="8" fill="#1E2636" stroke="#38BDF8" stroke-width="2"/>
+    <text x="60" y="55" font-family="system-ui, sans-serif" font-size="16" fill="#E5E7EB" text-anchor="middle">
+      Slot 4
+    </text>
+  </g>
+
+  <!-- Info -->
+  <text x="400" y="430" font-family="system-ui, sans-serif" font-size="14" fill="#9CA3AF" text-anchor="middle">
+    Fused moves fire together • Shared cooldown • 1 Bond = 2 moves, 4 Bonds = 5 moves
+  </text>
+
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#6EE7B7" />
+    </marker>
+  </defs>
+</svg>

@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" role="img" aria-label="Arceus Stats vs Other Legendary Pokémon">
+  <title>Arceus Stats vs Other Legendary Pokémon</title>
+
+  <!-- Background -->
+  <rect width="800" height="450" fill="#05070C"/>
+
+  <!-- Title -->
+  <text x="400" y="35" font-family="Arial, sans-serif" font-size="22" font-weight="bold" fill="#F8FAFC" text-anchor="middle">Stats Comparison: Arceus vs Legendary Pokémon</text>
+
+  <!-- Grid lines -->
+  <line x1="150" y1="80" x2="150" y2="380" stroke="#1E2636" stroke-width="2"/>
+  <line x1="150" y1="380" x2="750" y2="380" stroke="#1E2636" stroke-width="2"/>
+
+  <!-- Y-axis labels -->
+  <text x="140" y="90" font-family="Arial, sans-serif" font-size="12" fill="#94A3B8" text-anchor="end">720</text>
+  <text x="140" y="155" font-family="Arial, sans-serif" font-size="12" fill="#94A3B8" text-anchor="end">680</text>
+  <text x="140" y="230" font-family="Arial, sans-serif" font-size="12" fill="#94A3B8" text-anchor="end">640</text>
+  <text x="140" y="305" font-family="Arial, sans-serif" font-size="12" fill="#94A3B8" text-anchor="end">600</text>
+  <text x="140" y="385" font-family="Arial, sans-serif" font-size="12" fill="#94A3B8" text-anchor="end">580</text>
+
+  <!-- Grid horizontal lines -->
+  <line x1="150" y1="85" x2="750" y2="85" stroke="#0F131C" stroke-width="1" stroke-dasharray="5,5"/>
+  <line x1="150" y1="155" x2="750" y2="155" stroke="#0F131C" stroke-width="1" stroke-dasharray="5,5"/>
+  <line x1="150" y1="230" x2="750" y2="230" stroke="#0F131C" stroke-width="1" stroke-dasharray="5,5"/>
+  <line x1="150" y1="305" x2="750" y2="305" stroke="#0F131C" stroke-width="1" stroke-dasharray="5,5"/>
+
+  <!-- Bar 1: Arceus -->
+  <rect x="200" y="85" width="80" height="295" fill="#F97316" rx="4"/>
+  <text x="240" y="405" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#F8FAFC" text-anchor="middle">Arceus</text>
+  <text x="240" y="75" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#F97316" text-anchor="middle">720</text>
+  <circle cx="240" cy="60" r="4" fill="#F97316"/>
+
+  <!-- Bar 2: Mewtwo -->
+  <rect x="320" y="155" width="80" height="225" fill="#38BDF8" rx="4"/>
+  <text x="360" y="405" font-family="Arial, sans-serif" font-size="13" fill="#CBD5E1" text-anchor="middle">Mewtwo</text>
+  <text x="360" y="145" font-family="Arial, sans-serif" font-size="14" fill="#38BDF8" text-anchor="middle">680</text>
+
+  <!-- Bar 3: Rayquaza -->
+  <rect x="440" y="155" width="80" height="225" fill="#6EE7B7" rx="4"/>
+  <text x="480" y="405" font-family="Arial, sans-serif" font-size="13" fill="#CBD5E1" text-anchor="middle">Rayquaza</text>
+  <text x="480" y="145" font-family="Arial, sans-serif" font-size="14" fill="#6EE7B7" text-anchor="middle">680</text>
+
+  <!-- Bar 4: Dialga -->
+  <rect x="560" y="155" width="80" height="225" fill="#94A3B8" rx="4"/>
+  <text x="600" y="405" font-family="Arial, sans-serif" font-size="13" fill="#CBD5E1" text-anchor="middle">Dialga</text>
+  <text x="600" y="145" font-family="Arial, sans-serif" font-size="14" fill="#94A3B8" text-anchor="middle">680</text>
+
+  <!-- Y-axis label -->
+  <text x="70" y="230" font-family="Arial, sans-serif" font-size="14" fill="#CBD5E1" transform="rotate(-90 70 230)" text-anchor="middle">Base Stat Total (BST)</text>
+
+  <!-- Legend -->
+  <rect x="200" y="425" width="12" height="12" fill="#F97316" rx="2"/>
+  <text x="220" y="435" font-family="Arial, sans-serif" font-size="12" fill="#CBD5E1">Creation Trio leader</text>
+
+  <rect x="400" y="425" width="12" height="12" fill="#38BDF8" rx="2"/>
+  <text x="420" y="435" font-family="Arial, sans-serif" font-size="12" fill="#CBD5E1">Standard legendary</text>
+</svg>

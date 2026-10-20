@@ -1,0 +1,592 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import FAQ from '../../components/FAQ.astro';
+
+const site = 'https://poke-survivors.org';
+const title = '阿爾宙斯審判模式攻略：30分鐘後的終極挑戰 | PokéSurvivor';
+const description = '掌握 PokéSurvivor 阿爾宙斯審判模式。學習如何在30分鐘後存活、解鎖成就、登上排行榜。基於2026-10-13版本。';
+const updated = '2026-10-19';
+const gameVersion = '2026-10-13 更新';
+
+const faq = [
+  {
+    q: '可以跳過阿爾宙斯審判嗎？',
+    a: '不行。審判會在第30分鐘自動觸發，無法避免——做好準備才是王道。',
+  },
+  {
+    q: '可以擊敗阿爾宙斯嗎？',
+    a: '不行。審判模式中的阿爾宙斯是無敵的，目標是存活時間而非擊敗它。（「擊敗阿爾宙斯」成就來自裂縫戰鬥，那是不同的模式——參考我們的<a href="/zh/rifts/">裂縫指南</a>。）',
+  },
+  {
+    q: '在審判模式中死亡會失去進度嗎？',
+    a: '30分鐘前獲得的寶可幣和扭蛋券都會保留，只有排行榜的存活時間會重置。',
+  },
+  {
+    q: '目前的世界紀錄是多久？',
+    a: '排行榜在2026年10月13日重置。請查看 <a href="https://pokesurvivor.com/en/" rel="noopener">pokesurvivor.com</a> 的即時紀錄——每天都在更新。',
+  },
+];
+
+const jsonLd = [
+  {
+    '@type': 'Article',
+    headline: title,
+    description,
+    datePublished: '2026-10-19',
+    dateModified: updated,
+    author: { '@type': 'Organization', name: 'PokeSurvivor 粉絲攻略' },
+    publisher: { '@type': 'Organization', name: 'PokeSurvivor 粉絲攻略' },
+    inLanguage: 'zh-Hant',
+  },
+];
+---
+
+<BaseLayout
+  title={title}
+  locale="zh"
+  alternates={[
+    { locale: 'en', href: '/arceus-judgment/' },
+    { locale: 'zh-Hant', href: '/zh/arceus-judgment/' }
+  ]}
+  description={description}
+  keywords="阿爾宙斯審判模式, pokesurvivor 30分鐘, 審判遺跡, 無盡模式, 阿爾宙斯成就, 排行榜"
+  ogType="article"
+  ogImage="/og-arceus-judgment.jpg"
+  ogImageAlt="PokéSurvivor 阿爾宙斯審判模式攻略"
+  breadcrumbs={[
+    { name: '首頁', url: '/zh/' },
+    { name: '阿爾宙斯審判', url: '/zh/arceus-judgment/' }
+  ]}
+  jsonLd={jsonLd}
+>
+  <div class="page-wrapper">
+    <article class="main-content">
+      <header class="article-header">
+        <p class="section-label">攻略</p>
+        <h1>阿爾宙斯審判模式：30分鐘後的生存指南</h1>
+        <p class="article-meta">
+          更新於 {updated} · 基於{gameVersion}
+        </p>
+      </header>
+
+
+      <section>
+        <h2>什麼是阿爾宙斯審判模式？</h2>
+        <p>
+          你撐到了第30分鐘。螢幕一閃。阿爾宙斯從天而降，把你拖進審判遺跡。前面29分鐘的練級？那只是熱身。
+        </p>
+        <p>
+          阿爾宙斯審判是 PokéSurvivor 的真正終局挑戰，在2026年10月12-13日更新中引入，讓遊戲變成無盡生存。以前第30分鐘會出現勝利畫面。現在，30分鐘才是真正戰鬥的開始。
+        </p>
+        <p>
+          阿爾宙斯是無敵的。它會追逐你，而且越來越快。每5秒就會有一隻傳說寶可夢加入戰鬥，每隻的HP和傷害都是前一隻的兩倍。這個模式沒有「通關」——只有撐多久的問題。<a href="https://pokesurvivor.com/en/" rel="noopener">排行榜</a>按存活時間排名。你能撐多久？
+        </p>
+        <p>
+          新的背景音樂響起。氛圍完全不同。打到這裡的話應該熟悉基本操作了——不熟悉可以看我們的<a href="/zh/how-to-play/">玩法教學</a>。這份攻略專注於審判模式的生存技巧。
+        </p>
+      </section>
+
+      <section>
+        <h2>審判模式機制</h2>
+
+        <h3>阿爾宙斯是無敵的</h3>
+        <p>
+          你無法擊敗阿爾宙斯。沒有血條。沒有削弱階段。進入審判遺跡的那一刻，你的目標就從進攻變成純粹的生存。
+        </p>
+
+        <figure class="content-image">
+          <img
+            src="/images/content/arceus-stat-comparison.svg"
+            alt="阿爾宙斯基礎屬性總和與其他傳說寶可夢如超夢、烈空坐的對比"
+            width="800"
+            height="450"
+            loading="lazy"
+          />
+          <figcaption>阿爾宙斯擁有所有寶可夢中最高的基礎屬性總和——無法被擊敗的對手</figcaption>
+        </figure>
+
+        <p>
+          阿爾宙斯會在場地上追逐你，速度會隨時間遞增。官方公告說它「越來越快」（faster and faster）——沒有公開具體公式，但玩家回報第一分鐘後壓力明顯上升。
+        </p>
+
+        <h3>每5秒加入一隻傳說寶可夢</h3>
+        <p>
+          第一隻傳說寶可夢出現時就有強化過的屬性。5秒後，第二隻加入，HP和傷害翻倍。再過5秒，第三隻出現，屬性又是前一隻的兩倍。這個模式會持續下去。
+        </p>
+        <p>
+          這是你在第一分鐘要面對的：
+        </p>
+        <div class="data-table">
+          <table>
+            <thead>
+              <tr>
+                <th>時間</th>
+                <th>場上傳說寶可夢數量</th>
+                <th>最新一隻的倍率</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>0 秒</td><td>1 隻</td><td>1×</td></tr>
+              <tr><td>5 秒</td><td>2 隻</td><td>2×</td></tr>
+              <tr><td>10 秒</td><td>3 隻</td><td>4×</td></tr>
+              <tr><td>15 秒</td><td>4 隻</td><td>8×</td></tr>
+              <tr><td>30 秒</td><td>7 隻</td><td>64×</td></tr>
+              <tr><td>60 秒</td><td>13 隻</td><td>4,096×</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>
+          到第一分鐘時,螢幕上有13隻傳說寶可夢,最新那隻的傷害是第一隻的四千倍。難度曲線不是線性的——是指數型增長。
+        </p>
+
+        <figure class="content-image">
+          <img
+            src="/images/content/arceus-attack-timeline.svg"
+            alt="阿爾宙斯攻擊模式時間軸顯示30秒內的三個階段"
+            width="800"
+            height="400"
+            loading="lazy"
+          />
+          <figcaption>攻擊階段每30秒重複一次——學習規律才能活得更久</figcaption>
+        </figure>
+
+        <h3>生存是唯一目標</h3>
+        <p>
+          10月13日更新將全時段排行榜重置。所有人重新開始。你的排名就是你的存活時間：撐到31分鐘算不錯，32分鐘算強者，33分鐘就是頂尖玩家水準。
+        </p>
+        <p>
+          單人和組隊排行榜分開計算。想登頂？你在跟全球所有玩家競爭，而且這個模式才上線幾天，元遊戲還在成形中。
+        </p>
+      </section>
+
+      <section>
+        <h2>生存策略</h2>
+
+        <figure class="content-image">
+          <img
+            src="/images/content/judgment-arena-layout.svg"
+            alt="阿爾宙斯審判競技場佈局圖，展示安全區和危險區及攻擊模式"
+            width="800"
+            height="450"
+            loading="lazy"
+          />
+          <figcaption>競技場佈局：待在綠色安全區並持續移動以避開危險區</figcaption>
+        </figure>
+
+        <h3>移動就是一切</h3>
+        <p>
+          停下來就等死。前30分鐘教你閃避怪群——審判模式要求你把閃避練到完美。
+        </p>
+        <p>
+          跑大圈或走8字形。小圈移動會讓敵人包圍你。貼牆或躲角落，阿爾宙斯和傳說寶可夢會把你堵死。待在開闊空間，保持逃生路線暢通。
+        </p>
+        <p>
+          PC端用 WASD 或方向鍵。手機端，10月14日更新加入了響應式搖桿——用它來精確閃避。不要為了打傷害而站著不動。你的夥伴會自動攻擊，你的任務是活著。
+        </p>
+
+        <h3>夥伴和招式選擇</h3>
+        <p>
+          傷害沒你想的那麼重要。一隻有4,096倍HP的傳說寶可夢，無論你帶什麼配置都不會快速倒下。優先考慮生存屬性：
+        </p>
+        <ul>
+          <li><strong>速度</strong> — 跑贏阿爾宙斯，不斷調整位置。</li>
+          <li><strong>HP和防禦</strong> — 一次失誤不該直接結束遊戲。</li>
+          <li><strong>續航能力</strong> — 治療招式或護盾能多撐幾秒。積少成多。</li>
+        </ul>
+        <p>
+          參考我們的<a href="/zh/tier-list/">強度排行</a>和<a href="/zh/best-pokemon/">最佳初始夥伴</a>榜單。早期社群測試說機動性強的夥伴在這裡比玻璃大砲好用，但審判模式的元遊戲還在演變中。
+        </p>
+        <p>
+          招式配置方面，至少帶兩個輸出招式，其餘用輔助填滿——治療、護盾或移動增益。「招式儲備」升級（以2個招式開局）很有價值。給你的主力夥伴升級這個。
+        </p>
+
+        <h3>善用升級選擇</h3>
+        <p>
+          你在前30分鐘會升級。那些選擇決定了你能撐到31分鐘還是33分鐘。
+        </p>
+        <p>
+          25分鐘前，打傷害——你要有效率地刷經驗。25分鐘後，轉變優先順序：
+        </p>
+        <ul>
+          <li>速度升級優於傷害升級</li>
+          <li>HP和防禦優於進攻屬性</li>
+          <li>輔助招式（治療、護盾、衝刺）優於純輸出</li>
+        </ul>
+        <p>
+          25到30分鐘的窗口是你的準備階段。確保你的招式配置和屬性分配都針對生存調整好，而不是殺敵。
+        </p>
+
+        <h3>不要貪心</h3>
+        <p>
+          擊敗敵人會掉落經驗球。平常你會去追。在審判模式中，追經驗球會害死你。
+        </p>
+        <p>
+          讓經驗球自己飄過來。如果一顆球在傳說寶可夢群的另一邊，就放棄它。你不需要更多等級——你需要的是不死。對於「清場」傳說寶可夢也一樣：你清不完的。刷新速度太快。接受這是一場消耗戰，專注於閃避而不是殺敵。
+        </p>
+      </section>
+
+      <section>
+        <h2>三個成就</h2>
+        <p>
+          10月13日更新加入了三個審判相關成就。它們是遊戲中最難的成就之一。
+        </p>
+
+        <div class="achievement-card">
+          <h3>⭐ 審判降臨</h3>
+          <p class="achievement-unlock"><strong>解鎖條件：</strong>到達阿爾宙斯審判（第30分鐘）</p>
+          <p class="achievement-reward"><strong>獎勵：</strong>稱號 <em>「被審判者」</em></p>
+          <p class="achievement-strategy">
+            <strong>攻略：</strong>穩紮穩打30分鐘。第3、6、9、12、15、18、21、24、27分鐘的Boss是你的檢查點。傳說裂縫從1分15秒開始開啟——打通它們可以獲得×10扭蛋券（參考我們的<a href="/zh/rifts/">裂縫指南</a>）。到25分鐘時，確保你的招式和屬性偏向生存配置。
+          </p>
+        </div>
+
+        <div class="achievement-card">
+          <h3>⭐⭐ 創世神面前</h3>
+          <p class="achievement-unlock"><strong>解鎖條件：</strong>在阿爾宙斯面前存活1分鐘</p>
+          <p class="achievement-reward"><strong>獎勵：</strong>稱號 <em>「阿爾宙斯的選中者」</em></p>
+          <p class="achievement-strategy">
+            <strong>攻略：</strong>你需要撐到31分鐘（實際時間）。進入審判時要滿血——30分鐘前需要的話先補血。前30秒是最簡單的窗口：只有7隻傳說寶可夢，而且阿爾宙斯還沒加速到極限。大範圍移動，不要冒險。30秒後壓力翻倍。保持冷靜繼續跑。
+          </p>
+        </div>
+
+        <div class="achievement-card">
+          <h3>⭐⭐⭐ 神聖挑戰</h3>
+          <p class="achievement-unlock"><strong>解鎖條件：</strong>在單次審判中擊敗3隻傳說寶可夢</p>
+          <p class="achievement-reward"><strong>獎勵：</strong>無（無稱號）</p>
+          <p class="achievement-strategy">
+            <strong>攻略：</strong>這個超級難。你需要高爆發傷害，在倍率失控前擊殺傳說寶可夢。集火前2-3隻（0-15秒內）。它們最弱。之後倍率讓擊殺幾乎不可能。帶輸出型夥伴，在25-30分鐘窗口堆進攻升級，然後祈禱。早期回報說這比撐到32分鐘還難。
+          </p>
+        </div>
+
+        <p class="achievement-note">
+          <strong>注意：</strong>「擊敗阿爾宙斯」成就是另一個——它來自裂縫戰鬥，在類型場館中戰鬥阿爾宙斯。那是不同的模式。查看我們的<a href="/zh/rifts/">傳說裂縫指南</a>了解詳情。
+        </p>
+      </section>
+
+      <section>
+        <h2>社群經驗分享</h2>
+
+        <h3>何時開始準備</h3>
+        <p>
+          25分鐘是分界點。之前積極進攻——刷經驗、堆傷害、打裂縫。25分鐘後，每次升級選牌都要問：「這能讓我活更久嗎？」
+        </p>
+        <p>
+          檢查你的HP。如果低於80%，找治療。檢查你的招式欄。如果4個都是輸出沒有輔助，重抽一個護盾或衝刺。25到30分鐘不是刷經驗的時候——是調整配置準備即將到來的戰鬥。
+        </p>
+
+        <h3>組隊模式注意事項</h3>
+        <p>
+          和朋友一起玩？審判模式的表現會不同。我們的<a href="/zh/co-op/">多人合作指南</a>涵蓋多人基礎，這裡是審判專屬提醒：
+        </p>
+        <ul>
+          <li><strong>復活</strong> — 倒下的玩家可以站在旁邊3秒復活。在審判模式中，3秒是永恆。協調好誰去復活——不要全部擠在一起。</li>
+          <li><strong>分散還是集中？</strong> — 早期測試意見分歧。分散跑位可以分散敵人仇恨但復活更難。集中行動可以集火但風險是全滅。試驗看哪種適合你的隊伍。</li>
+          <li><strong>語音通話</strong> — 如果隊伍有語音，用起來。呼叫阿爾宙斯位置和傳說寶可夢刷新能救命。</li>
+        </ul>
+
+        <h3>常見錯誤</h3>
+        <p>
+          我犯過的錯，和我在直播中看到的錯：
+        </p>
+        <ul>
+          <li><strong>半血進審判</strong> — 30分鐘前補好血。一次早期傷害不應該直接結束遊戲。</li>
+          <li><strong>躲在角落</strong> — 角落看起來安全。實際是死亡陷阱。阿爾宙斯和傳說寶可夢會把你釘在那裡。待在開闊地。</li>
+          <li><strong>追著打</strong> — 你清不完場的。別試了。你的目標是時間，不是擊殺數。</li>
+          <li><strong>只盯一隻傳說寶可夢</strong> — 當你集火一隻時，三隻新的在你背後刷出來。保持大範圍警覺。</li>
+          <li><strong>忽略10月8日的新敵人類型</strong> — 那次更新加入了治療型、護盾型、召喚型和爆炸型敵人。它們也會出現在審判中。優先處理爆炸型（發光的那些）——它們能一擊秒你。</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>排行榜運作方式</h2>
+        <p>
+          全時段排行榜在2026年10月13日重置。所有人歸零。你的排名就是你的最佳存活時間：從第0分鐘開始你撐了多少秒。
+        </p>
+        <p>
+          單人和組隊排行榜分開，所以你可以同時挑戰兩個。排行榜是全球的——你在和所有 PokéSurvivor 玩家競爭，不只是你的地區。
+        </p>
+        <p>
+          目前還沒有官方公布世界紀錄（這個模式到本文撰寫時只上線6天），但社群Discord頻道已經在追蹤32分鐘以上的遊戲。這個數字還會繼續攀升。查看<a href="https://pokesurvivor.com/en/" rel="noopener">pokesurvivor.com</a> 的即時排名。
+        </p>
+        <p>
+          審判後撐過1分鐘（31分鐘）就超越大多數玩家了。2分鐘（32分鐘）是精英領域。3分鐘？你已經在頂尖玩家的討論範圍內。
+        </p>
+      </section>
+
+      <FAQ heading="常見問題" items={faq} />
+
+      <aside class="sources" aria-labelledby="sources-title">
+        <h2 id="sources-title">資料來源與更新</h2>
+        <p>
+          本指南基於 <a href="https://pokesurvivor.com/en/news/" rel="noopener">2026年10月13日官方更新公告</a>、<a href="https://pokesurvivor.com/en/achievements/" rel="noopener">成就頁面</a>和社群玩家經驗。我們是玩 PokéSurvivor 的粉絲，不是開發者。
+        </p>
+        <p>
+          遊戲機制可能隨未來更新變化。如果本頁面的任何數字與遊戲衝突，請以遊戲為準。最新資訊請隨時查看 <a href="https://pokesurvivor.com/en/" rel="noopener">pokesurvivor.com</a>。
+        </p>
+        <p class="version-info">
+          <strong>遊戲版本：</strong>2026年10月13日更新<br>
+          <strong>指南最後更新：</strong>2026年10月19日
+        </p>
+      </aside>
+    </article>
+
+    <section class="closing-cta" aria-labelledby="closing-cta-title">
+      <h2 id="closing-cta-title">準備好面對阿爾宙斯了嗎？</h2>
+      <p>審判在第30分鐘等著你。你能撐多久？</p>
+      <div class="cta-actions">
+        <a href="https://pokesurvivor.com/en/" target="_blank" rel="noopener" class="btn btn-primary btn-lg">開始遊玩 PokéSurvivor</a>
+        <a href="/zh/how-to-play/" class="btn btn-secondary btn-lg">學習基礎操作</a>
+      </div>
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  .page-wrapper {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .main-content {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: var(--space-2xl) var(--container-padding);
+  }
+
+  .article-header {
+    margin-bottom: var(--space-2xl);
+    text-align: center;
+  }
+
+  .section-label {
+    display: inline-block;
+    padding: var(--space-1) var(--space-3);
+    background: var(--accent-subtle);
+    border: 1px solid var(--accent-primary);
+    border-radius: var(--radius-pill);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-semibold);
+    color: var(--accent-primary);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: var(--space-md);
+  }
+
+  .article-header h1 {
+    font-family: var(--font-display);
+    font-size: clamp(var(--font-size-3xl), 5vw, var(--font-size-4xl));
+    font-weight: var(--font-bold);
+    color: var(--text-primary);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin-bottom: var(--space-md);
+  }
+
+  .article-meta {
+    font-size: var(--font-size-sm);
+    color: var(--text-tertiary);
+    margin: 0;
+  }
+
+  .version-alert {
+    background: var(--surface-elevated);
+    border: 1px solid var(--accent-primary);
+    border-radius: var(--radius-md);
+    padding: var(--space-md);
+    margin-bottom: var(--space-2xl);
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+  }
+
+  .version-alert a {
+    color: var(--accent-primary);
+    text-decoration: underline;
+  }
+
+  section {
+    margin-bottom: var(--space-2xl);
+  }
+
+  h2 {
+    font-family: var(--font-display);
+    font-size: var(--font-size-3xl);
+    font-weight: var(--font-bold);
+    color: var(--text-primary);
+    margin-bottom: var(--space-md);
+    line-height: 1.2;
+  }
+
+  h3 {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-semibold);
+    color: var(--text-primary);
+    margin-top: var(--space-lg);
+    margin-bottom: var(--space-2);
+  }
+
+  p {
+    font-size: var(--font-size-base);
+    line-height: var(--leading-relaxed);
+    color: var(--text-secondary);
+    margin-bottom: var(--space-md);
+  }
+
+  ul {
+    padding-left: 1.5rem;
+    margin-bottom: var(--space-md);
+  }
+
+  li {
+    margin-bottom: var(--space-2);
+    color: var(--text-secondary);
+    line-height: var(--leading-relaxed);
+  }
+
+  a {
+    color: var(--accent-primary);
+  }
+
+  a:hover {
+    color: var(--accent-hover);
+    text-decoration: underline;
+  }
+
+  .data-table {
+    overflow-x: auto;
+    margin: var(--space-lg) 0;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--surface-elevated);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+  }
+
+  th, td {
+    padding: var(--space-3) var(--space-4);
+    text-align: left;
+    border-bottom: 1px solid var(--border-subtle);
+  }
+
+  th {
+    background: var(--surface-raised);
+    font-weight: var(--font-semibold);
+    color: var(--text-primary);
+    font-size: var(--font-size-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  td {
+    color: var(--text-secondary);
+    font-size: var(--font-size-base);
+  }
+
+  tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+  .achievement-card {
+    background: var(--surface-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    padding: var(--space-lg);
+    margin-bottom: var(--space-lg);
+  }
+
+  .achievement-card h3 {
+    margin-top: 0;
+    color: var(--accent-primary);
+  }
+
+  .achievement-unlock,
+  .achievement-reward {
+    margin-bottom: var(--space-2);
+    font-size: var(--font-size-sm);
+  }
+
+  .achievement-strategy {
+    margin-bottom: 0;
+  }
+
+  .achievement-note {
+    font-size: var(--font-size-sm);
+    color: var(--text-tertiary);
+    font-style: italic;
+  }
+
+  .sources {
+    margin-top: var(--space-2xl);
+    padding: var(--space-lg);
+    background: var(--surface-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+  }
+
+  .sources h2 {
+    font-size: var(--font-size-xl);
+    margin-top: 0;
+    margin-bottom: var(--space-md);
+  }
+
+  .sources p {
+    margin-bottom: var(--space-md);
+  }
+
+  .sources p:last-child {
+    margin-bottom: 0;
+  }
+
+  .version-info {
+    font-size: var(--font-size-sm);
+    color: var(--text-tertiary);
+    margin-top: var(--space-md);
+    padding-top: var(--space-md);
+    border-top: 1px solid var(--border-subtle);
+  }
+
+  .closing-cta {
+    max-width: 800px;
+    margin: var(--space-2xl) auto;
+    padding: var(--space-2xl) var(--container-padding);
+    text-align: center;
+    background: var(--surface-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+  }
+
+  .closing-cta h2 {
+    font-family: var(--font-display);
+    font-size: var(--font-size-3xl);
+    margin-bottom: var(--space-md);
+  }
+
+  .closing-cta p {
+    font-size: var(--font-size-lg);
+    margin-bottom: var(--space-lg);
+  }
+
+  .cta-actions {
+    display: flex;
+    gap: var(--space-md);
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  @media (max-width: 768px) {
+    .cta-actions {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .data-table {
+      font-size: var(--font-size-sm);
+    }
+
+    th, td {
+      padding: var(--space-2) var(--space-3);
+    }
+  }
+</style>
