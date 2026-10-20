@@ -97,6 +97,15 @@ const isCurrent = (href: string) => path === href;
 <!doctype html>
 <html lang={isZh ? 'zh-Hant' : 'en'}>
   <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-0HXFYBSG9F"></script>
+    <script is:inline>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-0HXFYBSG9F');
+    </script>
+
     <SEOHead
       title={title}
       description={description}
