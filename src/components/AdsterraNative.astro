@@ -1,0 +1,96 @@
+---
+interface Props {
+  /** 广告位置标识 */
+  position: 'content' | 'sidebar';
+  /** 是否延迟加载 */
+  lazy?: boolean;
+}
+
+const { position, lazy = false } = Astro.props;
+const adId = `adsterra-native-${position}`;
+const containerId = 'container-551ff6df12adb1b22f32a5b2eee9e48c';
+---
+
+<div class={`adsterra-native-container adsterra-native-${position}`} data-ad-position={position}>
+  <div id={adId} class="adsterra-native-ad">
+    <div id={containerId}></div>
+  </div>
+</div>
+
+<style>
+  .adsterra-native-container {
+    width: 100%;
+    max-width: 1200px;
+    margin: var(--space-xl) auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 250px; /* 防止布局抖动 */
+  }
+
+  .adsterra-native-content {
+    margin: var(--space-xl) auto;
+  }
+
+  .adsterra-native-sidebar {
+    position: sticky;
+    top: var(--space-lg);
+    max-width: 300px;
+    margin: var(--space-lg) 0;
+  }
+
+  .adsterra-native-ad {
+    width: 100%;
+    background: var(--surface-base);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+  }
+
+  /* 移动端隐藏侧边栏广告 */
+  @media (max-width: 768px) {
+    .adsterra-native-sidebar {
+      display: none;
+    }
+  }
+</style>
+
+<script define:vars={{ adId, lazy }}>
+  function loadAdsterraNative() {
+    const container = document.getElementById(adId);
+    if (!container) return;
+
+    // 检查是否已加载过
+    if (container.dataset.loaded === 'true') return;
+    container.dataset.loaded = 'true';
+
+    // 创建 Adsterra Native Banner 脚本
+    const adScript = document.createElement('script');
+    adScript.async = true;
+    adScript.setAttribute('data-cfasync', 'false');
+    adScript.src = 'https://bauval.org/21/551ff6df12adb1b22f32a5b2eee9e48c';
+
+    container.appendChild(adScript);
+  }
+
+  if (lazy) {
+    // 延迟加载：当广告进入视口时加载
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          loadAdsterraNative();
+          observer.disconnect();
+        }
+      });
+    }, { rootMargin: '200px' });
+
+    const container = document.getElementById(adId);
+    if (container) observer.observe(container);
+  } else {
+    // 立即加载
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', loadAdsterraNative);
+    } else {
+      loadAdsterraNative();
+    }
+  }
+</script>

@@ -1,0 +1,113 @@
+---
+interface Props {
+  /** 广告位置标识 */
+  position: 'header' | 'footer' | 'content';
+  /** 是否延迟加载（内容下方的广告建议启用） */
+  lazy?: boolean;
+}
+
+const { position, lazy = false } = Astro.props;
+const adId = `adsterra-banner-${position}`;
+---
+
+<div class={`adsterra-container adsterra-${position}`} data-ad-position={position}>
+  <div id={adId} class="adsterra-ad">
+    <!-- Adsterra 728x90 Banner will be inserted here -->
+  </div>
+</div>
+
+<style>
+  .adsterra-container {
+    width: 100%;
+    max-width: 1200px;
+    margin: var(--space-lg) auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 90px; /* 防止布局抖动 (CLS) */
+  }
+
+  .adsterra-header {
+    margin: var(--space-md) auto var(--space-lg);
+  }
+
+  .adsterra-content {
+    margin: var(--space-xl) auto;
+  }
+
+  .adsterra-footer {
+    margin: var(--space-lg) auto var(--space-md);
+  }
+
+  .adsterra-ad {
+    width: 100%;
+    max-width: 728px;
+    background: var(--surface-base);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+  }
+
+  /* 移动端响应式 */
+  @media (max-width: 768px) {
+    .adsterra-container {
+      min-height: 50px;
+    }
+
+    .adsterra-ad {
+      max-width: 320px;
+    }
+  }
+</style>
+
+<script define:vars={{ adId, lazy }}>
+  function loadAdsterraBanner() {
+    const container = document.getElementById(adId);
+    if (!container) return;
+
+    // 检查是否已加载过
+    if (container.dataset.loaded === 'true') return;
+    container.dataset.loaded = 'true';
+
+    // 创建 Adsterra Banner 脚本
+    const configScript = document.createElement('script');
+    configScript.textContent = `
+      atOptions = {
+        'key' : '56d8fc5501b456b252fbae3619780b34',
+        'format' : 'iframe',
+        'height' : 90,
+        'width' : 728,
+        'params' : {}
+      };
+    `;
+
+    const adScript = document.createElement('script');
+    adScript.src = 'https://bauval.org/22/56d8fc5501b456b252fbae3619780b34';
+
+    container.appendChild(configScript);
+    container.appendChild(adScript);
+  }
+
+  if (lazy) {
+    // 延迟加载：当广告进入视口时加载
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          loadAdsterraBanner();
+          observer.disconnect();
+        }
+      });
+    }, { rootMargin: '200px' });
+
+    const container = document.getElementById(adId);
+    if (container) observer.observe(container);
+  } else {
+    // 立即加载
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', loadAdsterraBanner);
+    } else {
+      loadAdsterraBanner();
+    }
+  }
+</script>

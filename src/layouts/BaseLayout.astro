@@ -3,6 +3,7 @@ import SEOHead from '../components/SEOHead.astro';
 import RelatedGuides from '../components/RelatedGuides.astro';
 import LanguageBanner from '../components/LanguageBanner.astro';
 import LanguageSwitcher from '../components/LanguageSwitcher.astro';
+import AdsterraBanner from '../components/AdsterraBanner.astro';
 // Single source of truth for tokens + shared components. Do not redefine tokens elsewhere.
 import '../styles/global.css';
 
@@ -252,6 +253,9 @@ const isCurrent = (href: string) => path === href;
       </div>
     </header>
 
+    <!-- 顶部横幅广告 -->
+    <AdsterraBanner position="header" />
+
     {breadcrumbs && breadcrumbs.length > 1 && (
       <nav class="breadcrumbs" aria-label={isZh ? '麵包屑' : 'Breadcrumb'}>
         <ol>
@@ -273,6 +277,9 @@ const isCurrent = (href: string) => path === href;
     </main>
 
     <RelatedGuides locale={locale} current={path} />
+
+    <!-- 页脚上方广告（延迟加载） -->
+    <AdsterraBanner position="footer" lazy={true} />
 
     <footer class="site-footer">
       <div class="footer-container">
