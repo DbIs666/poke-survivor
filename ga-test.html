@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GA Test</title>
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-0HXFYBSG9F"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-0HXFYBSG9F');
+
+    // Debug logging
+    console.log('GA Script Loaded');
+    console.log('dataLayer:', window.dataLayer);
+  </script>
+</head>
+<body>
+  <h1>Google Analytics Test Page</h1>
+  <p>Check browser console (F12) for debug info</p>
+
+  <script>
+    // Test if gtag is working
+    setTimeout(() => {
+      console.log('After 2s, dataLayer:', window.dataLayer);
+
+      // Send a test event
+      if (typeof gtag === 'function') {
+        console.log('✅ gtag function exists');
+        gtag('event', 'test_event', {
+          'event_category': 'test',
+          'event_label': 'manual_test'
+        });
+        console.log('✅ Test event sent');
+      } else {
+        console.error('❌ gtag function NOT found');
+      }
+    }, 2000);
+
+    // Check if GA script loaded
+    setTimeout(() => {
+      const gaScript = document.querySelector('script[src*="gtag/js"]');
+      console.log('GA Script element:', gaScript);
+      console.log('GA Script loaded:', gaScript ? 'yes' : 'no');
+    }, 3000);
+  </script>
+</body>
+</html>

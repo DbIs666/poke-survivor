@@ -4,44 +4,123 @@ interface Props {
   height?: string;
   /** Use true on the homepage (above the fold). */
   eager?: boolean;
+  /** Use 'link' to show a play button instead of embedding (bypasses iframe restrictions) */
+  mode?: 'embed' | 'link';
 }
 
 const {
   title = 'PokéSurvivor official game (pokesurvivor.com)',
   height = 'auto',
   eager = false,
+  mode = 'link',
 } = Astro.props;
 const GAME_URL = 'https://pokesurvivor.com/en/';
 ---
 
-<div class="game-embed">
-  <div class="embed-container" style={height !== 'auto' ? `height: ${height}` : ''}>
-    <div class="loading-indicator">
-      <div class="spinner"></div>
-      <p>Loading game...</p>
+{mode === 'link' ? (
+  <div class="game-link-card">
+    <div class="card-content">
+      <h3>Play PokéSurvivor</h3>
+      <p>Experience the official game at pokesurvivor.com</p>
+      <a href={GAME_URL} target="_blank" rel="noopener" class="play-button">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M8 5v14l11-7z"/>
+        </svg>
+        Play Now
+      </a>
     </div>
-    <iframe
-      src={GAME_URL}
-      title={title}
-      allow="fullscreen; gamepad; autoplay"
-      allowfullscreen
-      loading={eager ? 'eager' : 'lazy'}
-    >
-      <a href={GAME_URL} rel="noopener">Play PokéSurvivor at pokesurvivor.com</a>
-    </iframe>
-    <noscript>
-      <p class="noscript-fallback">The embedded game needs JavaScript. <a href={GAME_URL} rel="noopener">Play PokéSurvivor at pokesurvivor.com</a>.</p>
-    </noscript>
   </div>
-  <p class="game-link">
-    <a href={GAME_URL} target="_blank" rel="noopener">
-      Open in full window →
-    </a>
-  </p>
-</div>
+) : (
+  <div class="game-embed">
+    <div class="embed-container" style={height !== 'auto' ? `height: ${height}` : ''}>
+      <div class="loading-indicator">
+        <div class="spinner"></div>
+        <p>Loading game...</p>
+      </div>
+      <iframe
+        src={GAME_URL}
+        title={title}
+        allow="fullscreen; gamepad; autoplay"
+        allowfullscreen
+        loading={eager ? 'eager' : 'lazy'}
+      >
+        <a href={GAME_URL} rel="noopener">Play PokéSurvivor at pokesurvivor.com</a>
+      </iframe>
+      <noscript>
+        <p class="noscript-fallback">The embedded game needs JavaScript. <a href={GAME_URL} rel="noopener">Play PokéSurvivor at pokesurvivor.com</a>.</p>
+      </noscript>
+    </div>
+    <p class="game-link">
+      <a href={GAME_URL} target="_blank" rel="noopener">
+        Open in full window →
+      </a>
+    </p>
+  </div>
+)}
 
 <style>
   /* Tokens come from src/styles/global.css (imported by BaseLayout). */
+
+  /* Link mode styles */
+  .game-link-card {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    background: var(--surface-base);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-subtle);
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+  }
+
+  .card-content {
+    padding: clamp(2rem, 5vw, 4rem);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+  }
+
+  .card-content h3 {
+    margin: 0;
+    font-size: clamp(1.5rem, 4vw, 2rem);
+    color: var(--text-primary);
+    font-weight: 700;
+  }
+
+  .card-content p {
+    margin: 0;
+    font-size: clamp(1rem, 2.5vw, 1.125rem);
+    color: var(--text-secondary);
+  }
+
+  .play-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem 2.5rem;
+    background: var(--accent-primary);
+    color: #fff;
+    font-size: clamp(1rem, 2.5vw, 1.125rem);
+    font-weight: 600;
+    text-decoration: none;
+    border-radius: 999px;
+    transition: all 0.2s;
+    box-shadow: 0 4px 12px rgba(56, 189, 248, 0.3);
+  }
+
+  .play-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(56, 189, 248, 0.4);
+  }
+
+  .play-button svg {
+    width: 24px;
+    height: 24px;
+  }
+
+  /* Embed mode styles */
   .game-embed {
     width: 100%;
     max-width: 1200px;
@@ -134,6 +213,14 @@ const GAME_URL = 'https://pokesurvivor.com/en/';
   @media (max-width: 640px) {
     .embed-container {
       border-radius: 12px;
+    }
+
+    .game-link-card {
+      border-radius: 12px;
+    }
+
+    .card-content {
+      padding: 2rem 1.5rem;
     }
   }
 </style>

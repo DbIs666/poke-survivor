@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Generate Diagram Images for PokéSurvivor Wiki</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: #0a0d12;
+      color: #e5e7eb;
+      padding: 2rem;
+    }
+    .container { max-width: 1400px; margin: 0 auto; }
+    h1 { margin-bottom: 2rem; font-size: 2rem; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 2rem; margin-bottom: 3rem; }
+    .diagram {
+      background: #161d2b;
+      border-radius: 12px;
+      padding: 2rem;
+      border: 2px solid #38bdf8;
+    }
+    .diagram h2 { font-size: 1.25rem; margin-bottom: 1rem; color: #38bdf8; }
+    .diagram-content { background: #0f131c; border-radius: 8px; padding: 1.5rem; min-height: 300px; }
+
+    /* Evolution Diagram */
+    .evolution-flow {
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      gap: 1rem;
+      height: 100%;
+    }
+    .move-box {
+      background: linear-gradient(135deg, #f97316 0%, #dc2626 100%);
+      color: white;
+      padding: 2rem 1.5rem;
+      border-radius: 12px;
+      text-align: center;
+      font-weight: bold;
+      font-size: 1.5rem;
+      box-shadow: 0 4px 12px rgba(249, 115, 22, 0.4);
+      min-width: 140px;
+    }
+    .move-box.evolved {
+      background: linear-gradient(135deg, #eab308 0%, #f59e0b 100%);
+      box-shadow: 0 4px 12px rgba(234, 179, 8, 0.4);
+      font-size: 1.75rem;
+    }
+    .arrow {
+      font-size: 3rem;
+      color: #38bdf8;
+      font-weight: bold;
+    }
+    .stat-req {
+      background: #1e2636;
+      padding: 0.75rem 1.25rem;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      color: #6ee7b7;
+      border: 2px solid #6ee7b7;
+    }
+
+    /* Fusion Diagram */
+    .fusion-grid {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 1.5rem;
+      align-items: center;
+      padding: 2rem 0;
+    }
+    .move-slot {
+      background: #1e2636;
+      border: 2px dashed #38bdf8;
+      border-radius: 8px;
+      padding: 1.5rem;
+      text-align: center;
+      min-height: 120px;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      justify-content: center;
+    }
+    .move-slot.fused {
+      border: 3px solid #6ee7b7;
+      background: linear-gradient(135deg, #1e2636 0%, #064e3b 100%);
+    }
+    .move-name {
+      font-weight: bold;
+      font-size: 1.1rem;
+      color: #e5e7eb;
+    }
+    .move-type {
+      font-size: 0.85rem;
+      color: #9ca3af;
+    }
+    .plus-sign {
+      font-size: 2.5rem;
+      color: #6ee7b7;
+      font-weight: bold;
+    }
+
+    /* Arena Diagram */
+    .arena {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16/9;
+      background: radial-gradient(circle, #1e2636 0%, #0a0d12 100%);
+      border: 3px solid #38bdf8;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .arena-zone {
+      position: absolute;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      text-align: center;
+    }
+    .safe-zone {
+      width: 25%;
+      height: 40%;
+      background: rgba(110, 231, 183, 0.2);
+      border: 2px solid #6ee7b7;
+      top: 30%;
+      left: 37.5%;
+    }
+    .danger-zone {
+      position: absolute;
+      width: 15%;
+      height: 25%;
+      background: rgba(239, 68, 68, 0.3);
+      border: 2px solid #ef4444;
+      border-radius: 50%;
+    }
+    .danger-zone:nth-child(2) { top: 10%; left: 10%; }
+    .danger-zone:nth-child(3) { top: 10%; right: 10%; }
+    .danger-zone:nth-child(4) { bottom: 10%; left: 20%; }
+    .danger-zone:nth-child(5) { bottom: 10%; right: 20%; }
+    .timer {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: rgba(14, 15, 22, 0.9);
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #eab308;
+      border: 2px solid #eab308;
+    }
+
+    /* Attack Patterns Grid */
+    .patterns-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+    }
+    .pattern-card {
+      background: #1e2636;
+      border: 2px solid #38bdf8;
+      border-radius: 8px;
+      padding: 1.25rem;
+      text-align: center;
+      transition: all 0.3s;
+    }
+    .pattern-card:hover {
+      border-color: #6ee7b7;
+      transform: translateY(-2px);
+    }
+    .pattern-icon {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
+    .pattern-name {
+      font-weight: bold;
+      color: #e5e7eb;
+      margin-bottom: 0.25rem;
+    }
+    .pattern-desc {
+      font-size: 0.8rem;
+      color: #9ca3af;
+    }
+
+    button {
+      background: #38bdf8;
+      color: #0a0d12;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 1rem;
+      font-size: 1rem;
+    }
+    button:hover {
+      background: #6ee7b7;
+    }
+
+    .instructions {
+      background: #161d2b;
+      padding: 1.5rem;
+      border-radius: 8px;
+      margin-bottom: 2rem;
+      border-left: 4px solid #38bdf8;
+    }
+    .instructions h3 {
+      margin-bottom: 0.5rem;
+      color: #38bdf8;
+    }
+    .instructions ol {
+      margin-left: 1.5rem;
+      line-height: 1.8;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🎮 PokéSurvivor Wiki - Diagram Image Generator</h1>
+
+    <div class="instructions">
+      <h3>📸 Instructions:</h3>
+      <ol>
+        <li>Right-click each diagram below</li>
+        <li>Select "Save image as..." or "Copy image"</li>
+        <li>Use browser DevTools (F12) → Select element → Take screenshot</li>
+        <li>Save with the specified filename to <code>/public/images/content/</code></li>
+      </ol>
+    </div>
+
+    <div class="grid">
+      <!-- Evolution Diagram -->
+      <div class="diagram" id="evolution-diagram">
+        <h2>📦 moves-evolution-hero.jpg (1200×675)</h2>
+        <div class="diagram-content">
+          <div class="evolution-flow">
+            <div>
+              <div class="move-box">Ember</div>
+              <div style="margin-top: 0.5rem; font-size: 0.85rem; color: #9ca3af;">Lv 5</div>
+            </div>
+            <div style="text-align: center;">
+              <div class="arrow">→</div>
+              <div class="stat-req">+Power Card</div>
+            </div>
+            <div>
+              <div class="move-box evolved">Fire Blast</div>
+              <div style="margin-top: 0.5rem; font-size: 0.85rem; color: #6ee7b7;">✨ Evolved</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Fusion Diagram -->
+      <div class="diagram" id="fusion-diagram">
+        <h2>📦 fusion-diagram-visual.jpg (800×450)</h2>
+        <div class="diagram-content">
+          <div class="fusion-grid">
+            <div class="move-slot">
+              <div class="move-name">Thunderbolt</div>
+              <div class="move-type">Electric | Chain</div>
+            </div>
+            <div class="plus-sign">+</div>
+            <div class="move-slot">
+              <div class="move-name">Flamethrower</div>
+              <div class="move-type">Fire | Beam</div>
+            </div>
+          </div>
+          <div style="text-align: center; margin-top: 1rem;">
+            <div class="arrow" style="transform: rotate(90deg); display: inline-block;">→</div>
+          </div>
+          <div style="margin-top: 1rem;">
+            <div class="move-slot fused">
+              <div class="move-name">⚡🔥 Fused Slot</div>
+              <div class="move-type">Both moves fire together</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Arena Diagram -->
+      <div class="diagram" id="arena-diagram">
+        <h2>📦 judgment-arena-layout.jpg (800×450)</h2>
+        <div class="diagram-content">
+          <div class="arena">
+            <div class="timer">35:00</div>
+            <div class="danger-zone">❌</div>
+            <div class="danger-zone">❌</div>
+            <div class="danger-zone">❌</div>
+            <div class="danger-zone">❌</div>
+            <div class="safe-zone">
+              ✅<br>Safe Zone<br>Keep Moving
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Attack Patterns -->
+      <div class="diagram" id="patterns-diagram" style="grid-column: 1 / -1;">
+        <h2>📦 attack-patterns-grid.jpg (800×600)</h2>
+        <div class="diagram-content">
+          <div class="patterns-grid">
+            <div class="pattern-card">
+              <div class="pattern-icon">⚔️</div>
+              <div class="pattern-name">Melee</div>
+              <div class="pattern-desc">Close-range hits</div>
+            </div>
+            <div class="pattern-card">
+              <div class="pattern-icon">➡️</div>
+              <div class="pattern-name">Projectile</div>
+              <div class="pattern-desc">Shoots forward</div>
+            </div>
+            <div class="pattern-card">
+              <div class="pattern-icon">〰️</div>
+              <div class="pattern-name">Beam</div>
+              <div class="pattern-desc">Continuous ray</div>
+            </div>
+            <div class="pattern-card">
+              <div class="pattern-icon">💥</div>
+              <div class="pattern-name">Burst</div>
+              <div class="pattern-desc">AoE explosion</div>
+            </div>
+            <div class="pattern-card">
+              <div class="pattern-icon">🔄</div>
+              <div class="pattern-name">Orbit</div>
+              <div class="pattern-desc">Circles player</div>
+            </div>
+            <div class="pattern-card">
+              <div class="pattern-icon">⚡</div>
+              <div class="pattern-name">Chain</div>
+              <div class="pattern-desc">Jumps targets</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top: 2rem; padding: 1.5rem; background: #161d2b; border-radius: 8px;">
+      <h3 style="margin-bottom: 1rem; color: #38bdf8;">🎯 Next Steps:</h3>
+      <ol style="margin-left: 1.5rem; line-height: 1.8;">
+        <li>Screenshot each diagram above using browser DevTools</li>
+        <li>Save to <code>/public/images/content/</code> with the specified filenames</li>
+        <li>Run image optimization: <code>npm run optimize-images</code> (if available)</li>
+        <li>Images will be automatically referenced in the pages</li>
+      </ol>
+    </div>
+  </div>
+</body>
+</html>

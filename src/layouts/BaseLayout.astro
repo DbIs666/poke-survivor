@@ -45,36 +45,85 @@ const path = Astro.url.pathname;
 
 const navEn = [
   { href: '/', label: 'Home' },
-  { href: '/how-to-play/', label: 'How to Play' },
-  { href: '/mobile/', label: 'Mobile' },
-  { href: '/tier-list/', label: 'Tier List' },
-  { href: '/best-pokemon/', label: 'Best Pokémon' },
-  { href: '/pokedex/', label: 'Pokédex' },
-  { href: '/rifts/', label: 'Rifts' },
-  { href: '/co-op/', label: 'Co-op' },
+  {
+    label: 'Guides',
+    children: [
+      { href: '/how-to-play/', label: 'How to Play' },
+      { href: '/mobile/', label: 'Mobile Guide' },
+    ]
+  },
+  {
+    label: 'Pokémon',
+    children: [
+      { href: '/tier-list/', label: 'Tier List' },
+      { href: '/best-pokemon/', label: 'Best Pokémon' },
+      { href: '/pokedex/', label: 'Pokédex' },
+    ]
+  },
+  {
+    label: 'Game Modes',
+    children: [
+      { href: '/arceus-judgment/', label: 'Arceus Judgment' },
+      { href: '/rifts/', label: 'Legendary Rifts' },
+      { href: '/co-op/', label: 'Co-op Mode' },
+    ]
+  },
+  {
+    label: 'Moves & Combat',
+    children: [
+      { href: '/moves/', label: 'Move Evolution' },
+      { href: '/fusion-bonds/', label: 'Fusion Bonds' },
+    ]
+  },
 ];
 const navZh = [
-  { href: '/zh/', label: '首頁攻略' },
-  { href: '/zh/mobile/', label: '手機版' },
-  { href: '/zh/pokedex/', label: '圖鑑' },
-  { href: '/zh/how-to-play/', label: '玩法教學' },
-  { href: '/zh/tier-list/', label: '強度排行' },
-  { href: '/zh/best-pokemon/', label: '最佳初始' },
-  { href: '/zh/rifts/', label: '裂縫指南' },
-  { href: '/zh/co-op/', label: '多人合作' },
+  { href: '/zh/', label: '首頁' },
+  {
+    label: '新手指南',
+    children: [
+      { href: '/zh/how-to-play/', label: '玩法教學' },
+      { href: '/zh/mobile/', label: '手機版指南' },
+    ]
+  },
+  {
+    label: '寶可夢資料',
+    children: [
+      { href: '/zh/tier-list/', label: '強度排行' },
+      { href: '/zh/best-pokemon/', label: '最佳初始' },
+      { href: '/zh/pokedex/', label: '寶可夢圖鑑' },
+    ]
+  },
+  {
+    label: '遊戲模式',
+    children: [
+      { href: '/zh/arceus-judgment/', label: '阿爾宙斯審判' },
+      { href: '/zh/rifts/', label: '傳說裂縫' },
+      { href: '/zh/co-op/', label: '多人合作' },
+    ]
+  },
+  {
+    label: '招式系統',
+    children: [
+      { href: '/zh/moves/', label: '招式進化' },
+      { href: '/zh/fusion-bonds/', label: '招式融合' },
+    ]
+  },
 ];
 const nav = isZh ? navZh : navEn;
 
 const footerGuides = isZh
   ? [
       { href: '/zh/', label: '首頁攻略' },
-      { href: '/zh/mobile/', label: '手機版' },
-      { href: '/zh/pokedex/', label: '寶可夢圖鑑' },
       { href: '/zh/how-to-play/', label: '玩法教學' },
+      { href: '/zh/mobile/', label: '手機版指南' },
       { href: '/zh/tier-list/', label: '強度排行' },
       { href: '/zh/best-pokemon/', label: '最佳初始夥伴' },
+      { href: '/zh/pokedex/', label: '寶可夢圖鑑' },
+      { href: '/zh/arceus-judgment/', label: '阿爾宙斯審判' },
       { href: '/zh/rifts/', label: '傳說裂縫指南' },
       { href: '/zh/co-op/', label: '多人合作' },
+      { href: '/zh/moves/', label: '招式進化' },
+      { href: '/zh/fusion-bonds/', label: '招式融合' },
       { href: '/', label: '英文攻略首頁' },
     ]
   : [
@@ -84,8 +133,11 @@ const footerGuides = isZh
       { href: '/tier-list/', label: 'Tier List' },
       { href: '/best-pokemon/', label: 'Best Pokémon Picks' },
       { href: '/pokedex/', label: 'Pokédex' },
+      { href: '/arceus-judgment/', label: 'Arceus Judgment Mode' },
       { href: '/rifts/', label: 'Legendary Rifts' },
       { href: '/co-op/', label: 'Co-op Guide' },
+      { href: '/moves/', label: 'Move Evolution' },
+      { href: '/fusion-bonds/', label: 'Fusion Bonds' },
     ];
 const footerLangs = [
   { href: '/zh/', label: '繁體中文攻略', lang: 'zh-Hant' },
@@ -134,15 +186,38 @@ const isCurrent = (href: string) => path === href;
         <nav aria-label={isZh ? '主選單' : 'Main'}>
           <ul class="nav-links">
             {nav.map((item) => (
-              <li>
-                <a
-                  href={item.href}
-                  lang={item.lang}
-                  aria-current={isCurrent(item.href) ? 'page' : undefined}
-                  class={isCurrent(item.href) ? 'active' : ''}
-                >
-                  {item.label}
-                </a>
+              <li class={item.children ? 'has-dropdown' : ''}>
+                {item.children ? (
+                  <>
+                    <button class="dropdown-toggle" aria-expanded="false">
+                      {item.label}
+                      <svg class="dropdown-icon" width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+                        <path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                    </button>
+                    <ul class="dropdown-menu">
+                      {item.children.map((child) => (
+                        <li>
+                          <a
+                            href={child.href}
+                            aria-current={isCurrent(child.href) ? 'page' : undefined}
+                            class={isCurrent(child.href) ? 'active' : ''}
+                          >
+                            {child.label}
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  </>
+                ) : (
+                  <a
+                    href={item.href}
+                    aria-current={isCurrent(item.href) ? 'page' : undefined}
+                    class={isCurrent(item.href) ? 'active' : ''}
+                  >
+                    {item.label}
+                  </a>
+                )}
               </li>
             ))}
             <li class="nav-lang-item">
@@ -225,6 +300,55 @@ const isCurrent = (href: string) => path === href;
         )}
       </div>
     </footer>
+
+    <script>
+      // Dropdown menu functionality
+      document.addEventListener('DOMContentLoaded', () => {
+        const dropdowns = document.querySelectorAll('.has-dropdown');
+
+        dropdowns.forEach(dropdown => {
+          const toggle = dropdown.querySelector('.dropdown-toggle');
+          const menu = dropdown.querySelector('.dropdown-menu');
+
+          if (!toggle || !menu) return;
+
+          // Toggle on click
+          toggle.addEventListener('click', (e) => {
+            e.preventDefault();
+            const isExpanded = toggle.getAttribute('aria-expanded') === 'true';
+
+            // Close all other dropdowns
+            document.querySelectorAll('.dropdown-toggle').forEach(other => {
+              if (other !== toggle) {
+                other.setAttribute('aria-expanded', 'false');
+              }
+            });
+
+            // Toggle current dropdown
+            toggle.setAttribute('aria-expanded', !isExpanded ? 'true' : 'false');
+          });
+
+          // Keyboard navigation
+          toggle.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              toggle.click();
+            } else if (e.key === 'Escape') {
+              toggle.setAttribute('aria-expanded', 'false');
+            }
+          });
+        });
+
+        // Close dropdowns when clicking outside
+        document.addEventListener('click', (e) => {
+          if (!e.target.closest('.has-dropdown')) {
+            document.querySelectorAll('.dropdown-toggle').forEach(toggle => {
+              toggle.setAttribute('aria-expanded', 'false');
+            });
+          }
+        });
+      });
+    </script>
   </body>
 </html>
 
