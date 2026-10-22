@@ -130,6 +130,7 @@ for (const s of jsonLd) schemas.push({ '@context': 'https://schema.org', ...link
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <meta name="generator" content={Astro.generator} />
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.cloudflareinsights.com https://www.googletagmanager.com https://www.google-analytics.com https://analytics.google.com https://region1.google-analytics.com; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://raw.githubusercontent.com https://www.google-analytics.com https://www.googletagmanager.com https://cloudflareinsights.com https://www.google-analytics.com https://analytics.google.com https://region1.google-analytics.com; img-src 'self' data: https://raw.githubusercontent.com https://www.google-analytics.com https://www.googletagmanager.com; frame-src https://pokesurvivor.com; connect-src 'self' https://cloudflareinsights.com https://www.google-analytics.com https://analytics.google.com https://region1.google-analytics.com; font-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self';" />
 <title>{fullTitle}</title>
 <meta name="description" content={description} />
 {canonicalUrl && <link rel="canonical" href={canonicalUrl} />}
