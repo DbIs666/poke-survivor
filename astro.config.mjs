@@ -49,7 +49,14 @@ export default defineConfig({
   build: {
     format: 'directory',
   },
-  ...(viteCacheDir ? { vite: { cacheDir: viteCacheDir } } : {}),
+  vite: {
+    ...(viteCacheDir ? { cacheDir: viteCacheDir } : {}),
+    server: {
+      headers: {
+        'Content-Security-Policy': "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com https://region1.google-analytics.com https://static.cloudflareinsights.com; connect-src 'self' https://www.google-analytics.com https://region1.google-analytics.com https://cloudflareinsights.com; img-src 'self' data: https://www.google-analytics.com; frame-ancestors 'none';"
+      }
+    }
+  },
   // zh pages are distinct content, not translations, so no sitemap i18n alternates.
   integrations: [
     sitemap({
