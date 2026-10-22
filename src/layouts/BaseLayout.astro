@@ -183,16 +183,40 @@ const isCurrent = (href: string) => path === href;
           <img src="/favicon.svg" alt="" width="32" height="32" aria-hidden="true" />
           <span class="logo-text">PokeSurvivor</span>
         </a>
-        <nav aria-label={isZh ? '主選單' : 'Main'}>
+
+        <!-- Mobile menu toggle -->
+        <button
+          class="mobile-menu-toggle"
+          aria-expanded="false"
+          aria-controls="main-nav"
+          aria-label={isZh ? '開啟選單' : 'Open menu'}
+        >
+          <svg class="hamburger-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </button>
+
+        <!-- Navigation -->
+        <nav id="main-nav" class="main-nav" aria-label={isZh ? '主選單' : 'Main'}>
+          <!-- Mobile close button -->
+          <button
+            class="mobile-nav-close"
+            aria-label={isZh ? '關閉選單' : 'Close menu'}
+          >
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </button>
+
           <ul class="nav-links">
             {nav.map((item) => (
               <li class={item.children ? 'has-dropdown' : ''}>
                 {item.children ? (
                   <>
                     <button class="dropdown-toggle" aria-expanded="false">
-                      {item.label}
-                      <svg class="dropdown-icon" width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
-                        <path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                      <span>{item.label}</span>
+                      <svg class="dropdown-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                        <path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                       </svg>
                     </button>
                     <ul class="dropdown-menu">
@@ -302,8 +326,49 @@ const isCurrent = (href: string) => path === href;
     </footer>
 
     <script>
-      // Dropdown menu functionality
+      // Mobile menu functionality
       document.addEventListener('DOMContentLoaded', () => {
+        const mobileToggle = document.querySelector('.mobile-menu-toggle');
+        const mobileClose = document.querySelector('.mobile-nav-close');
+        const mainNav = document.querySelector('.main-nav');
+        const body = document.body;
+
+        if (!mobileToggle || !mainNav) return;
+
+        // Open mobile menu
+        mobileToggle.addEventListener('click', () => {
+          const isExpanded = mobileToggle.getAttribute('aria-expanded') === 'true';
+          mobileToggle.setAttribute('aria-expanded', !isExpanded ? 'true' : 'false');
+          mainNav.classList.toggle('is-open', !isExpanded);
+          body.style.overflow = !isExpanded ? 'hidden' : '';
+        });
+
+        // Close mobile menu
+        const closeMobileMenu = () => {
+          mobileToggle.setAttribute('aria-expanded', 'false');
+          mainNav.classList.remove('is-open');
+          body.style.overflow = '';
+        };
+
+        if (mobileClose) {
+          mobileClose.addEventListener('click', closeMobileMenu);
+        }
+
+        // Close on backdrop click
+        mainNav.addEventListener('click', (e) => {
+          if (e.target === mainNav) {
+            closeMobileMenu();
+          }
+        });
+
+        // Close on ESC key
+        document.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape' && mainNav.classList.contains('is-open')) {
+            closeMobileMenu();
+          }
+        });
+
+        // Dropdown functionality
         const dropdowns = document.querySelectorAll('.has-dropdown');
 
         dropdowns.forEach(dropdown => {
@@ -315,14 +380,18 @@ const isCurrent = (href: string) => path === href;
           // Toggle on click
           toggle.addEventListener('click', (e) => {
             e.preventDefault();
+            e.stopPropagation();
+
             const isExpanded = toggle.getAttribute('aria-expanded') === 'true';
 
-            // Close all other dropdowns
-            document.querySelectorAll('.dropdown-toggle').forEach(other => {
-              if (other !== toggle) {
-                other.setAttribute('aria-expanded', 'false');
-              }
-            });
+            // On mobile, allow only one dropdown open at a time
+            if (window.innerWidth < 1024) {
+              document.querySelectorAll('.dropdown-toggle').forEach(other => {
+                if (other !== toggle) {
+                  other.setAttribute('aria-expanded', 'false');
+                }
+              });
+            }
 
             // Toggle current dropdown
             toggle.setAttribute('aria-expanded', !isExpanded ? 'true' : 'false');
@@ -339,13 +408,25 @@ const isCurrent = (href: string) => path === href;
           });
         });
 
-        // Close dropdowns when clicking outside
+        // Close dropdowns when clicking outside (desktop only)
         document.addEventListener('click', (e) => {
-          if (!e.target.closest('.has-dropdown')) {
+          if (window.innerWidth >= 1024 && !e.target.closest('.has-dropdown')) {
             document.querySelectorAll('.dropdown-toggle').forEach(toggle => {
               toggle.setAttribute('aria-expanded', 'false');
             });
           }
+        });
+
+        // Handle window resize
+        let resizeTimer;
+        window.addEventListener('resize', () => {
+          clearTimeout(resizeTimer);
+          resizeTimer = setTimeout(() => {
+            // Reset mobile menu state on resize to desktop
+            if (window.innerWidth >= 1024) {
+              closeMobileMenu();
+            }
+          }, 250);
         });
       });
     </script>
